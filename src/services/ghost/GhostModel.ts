@@ -1,4 +1,4 @@
-import { modelIdKeysByProvider, ProviderSettingsEntry } from "@roo-code/types"
+import { modelIdKeysByProvider, ProviderSettingsEntry, ProviderName } from "@roo-code/types"
 import { ApiHandler, buildApiHandler } from "../../api"
 import { ProviderSettingsManager } from "../../core/config/ProviderSettingsManager"
 import { OpenRouterHandler } from "../../api/providers"
@@ -6,9 +6,17 @@ import { CompletionUsage } from "../../api/providers/openrouter"
 import { ApiStreamChunk } from "../../api/transform/stream"
 import { AUTOCOMPLETE_PROVIDER_MODELS, checkKilocodeBalance } from "./utils/kilocode-utils"
 import { KilocodeOpenrouterHandler } from "../../api/providers/kilocode-openrouter"
+import { PROVIDERS } from "../../../webview-ui/src/components/settings/constants"
+
+// Convert PROVIDERS array to a lookup map for display names
+const PROVIDER_DISPLAY_NAMES = Object.fromEntries(PROVIDERS.map(({ value, label }) => [value, label])) as Record<
+	ProviderName,
+	string
+>
 
 export class GhostModel {
 	private apiHandler: ApiHandler | null = null
+	private currentProvider: ProviderName | null = null
 	public loaded = false
 
 	constructor(apiHandler: ApiHandler | null = null) {
@@ -19,6 +27,7 @@ export class GhostModel {
 	}
 	private cleanup(): void {
 		this.apiHandler = null
+		this.currentProvider = null
 		this.loaded = false
 	}
 
@@ -40,6 +49,7 @@ export class GhostModel {
 			}
 
 			this.apiHandler = buildApiHandler({ ...profile, [modelIdKeysByProvider[provider]]: model })
+			this.currentProvider = provider
 
 			if (this.apiHandler instanceof OpenRouterHandler) {
 				await this.apiHandler.fetchModel()
@@ -96,20 +106,12 @@ export class GhostModel {
 
 		let usage: CompletionUsage | undefined
 
-		try {
-			for await (const chunk of this.apiHandler.streamFim(prefix, suffix, taskId)) {
-				if (chunk.type === "content") {
-					onChunk(chunk.content)
-				} else if (chunk.type === "usage") {
-					usage = chunk.usage
-				}
-			}
-		} catch (error) {
-			console.error("Error streaming FIM completion:", error)
-			throw error
+		for await (const chunk of this.apiHandler.streamFim(prefix, suffix, taskId, (u) => {
+			usage = u
+		})) {
+			onChunk(chunk)
 		}
 
-		// Calculate cost from usage information
 		const cost = usage ? this.apiHandler.getTotalCost(usage) : 0
 		const inputTokens = usage?.prompt_tokens ?? 0
 		const outputTokens = usage?.completion_tokens ?? 0
@@ -190,14 +192,12 @@ export class GhostModel {
 	}
 
 	public getProviderDisplayName(): string | undefined {
-		if (!this.apiHandler) return undefined
+		if (!this.currentProvider) return undefined
+		return PROVIDER_DISPLAY_NAMES[this.currentProvider]
+	}
 
-		const handler = this.apiHandler as any
-		if (handler.providerName && typeof handler.providerName === "string") {
-			return handler.providerName
-		} else {
-			return undefined
-		}
+	public getRolloutHash_IfLoggedInToKilo(): number | undefined {
+		return this.apiHandler instanceof KilocodeOpenrouterHandler ? this.apiHandler.getRolloutHash() : undefined
 	}
 
 	public hasValidCredentials(): boolean {

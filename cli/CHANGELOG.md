@@ -1,5 +1,11 @@
 # @kilocode/cli
 
+## 0.6.0
+
+### Minor Changes
+
+- [#3886](https://github.com/Kilo-Org/kilocode/pull/3886) [`00e6fb5`](https://github.com/Kilo-Org/kilocode/commit/00e6fb59a42dcf827f7cfe72516052c561723cd0) Thanks [@catrielmuller](https://github.com/catrielmuller)! - Update Dependencies
+
 ## 0.5.1
 
 ### Patch Changes
