@@ -45,6 +45,7 @@ import {
 	vercelAiGatewayDefaultModelId,
 	deepInfraDefaultModelId,
 	minimaxDefaultModelId,
+	agenticaDefaultModelId,
 } from "@roo-code/types"
 
 import { vscode } from "@src/utils/vscode"
@@ -74,6 +75,7 @@ import {
 
 import {
 	Anthropic,
+	Agentica,
 	Bedrock,
 	Cerebras,
 	Chutes,
@@ -422,6 +424,7 @@ const ApiOptions = ({
 				ovhcloud: { field: "ovhCloudAiEndpointsModelId", default: ovhCloudAiEndpointsDefaultModelId },
 				inception: { field: "inceptionLabsModelId", default: inceptionDefaultModelId },
 				// kilocode_change end
+				agentica: { field: "apiModelId", default: agenticaDefaultModelId },
 			}
 
 			const config = PROVIDER_MODEL_CONFIG[value]
@@ -607,6 +610,10 @@ const ApiOptions = ({
 
 			{selectedProvider === "anthropic" && (
 				<Anthropic apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+			)}
+
+			{selectedProvider === "agentica" && (
+				<Agentica apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
 
 			{selectedProvider === "claude-code" && (
