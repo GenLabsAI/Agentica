@@ -1,49 +1,49 @@
-import React from "react"
-import { ButtonLink } from "./ButtonLink"
-import { ButtonSecondary } from "./ButtonSecondary"
-import Logo from "./Logo"
-import { useAppTranslation } from "@/i18n/TranslationContext"
-import { getKiloCodeBackendSignUpUrl } from "../helpers"
-import { useExtensionState } from "@/context/ExtensionStateContext"
+import { PropsWithChildren } from "react"
+import styled from "styled-components"
 
-interface KiloCodeAuthProps {
-	onManualConfigClick?: () => void
-	className?: string
-}
+type ButtonProps = PropsWithChildren<{
+	onClick: () => void
+}>
 
-const KiloCodeAuth: React.FC<KiloCodeAuthProps> = ({ onManualConfigClick, className = "" }) => {
-	const { uriScheme, uiKind, kiloCodeWrapperProperties } = useExtensionState()
+const StyledButton = styled.button`
+	display: block;
+	text-decoration: none;
+	font-weight: 600;
+	font-size: 12px;
+	border-radius: 2px;
+	padding: 14px;
+	transition: all 0.2s;
+	cursor: pointer;
 
-	const { t } = useAppTranslation()
+	/* Theme-specific styles */
+	body.vscode-dark & {
+		border: 1px solid #9f9ea1;
+		background: #8e9196;
+		color: #fff;
 
-	return (
-		<div className={`flex flex-col items-center ${className}`}>
-			<Logo />
+		&:hover {
+			background-color: #7a7e83;
+		}
 
-			<h2 className="m-0 p-0 mb-4">{t("kilocode:welcome.greeting")}</h2>
-			<p className="text-center mb-2">{t("kilocode:welcome.introText1")}</p>
-			<p className="text-center mb-2">{t("kilocode:welcome.introText2")}</p>
-			<p className="text-center mb-5">{t("kilocode:welcome.introText3")}</p>
+		&:active {
+			background-color: #6a6e73;
+			transform: scale(0.98);
+		}
+	}
 
-			<div className="w-full flex flex-col gap-5">
-				<ButtonLink
-					href={getKiloCodeBackendSignUpUrl(uriScheme, uiKind, kiloCodeWrapperProperties)}
-					onClick={() => {
-						if (uiKind === "Web" && onManualConfigClick) {
-							onManualConfigClick()
-						}
-					}}>
-					{t("kilocode:welcome.ctaButton")}
-				</ButtonLink>
+	body.vscode-light & {
+		border: 1px solid #9f9ea1;
+		background: #fff;
+		color: #8e9196;
 
-				{!!onManualConfigClick && (
-					<ButtonSecondary onClick={() => onManualConfigClick && onManualConfigClick()}>
-						{t("kilocode:welcome.manualModeButton")}
-					</ButtonSecondary>
-				)}
-			</div>
-		</div>
-	)
-}
+		&:active {
+			transform: scale(0.98);
+		}
+	}
+`
 
-export default KiloCodeAuth
+export const ButtonSecondary = ({ onClick, children }: ButtonProps) => (
+	<StyledButton onClick={onClick} className="flex flex-col gap-1 text-center">
+		{children}
+	</StyledButton>
+)
