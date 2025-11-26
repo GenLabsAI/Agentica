@@ -33,7 +33,7 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 					placeholder="your-email@example.com"
 					style={{ width: "100%" }}>
 					<span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-						GenLabs Email
+						Email
 						<span style={{ opacity: 0.7, fontSize: "0.9em" }}>(required)</span>
 					</span>
 				</VSCodeTextField>
@@ -45,7 +45,7 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 					type="password"
 					style={{ width: "100%" }}>
 					<span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-						GenLabs Password
+						Password
 						<span style={{ opacity: 0.7, fontSize: "0.9em" }}>(required)</span>
 					</span>
 				</VSCodeTextField>

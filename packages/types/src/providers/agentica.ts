@@ -4,7 +4,7 @@ export type AgenticaModelId = keyof typeof agenticaModels
 
 export const agenticaDefaultModelId: AgenticaModelId = "deca-coder-flash"
 
-export const AGENTICA_DEFAULT_BASE_URL = "https://api.genlabs.dev/deca/v1" as const
+export const AGENTICA_DEFAULT_BASE_URL = "https://api.genlabs.dev/agentica/v1" as const
 
 export const agenticaModels = {
 	"deca-coder-flash": {
