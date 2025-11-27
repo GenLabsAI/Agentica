@@ -25,16 +25,6 @@ const WelcomeView = () => {
 	const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
 	const [showRooProvider, setShowRooProvider] = useState(false)
 
-	// Debug logging for API configuration changes
-	useEffect(() => {
-		console.log("WelcomeView apiConfiguration changed:", apiConfiguration)
-	}, [apiConfiguration])
-
-	// Debug logging for re-renders
-	useEffect(() => {
-		console.log("WelcomeView re-rendered")
-	})
-
 	// Check PostHog feature flag for Roo provider
 	useEffect(() => {
 		posthog.onFeatureFlags(function () {
@@ -45,44 +35,19 @@ const WelcomeView = () => {
 	// Memoize the setApiConfigurationField function to pass to ApiOptions
 	const setApiConfigurationFieldForApiOptions = useCallback(
 		<K extends keyof ProviderSettings>(field: K, value: ProviderSettings[K]) => {
-			console.log("setApiConfigurationFieldForApiOptions called:", { field, value })
 			setApiConfiguration({ [field]: value })
 		},
 		[setApiConfiguration], // setApiConfiguration from context is stable
 	)
 
 	const handleSubmit = useCallback(() => {
-		console.log("handleSubmit called", { apiConfiguration, currentApiConfigName })
-		
-		if (!apiConfiguration) {
-			console.log("No API configuration provided")
-			setErrorMessage("No API configuration provided")
-			return
-		}
-		
-		// TEMPORARY: Bypass validation for Agentica to test if that's the issue
-		if (apiConfiguration.apiProvider === "agentica") {
-			console.log("Agentica provider detected, bypassing validation for testing")
-			setErrorMessage(undefined)
-			vscode.postMessage({ type: "upsertApiConfiguration", text: currentApiConfigName, apiConfiguration })
-			return
-		}
-		
-		const error = validateApiConfiguration(apiConfiguration)
-		
-		console.log("Validation result:", { error, provider: apiConfiguration?.apiProvider, email: apiConfiguration?.agenticaEmail, password: !!apiConfiguration?.agenticaPassword })
+		const error = apiConfiguration ? validateApiConfiguration(apiConfiguration) : undefined
 
 		if (error) {
-			console.log("Setting error message:", error)
 			setErrorMessage(error)
-			// Add a small delay to ensure the error message is set
-			setTimeout(() => {
-				console.log("Error message should now be visible:", error)
-			}, 100)
 			return
 		}
 
-		console.log("Validation passed, sending message to extension")
 		setErrorMessage(undefined)
 		vscode.postMessage({ type: "upsertApiConfiguration", text: currentApiConfigName, apiConfiguration })
 	}, [apiConfiguration, currentApiConfigName])
@@ -210,40 +175,14 @@ const WelcomeView = () => {
 					</div>
 
 					<p className="text-sm font-medium mt-6 mb-3">{t("welcome:startCustom")}</p>
-					{/* TEMPORARY: Disable ApiOptions to test if it's causing the freeze */}
-					<div style={{ padding: "16px", border: "1px solid var(--vscode-panel-border)", borderRadius: "8px" }}>
-						<p>ApiOptions component temporarily disabled for testing</p>
-						<p>Current provider: {apiConfiguration?.apiProvider || "none"}</p>
-						<VSCodeButton 
-							onClick={() => setApiConfigurationFieldForApiOptions("apiProvider", "agentica")}
-							appearance="secondary"
-							style={{ marginTop: "8px" }}
-						>
-							Set Provider to Agentica
-						</VSCodeButton>
-						<VSCodeButton 
-							onClick={() => setApiConfigurationFieldForApiOptions("agenticaEmail", "test@example.com")}
-							appearance="secondary"
-							style={{ marginTop: "8px", marginLeft: "8px" }}
-						>
-							Set Email
-						</VSCodeButton>
-						<VSCodeButton 
-							onClick={() => setApiConfigurationFieldForApiOptions("agenticaPassword", "password123")}
-							appearance="secondary"
-							style={{ marginTop: "8px", marginLeft: "8px" }}
-						>
-							Set Password
-						</VSCodeButton>
-					</div>
-					{/* <ApiOptions
+					<ApiOptions
 						fromWelcomeView
 						apiConfiguration={apiConfiguration || {}}
 						uriScheme={uriScheme}
 						setApiConfigurationField={setApiConfigurationFieldForApiOptions}
 						errorMessage={errorMessage}
 						setErrorMessage={setErrorMessage}
-					/> */}
+					/>
 				</div>
 			</TabContent>
 			<div className="sticky bottom-0 bg-vscode-sideBar-background p-4 border-t border-vscode-panel-border">
@@ -259,14 +198,7 @@ const WelcomeView = () => {
 							{t("welcome:importSettings")}
 						</VSCodeLink>
 					</div>
-					<VSCodeButton onClick={() => {
-						try {
-							handleSubmit()
-						} catch (error) {
-							console.error("Error in handleSubmit:", error)
-							setErrorMessage("An unexpected error occurred. Please check the console for details.")
-						}
-					}} appearance="primary">
+					<VSCodeButton onClick={handleSubmit} appearance="primary">
 						{t("welcome:start")}
 					</VSCodeButton>
 					{errorMessage && <div className="text-vscode-errorForeground">{errorMessage}</div>}
