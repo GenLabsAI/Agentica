@@ -1,7 +1,7 @@
 {
 	"welcome": {
-		"greeting": "Kilo Codeへようこそ！",
-		"introText1": "Kilo Codeは無料のオープンソースAIコーディングエージェントです。",
+		"greeting": "Agenticaへようこそ！",
+		"introText1": "Agenticaは無料のオープンソースAIコーディングエージェントです。",
 		"introText2": "Claude Sonnet 4.5、Gemini 2.5 Pro、GPT-5、その他450以上の最新のAIモデルと連携します。",
 		"introText3": "無料アカウントを作成して、初回チャージ時に$20のボーナスクレジットを獲得しましょう。",
 		"ctaButton": "始める",
@@ -11,7 +11,7 @@
 	},
 	"lowCreditWarning": {
 		"addCredit": "クレジットを追加",
-		"lowBalance": "Kilo Codeの残高が少なくなっています",
+		"lowBalance": "Agenticaの残高が少なくなっています",
 		"newOrganization": "仕事でKiloを使用していますか？"
 	},
 	"pagination": {
@@ -41,15 +41,15 @@
 			"mcp": "MCPサーバー"
 		},
 		"provider": {
-			"account": "Kilo Code アカウント",
-			"apiKey": "Kilo Code APIキー",
-			"login": "Kilo Codeにログイン",
-			"logout": "Kilo Codeからログアウト",
+			"account": "Agentica アカウント",
+			"apiKey": "Agentica APIキー",
+			"login": "Agenticaにログイン",
+			"logout": "Agenticaからログアウト",
 			"providerRouting": {
 				"title": "プロバイダールーティング",
 				"managedByOrganization": "組織レベルのプロバイダールーティングを管理",
 				"createOrganization": "プロバイダールーティングを管理する組織を作成",
-				"description": "Kilo Codeは、モデルに最適な利用可能なプロバイダーにリクエストをルーティングします。デフォルトでは、稼働時間を最大化するために、リクエストはトッププロバイダー間で負荷分散されます。ただし、このモデルに使用する特定のプロバイダーを選択できます。",
+				"description": "Agenticaは、モデルに最適な利用可能なプロバイダーにリクエストをルーティングします。デフォルトでは、稼働時間を最大化するために、リクエストはトッププロバイダー間で負荷分散されます。ただし、このモデルに使用する特定のプロバイダーを選択できます。",
 				"sorting": {
 					"default": "デフォルトプロバイダーソート",
 					"price": "より安い価格のプロバイダーを優先",
@@ -64,12 +64,12 @@
 					"zdr": "データ保持なし"
 				}
 			},
-			"automaticFetch": "最新のモデルはKilo Codeで自動的に利用可能になります。どのモデルを選択すべきかわからない場合は、上部に<strong>太字</strong>で表示されている推奨モデルでKilo Codeが最適に動作します。"
+			"automaticFetch": "最新のモデルはAgenticaで自動的に利用可能になります。どのモデルを選択すべきかわからない場合は、上部に<strong>太字</strong>で表示されている推奨モデルでAgenticaが最適に動作します。"
 		},
 		"modelInfo": {
 			"contextWindow": "コンテキストウィンドウ",
 			"providerBreakdown": "プロバイダー価格・機能詳細",
-			"averageKiloCodeCost": "これは、過去1週間のこのモデルを使用したKilo Codeの実際の平均支出です。プロンプトキャッシュの活用により、表示価格より安くなる場合があります。",
+			"averageKiloCodeCost": "これは、過去1週間のこのモデルを使用したAgenticaの実際の平均支出です。プロンプトキャッシュの活用により、表示価格より安くなる場合があります。",
 			"table": {
 				"provider": "プロバイダー",
 				"context": "エンドポイントが処理できるトークン数（入力+出力）。",
@@ -82,15 +82,15 @@
 		"contextManagement": {
 			"allowVeryLargeReads": {
 				"label": "非常に大きなファイルの読み取りを許可",
-				"description": "有効にすると、Kilo Codeはコンテキストウィンドウをオーバーフローする可能性が高い場合でも、非常に大きなファイルやMCP出力の読み取りを実行します（コンテンツサイズがコンテキストウィンドウの80%以上）。"
+				"description": "有効にすると、Agenticaはコンテキストウィンドウをオーバーフローする可能性が高い場合でも、非常に大きなファイルやMCP出力の読み取りを実行します（コンテンツサイズがコンテキストウィンドウの80%以上）。"
 			}
 		},
 		"systemNotifications": {
 			"label": "システム通知を有効にする",
-			"description": "有効にすると、Kilo Codeはタスクの完了やエラーなどの重要なイベントについてシステム通知を送信します。",
+			"description": "有効にすると、Agenticaはタスクの完了やエラーなどの重要なイベントについてシステム通知を送信します。",
 			"testButton": "通知をテスト",
-			"testTitle": "Kilo Code",
-			"testMessage": "これはKilo Codeからのテスト通知です。"
+			"testTitle": "Agentica",
+			"testMessage": "これはAgenticaからのテスト通知です。"
 		},
 		"terminal": {
 			"commandGenerator": {
@@ -112,7 +112,7 @@
 	},
 	"chat": {
 		"condense": {
-			"wantsToCondense": "Kilo Codeは会話を要約したいと思っています",
+			"wantsToCondense": "Agenticaは会話を要約したいと思っています",
 			"condenseConversation": "会話を要約する"
 		},
 		"seeNewChanges": "新しい変更を表示",
@@ -143,15 +143,15 @@
 	},
 	"docs": "ドキュメント",
 	"rules": {
-		"tooltip": "Kilo Codeルールとワークフローを管理",
-		"ariaLabel": "Kilo Codeルール",
+		"tooltip": "Agenticaルールとワークフローを管理",
+		"ariaLabel": "Agenticaルール",
 		"tabs": {
 			"rules": "ルール",
 			"workflows": "ワークフロー"
 		},
 		"description": {
-			"rules": "ルールを使用すると、Kilo Codeがすべてのモードとすべてのプロンプトで従うべき指示を提供できます。これらは、ワークスペースまたはグローバルですべての会話にコンテキストと設定を含める永続的な方法です。",
-			"workflows": "ワークフローは会話用の準備されたテンプレートです。ワークフローを使用すると、頻繁に使用するプロンプトを定義でき、サービスのデプロイやPRの送信など、反復的なタスクを通じてKilo Codeをガイドする一連のステップを含めることができます。ワークフローを呼び出すには、次のように入力します",
+			"rules": "ルールを使用すると、Agenticaがすべてのモードとすべてのプロンプトで従うべき指示を提供できます。これらは、ワークスペースまたはグローバルですべての会話にコンテキストと設定を含める永続的な方法です。",
+			"workflows": "ワークフローは会話用の準備されたテンプレートです。ワークフローを使用すると、頻繁に使用するプロンプトを定義でき、サービスのデプロイやPRの送信など、反復的なタスクを通じてAgenticaをガイドする一連のステップを含めることができます。ワークフローを呼び出すには、次のように入力します",
 			"workflowsInChat": "チャットで。"
 		},
 		"sections": {
@@ -221,11 +221,11 @@
 			"keybindingDescription": "Autocomplete機能はコマンドでトリガーできます。<DocsLink>キーボードショートカットはこちら</DocsLink>で設定できます。",
 			"enableAutoTrigger": {
 				"label": "Autocompleteを有効にする",
-				"description": "有効にすると、タイピングを停止したときにKilo CodeがAutocompleteを自動的にトリガーします。これは素早い修正や提案に役立ちます。"
+				"description": "有効にすると、タイピングを停止したときにAgenticaがAutocompleteを自動的にトリガーします。これは素早い修正や提案に役立ちます。"
 			},
 			"autoTriggerDelay": {
 				"label": "自動トリガー遅延",
-				"description": "タイピングを停止してからKilo CodeがAutocompleteをトリガーするまでの秒数。遅延が短いほど提案が早くなりますが、リソースを多く消費する可能性があります。"
+				"description": "タイピングを停止してからAgenticaがAutocompleteをトリガーするまでの秒数。遅延が短いほど提案が早くなりますが、リソースを多く消費する可能性があります。"
 			},
 			"enableQuickInlineTaskKeybinding": {
 				"label": "クイックタスク ({{keybinding}})",

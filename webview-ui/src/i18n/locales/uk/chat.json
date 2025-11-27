@@ -1,5 +1,5 @@
 {
-	"greeting": "Що Kilo Code може зробити для тебе?",
+	"greeting": "Що Agentica може зробити для тебе?",
 	"task": {
 		"title": "Завдання",
 		"seeMore": "Дивитися більше",
@@ -19,7 +19,7 @@
 		"sharePublicly": "Поділитися публічно",
 		"sharePubliclyDescription": "Будь-хто з посиланням має доступ",
 		"connectToCloud": "Підключитися до Cloud",
-		"connectToCloudDescription": "Увійдіть до Kilo Code Cloud для обміну завданнями",
+		"connectToCloudDescription": "Увійдіть до Agentica Cloud для обміну завданнями",
 		"sharingDisabledByOrganization": "Обмін вимкнено організацією",
 		"shareSuccessOrganization": "Посилання організації скопійовано до буфера обміну",
 		"shareSuccessPublic": "Публічне посилання скопійовано до буфера обміну",
@@ -131,7 +131,7 @@
 		"title": "Режими",
 		"marketplace": "Ринок режимів",
 		"settings": "Налаштування режимів",
-		"description": "Спеціалізовані персони, які налаштовують поведінку Kilo Code.",
+		"description": "Спеціалізовані персони, які налаштовують поведінку Agentica.",
 		"searchPlaceholder": "Пошук режимів...",
 		"noResults": "Результатів не знайдено",
 		"organizationModes": "Режими організації"
@@ -184,50 +184,50 @@
 		"tokens": "токени"
 	},
 	"instructions": {
-		"wantsToFetch": "Kilo Code хоче отримати детальні інструкції для допомоги з поточним завданням"
+		"wantsToFetch": "Agentica хоче отримати детальні інструкції для допомоги з поточним завданням"
 	},
 	"fileOperations": {
-		"wantsToRead": "Kilo Code хоче прочитати цей файл:",
-		"wantsToReadMultiple": "Kilo Code хоче прочитати кілька файлів:",
-		"wantsToReadAndXMore": "Kilo Code хоче прочитати цей файл і ще {{count}}:",
-		"wantsToReadOutsideWorkspace": "Kilo Code хоче прочитати цей файл за межами робочого простору:",
-		"didRead": "Kilo Code прочитав цей файл:",
-		"wantsToEdit": "Kilo Code хоче редагувати цей файл:",
-		"wantsToEditOutsideWorkspace": "Kilo Code хоче редагувати цей файл за межами робочого простору:",
-		"wantsToEditProtected": "Kilo Code хоче редагувати захищений файл конфігурації:",
-		"wantsToApplyBatchChanges": "Kilo Code хоче застосувати зміни до кількох файлів:",
-		"wantsToGenerateImage": "Kilo Code хоче згенерувати зображення:",
-		"wantsToGenerateImageOutsideWorkspace": "Kilo Code хоче згенерувати зображення поза робочою областю:",
-		"wantsToGenerateImageProtected": "Kilo Code хоче згенерувати зображення у захищеному місці:",
-		"didGenerateImage": "Kilo Code згенерував зображення:",
-		"wantsToCreate": "Kilo Code хоче створити новий файл:",
-		"wantsToSearchReplace": "Kilo Code хоче шукати та замінити в цьому файлі:",
-		"didSearchReplace": "Kilo Code виконав пошук і заміну в цьому файлі:",
-		"wantsToInsert": "Kilo Code хоче вставити вміст у цей файл:",
-		"wantsToInsertWithLineNumber": "Kilo Code хоче вставити вміст у цей файл на рядку {{lineNumber}}:",
-		"wantsToInsertAtEnd": "Kilo Code хоче додати вміст в кінець цього файлу:"
+		"wantsToRead": "Agentica хоче прочитати цей файл:",
+		"wantsToReadMultiple": "Agentica хоче прочитати кілька файлів:",
+		"wantsToReadAndXMore": "Agentica хоче прочитати цей файл і ще {{count}}:",
+		"wantsToReadOutsideWorkspace": "Agentica хоче прочитати цей файл за межами робочого простору:",
+		"didRead": "Agentica прочитав цей файл:",
+		"wantsToEdit": "Agentica хоче редагувати цей файл:",
+		"wantsToEditOutsideWorkspace": "Agentica хоче редагувати цей файл за межами робочого простору:",
+		"wantsToEditProtected": "Agentica хоче редагувати захищений файл конфігурації:",
+		"wantsToApplyBatchChanges": "Agentica хоче застосувати зміни до кількох файлів:",
+		"wantsToGenerateImage": "Agentica хоче згенерувати зображення:",
+		"wantsToGenerateImageOutsideWorkspace": "Agentica хоче згенерувати зображення поза робочою областю:",
+		"wantsToGenerateImageProtected": "Agentica хоче згенерувати зображення у захищеному місці:",
+		"didGenerateImage": "Agentica згенерував зображення:",
+		"wantsToCreate": "Agentica хоче створити новий файл:",
+		"wantsToSearchReplace": "Agentica хоче шукати та замінити в цьому файлі:",
+		"didSearchReplace": "Agentica виконав пошук і заміну в цьому файлі:",
+		"wantsToInsert": "Agentica хоче вставити вміст у цей файл:",
+		"wantsToInsertWithLineNumber": "Agentica хоче вставити вміст у цей файл на рядку {{lineNumber}}:",
+		"wantsToInsertAtEnd": "Agentica хоче додати вміст в кінець цього файлу:"
 	},
 	"directoryOperations": {
-		"wantsToViewTopLevel": "Kilo Code хоче переглянути файли верхнього рівня в цій директорії:",
-		"didViewTopLevel": "Kilo Code переглянув файли верхнього рівня в цій директорії:",
-		"wantsToViewTopLevelOutsideWorkspace": "Kilo Code хоче переглянути файли верхнього рівня в цій директорії (за межами робочого простору):",
-		"didViewTopLevelOutsideWorkspace": "Kilo Code переглянув файли верхнього рівня в цій директорії (за межами робочого простору):",
-		"wantsToViewRecursive": "Kilo Code хоче рекурсивно переглянути всі файли в цій директорії:",
-		"didViewRecursive": "Kilo Code рекурсивно переглянув всі файли в цій директорії:",
-		"wantsToViewRecursiveOutsideWorkspace": "Kilo Code хоче рекурсивно переглянути всі файли в цій директорії (за межами робочого простору):",
-		"didViewRecursiveOutsideWorkspace": "Kilo Code рекурсивно переглянув всі файли в цій директорії (за межами робочого простору):",
-		"wantsToViewDefinitions": "Kilo Code хоче переглянути назви визначень вихідного коду, що використовуються в цій директорії:",
-		"didViewDefinitions": "Kilo Code переглянув назви визначень вихідного коду, що використовуються в цій директорії:",
-		"wantsToViewDefinitionsOutsideWorkspace": "Kilo Code хоче переглянути назви визначень вихідного коду, що використовуються в цій директорії (за межами робочого простору):",
-		"didViewDefinitionsOutsideWorkspace": "Kilo Code переглянув назви визначень вихідного коду, що використовуються в цій директорії (за межами робочого простору):",
-		"wantsToSearch": "Kilo Code хоче шукати в цій директорії <code>{{regex}}</code>:",
-		"didSearch": "Kilo Code шукав у цій директорії <code>{{regex}}</code>:",
-		"wantsToSearchOutsideWorkspace": "Kilo Code хоче шукати в цій директорії (за межами робочого простору) <code>{{regex}}</code>:",
-		"didSearchOutsideWorkspace": "Kilo Code шукав у цій директорії (за межами робочого простору) <code>{{regex}}</code>:"
+		"wantsToViewTopLevel": "Agentica хоче переглянути файли верхнього рівня в цій директорії:",
+		"didViewTopLevel": "Agentica переглянув файли верхнього рівня в цій директорії:",
+		"wantsToViewTopLevelOutsideWorkspace": "Agentica хоче переглянути файли верхнього рівня в цій директорії (за межами робочого простору):",
+		"didViewTopLevelOutsideWorkspace": "Agentica переглянув файли верхнього рівня в цій директорії (за межами робочого простору):",
+		"wantsToViewRecursive": "Agentica хоче рекурсивно переглянути всі файли в цій директорії:",
+		"didViewRecursive": "Agentica рекурсивно переглянув всі файли в цій директорії:",
+		"wantsToViewRecursiveOutsideWorkspace": "Agentica хоче рекурсивно переглянути всі файли в цій директорії (за межами робочого простору):",
+		"didViewRecursiveOutsideWorkspace": "Agentica рекурсивно переглянув всі файли в цій директорії (за межами робочого простору):",
+		"wantsToViewDefinitions": "Agentica хоче переглянути назви визначень вихідного коду, що використовуються в цій директорії:",
+		"didViewDefinitions": "Agentica переглянув назви визначень вихідного коду, що використовуються в цій директорії:",
+		"wantsToViewDefinitionsOutsideWorkspace": "Agentica хоче переглянути назви визначень вихідного коду, що використовуються в цій директорії (за межами робочого простору):",
+		"didViewDefinitionsOutsideWorkspace": "Agentica переглянув назви визначень вихідного коду, що використовуються в цій директорії (за межами робочого простору):",
+		"wantsToSearch": "Agentica хоче шукати в цій директорії <code>{{regex}}</code>:",
+		"didSearch": "Agentica шукав у цій директорії <code>{{regex}}</code>:",
+		"wantsToSearchOutsideWorkspace": "Agentica хоче шукати в цій директорії (за межами робочого простору) <code>{{regex}}</code>:",
+		"didSearchOutsideWorkspace": "Agentica шукав у цій директорії (за межами робочого простору) <code>{{regex}}</code>:"
 	},
 	"codebaseSearch": {
-		"wantsToSearch": "Kilo Code хоче шукати в кодовій базі <code>{{query}}</code>:",
-		"wantsToSearchWithPath": "Kilo Code хоче шукати в кодовій базі <code>{{query}}</code> в <code>{{path}}</code>:",
+		"wantsToSearch": "Agentica хоче шукати в кодовій базі <code>{{query}}</code>:",
+		"wantsToSearchWithPath": "Agentica хоче шукати в кодовій базі <code>{{query}}</code> в <code>{{path}}</code>:",
 		"didSearch_one": "Знайдено 1 результат",
 		"didSearch_other": "Знайдено {{count}} результатів",
 		"resultTooltip": "Оцінка схожості: {{score}} (клікни для відкриття файлу)"
@@ -260,18 +260,18 @@
 		"youSaid": "Ти сказав"
 	},
 	"mcp": {
-		"wantsToUseTool": "Kilo Code хоче використати інструмент на сервері MCP {{serverName}}:",
-		"wantsToAccessResource": "Kilo Code хоче отримати доступ до ресурсу на сервері MCP {{serverName}}:"
+		"wantsToUseTool": "Agentica хоче використати інструмент на сервері MCP {{serverName}}:",
+		"wantsToAccessResource": "Agentica хоче отримати доступ до ресурсу на сервері MCP {{serverName}}:"
 	},
 	"modes": {
-		"wantsToSwitch": "Kilo Code хоче перейти в режим {{mode}}",
-		"wantsToSwitchWithReason": "Kilo Code хоче перейти в режим {{mode}}, тому що: {{reason}}",
-		"didSwitch": "Kilo Code перейшов у режим {{mode}}",
-		"didSwitchWithReason": "Kilo Code перейшов у режим {{mode}}, тому що: {{reason}}"
+		"wantsToSwitch": "Agentica хоче перейти в режим {{mode}}",
+		"wantsToSwitchWithReason": "Agentica хоче перейти в режим {{mode}}, тому що: {{reason}}",
+		"didSwitch": "Agentica перейшов у режим {{mode}}",
+		"didSwitchWithReason": "Agentica перейшов у режим {{mode}}, тому що: {{reason}}"
 	},
 	"subtasks": {
-		"wantsToCreate": "Kilo Code хоче створити нове підзавдання в режимі {{mode}}:",
-		"wantsToFinish": "Kilo Code хоче завершити це підзавдання",
+		"wantsToCreate": "Agentica хоче створити нове підзавдання в режимі {{mode}}:",
+		"wantsToFinish": "Agentica хоче завершити це підзавдання",
 		"newTaskContent": "Інструкції підзавдання",
 		"completionContent": "Підзавдання завершено",
 		"resultContent": "Результати підзавдання",
@@ -279,21 +279,21 @@
 		"completionInstructions": "Підзавдання завершено! Ти можеш переглянути результати та запропонувати будь-які виправлення або наступні кроки. Якщо все виглядає добре, підтверди, щоб повернути результат до батьківського завдання."
 	},
 	"questions": {
-		"hasQuestion": "Kilo Code має питання:"
+		"hasQuestion": "Agentica має питання:"
 	},
 	"taskCompleted": "Завдання виконано",
 	"error": "Помилка",
 	"diffError": {
 		"title": "Редагування не вдалося"
 	},
-	"troubleMessage": "Kilo Code має проблеми...",
+	"troubleMessage": "Agentica має проблеми...",
 	"powershell": {
 		"issues": "Схоже, у тебе проблеми з Windows PowerShell, будь ласка, подивись це"
 	},
 	"autoApprove": {
 		"title": "Автосхвалення:",
 		"none": "Немає",
-		"description": "Автосхвалення дозволяє Kilo Code виконувати дії без запиту дозволу. Увімкни лише для дій, яким ти повністю довіряєш. Більш детальна конфігурація доступна в <settingsLink>Налаштуваннях</settingsLink>.",
+		"description": "Автосхвалення дозволяє Agentica виконувати дії без запиту дозволу. Увімкни лише для дій, яким ти повністю довіряєш. Більш детальна конфігурація доступна в <settingsLink>Налаштуваннях</settingsLink>.",
 		"selectOptionsFirst": "Спочатку вибери принаймні один варіант нижче, щоб увімкнути автосхвалення",
 		"toggleAriaLabel": "Перемкнути автосхвалення",
 		"disabledAriaLabel": "Автосхвалення вимкнено - спочатку вибери варіанти",
@@ -342,7 +342,7 @@
 		"countdownDisplay": "{{count}}с"
 	},
 	"browser": {
-		"rooWantsToUse": "Kilo Code хоче використати браузер:",
+		"rooWantsToUse": "Agentica хоче використати браузер:",
 		"consoleLogs": "Логи консолі",
 		"noNewLogs": "(Немає нових логів)",
 		"screenshot": "Знімок екрана браузера",
@@ -376,18 +376,18 @@
 	"profileViolationWarning": "Поточний профіль несумісний з налаштуваннями твоєї організації",
 	"shellIntegration": {
 		"title": "Попередження про виконання команди",
-		"description": "Твоя команда виконується без інтеграції оболонки терміналу VSCode. Щоб прибрати це попередження, ти можеш вимкнути інтеграцію оболонки в розділі <strong>Terminal</strong> <settingsLink>налаштувань Kilo Code</settingsLink> або усунути проблеми з інтеграцією терміналу VSCode, використовуючи посилання нижче.",
+		"description": "Твоя команда виконується без інтеграції оболонки терміналу VSCode. Щоб прибрати це попередження, ти можеш вимкнути інтеграцію оболонки в розділі <strong>Terminal</strong> <settingsLink>налаштувань Agentica</settingsLink> або усунути проблеми з інтеграцією терміналу VSCode, використовуючи посилання нижче.",
 		"troubleshooting": "Натисни тут для документації з інтеграції оболонки."
 	},
 	"ask": {
 		"autoApprovedRequestLimitReached": {
 			"title": "Досягнуто ліміт автосхвалених запитів",
-			"description": "Kilo Code досяг автосхваленого ліміту {{count}} API запит(ів). Хочеш скинути лічильник і продовжити завдання?",
+			"description": "Agentica досяг автосхваленого ліміту {{count}} API запит(ів). Хочеш скинути лічильник і продовжити завдання?",
 			"button": "Скинути і продовжити"
 		},
 		"autoApprovedCostLimitReached": {
 			"title": "Досягнуто ліміт автоматично схвалених витрат",
-			"description": "Kilo Code досяг ліміту автоматично схвалених витрат ${{count}}. Хочете скинути витрати і продовжити завдання?",
+			"description": "Agentica досяг ліміту автоматично схвалених витрат ${{count}}. Хочете скинути витрати і продовжити завдання?",
 			"button": "Скинути і продовжити"
 		}
 	},
@@ -435,8 +435,8 @@
 	},
 	"generateCommitMessage": "Згенерувати повідомлення коміту",
 	"slashCommand": {
-		"wantsToRun": "Kilo Code хоче виконати slash команду:",
-		"didRun": "Kilo Code виконав slash команду:"
+		"wantsToRun": "Agentica хоче виконати slash команду:",
+		"didRun": "Agentica виконав slash команду:"
 	},
 	"contextMenu": {
 		"noResults": "Результатів немає",

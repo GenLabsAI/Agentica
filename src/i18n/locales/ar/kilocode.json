@@ -51,7 +51,7 @@
 		}
 	},
 	"commitMessage": {
-		"activated": "تم تفعيل منشئ رسائل التزام Kilo Code",
+		"activated": "تم تفعيل منشئ رسائل التزام Agentica",
 		"gitNotFound": "⚠️ مستودع Git غير موجود أو Git غير متاح",
 		"gitInitError": "⚠️ خطأ في تهيئة Git: {{error}}",
 		"generating": "Kilo: جارٍ إنشاء رسالة الالتزام...",
@@ -62,12 +62,12 @@
 		"analyzingChanges": "Kilo: جاري تحليل التعديلات الجاهزة...",
 		"noStagedChangesRepo": "Kilo: ما فيه تعديلات مضافة في مستودع git",
 		"noStagedChanges": "Kilo: ما فيه تعديلات مضافة لتحليلها",
-		"tokenRequired": "يتطلب توليد الرسالة رمز Kilo Code",
+		"tokenRequired": "يتطلب توليد الرسالة رمز Agentica",
 		"activationFailed": "Kilo: فشل تفعيل مولّد الرسائل: {{error}}",
 		"providerRegistered": "Kilo: تم تسجيل موفر رسائل الاعتماد",
 		"errors": {
 			"noProject": "لا يوجد مشروع متاح",
-			"connectionFailed": "فشل الاتصال بملحق Kilo Code",
+			"connectionFailed": "فشل الاتصال بملحق Agentica",
 			"invalidResponse": "تم استلام صيغة استجابة غير صالحة من الملحق",
 			"noChanges": "لا توجد تغييرات للإرسال",
 			"timeout": "انتهت مهلة الطلب بعد 30 ثانية",
@@ -102,12 +102,12 @@
 	},
 	"ghost": {
 		"statusBar": {
-			"enabled": "$(sparkle) Kilo Code Autocomplete",
-			"disabled": "$(circle-slash) Kilo Code Autocomplete",
-			"warning": "$(warning) Kilo Code Autocomplete",
+			"enabled": "$(sparkle) Agentica Autocomplete",
+			"disabled": "$(circle-slash) Agentica Autocomplete",
+			"warning": "$(warning) Agentica Autocomplete",
 			"tooltip": {
-				"basic": "Kilo Code Autocomplete",
-				"disabled": "Kilo Code Autocomplete (معطل)",
+				"basic": "Agentica Autocomplete",
+				"disabled": "Agentica Autocomplete (معطل)",
 				"tokenError": "يجب تعيين رمز صالح لاستخدام الإكمال التلقائي",
 				"lastCompletion": "آخر اقتراح:",
 				"sessionTotal": "إجمالي تكلفة الجلسة:",
@@ -119,36 +119,36 @@
 				"lessThanCent": "<$0.01"
 			}
 		},
-		"toggleMessage": "Kilo Code Autocomplete {{status}}",
+		"toggleMessage": "Agentica Autocomplete {{status}}",
 		"progress": {
-			"title": "Kilo Code",
+			"title": "Agentica",
 			"analyzing": "تحليل الكود الخاص بك...",
 			"generating": "إنشاء التعديلات المقترحة...",
 			"processing": "معالجة التعديلات المقترحة...",
 			"showing": "عرض التعديلات المقترحة..."
 		},
 		"input": {
-			"title": "Kilo Code: مهمة سريعة",
+			"title": "Agentica: مهمة سريعة",
 			"placeholder": "مثال، 'أعد هيكلة هذه الدالة لتكون أكثر كفاءة'"
 		},
 		"commands": {
-			"generateSuggestions": "Kilo Code: إنشاء التعديلات المقترحة",
+			"generateSuggestions": "Agentica: إنشاء التعديلات المقترحة",
 			"displaySuggestions": "عرض التعديلات المقترحة",
 			"cancelSuggestions": "إلغاء التعديلات المقترحة",
 			"applyCurrentSuggestion": "تطبيق التعديل المقترح الحالي",
 			"applyAllSuggestions": "تطبيق جميع التعديلات المقترحة",
-			"category": "Kilo Code"
+			"category": "Agentica"
 		},
 		"codeAction": {
-			"title": "Kilo Code: التعديلات المقترحة"
+			"title": "Agentica: التعديلات المقترحة"
 		},
 		"chatParticipant": {
-			"fullName": "Kilo Code Agent",
+			"fullName": "Agentica Agent",
 			"name": "Agent",
 			"description": "يمكنني مساعدتك في المهام السريعة والتعديلات المقترحة."
 		},
 		"incompatibilityExtensionPopup": {
-			"message": "يتم حظر Kilo Code Autocomplete بسبب تعارض مع GitHub Copilot. لإصلاح هذا، يجب عليك تعطيل اقتراحات Copilot المضمنة.",
+			"message": "يتم حظر Agentica Autocomplete بسبب تعارض مع GitHub Copilot. لإصلاح هذا، يجب عليك تعطيل اقتراحات Copilot المضمنة.",
 			"disableCopilot": "تعطيل Copilot",
 			"disableInlineAssist": "تعطيل الإكمال التلقائي"
 		}

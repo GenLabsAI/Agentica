@@ -1,5 +1,5 @@
 {
-	"greeting": "Kilo Code は何をお手伝いできますか？",
+	"greeting": "Agentica は何をお手伝いできますか？",
 	"task": {
 		"title": "タスク",
 		"expand": "タスクを展開",
@@ -21,7 +21,7 @@
 		"sharePublicly": "公開で共有",
 		"sharePubliclyDescription": "リンクを持つ誰でもアクセスできます",
 		"connectToCloud": "クラウドに接続",
-		"connectToCloudDescription": "タスクを共有するためにKilo Code Cloudにサインイン",
+		"connectToCloudDescription": "タスクを共有するためにAgentica Cloudにサインイン",
 		"sharingDisabledByOrganization": "組織により共有が無効化されています",
 		"shareSuccessOrganization": "組織リンクをクリップボードにコピーしました",
 		"shareSuccessPublic": "公開リンクをクリップボードにコピーしました",
@@ -128,7 +128,7 @@
 		"title": "モード",
 		"marketplace": "モードマーケットプレイス",
 		"settings": "モード設定",
-		"description": "Kilo Codeの動作をカスタマイズする専門的なペルソナ。",
+		"description": "Agenticaの動作をカスタマイズする専門的なペルソナ。",
 		"searchPlaceholder": "モードを検索...",
 		"noResults": "結果が見つかりません",
 		"organizationModes": "組織モード"
@@ -143,7 +143,7 @@
 	"diffError": {
 		"title": "編集に失敗しました"
 	},
-	"troubleMessage": "Kilo Codeに問題が発生しています...",
+	"troubleMessage": "Agenticaに問題が発生しています...",
 	"apiRequest": {
 		"title": "APIリクエスト",
 		"failed": "APIリクエスト失敗",
@@ -171,46 +171,46 @@
 		"current": "現在"
 	},
 	"instructions": {
-		"wantsToFetch": "Kilo Codeは現在のタスクを支援するための詳細な指示を取得したい"
+		"wantsToFetch": "Agenticaは現在のタスクを支援するための詳細な指示を取得したい"
 	},
 	"fileOperations": {
-		"wantsToRead": "Kilo Codeはこのファイルを読みたい",
-		"wantsToReadOutsideWorkspace": "Kilo Codeはワークスペース外のこのファイルを読みたい",
-		"didRead": "Kilo Codeはこのファイルを読みました",
-		"wantsToEdit": "Kilo Codeはこのファイルを編集したい",
-		"wantsToEditOutsideWorkspace": "Kilo Codeはワークスペース外のこのファイルを編集したい",
-		"wantsToEditProtected": "Kilo Codeは保護された設定ファイルを編集したい",
-		"wantsToCreate": "Kilo Codeは新しいファイルを作成したい",
-		"wantsToSearchReplace": "Kilo Codeはこのファイルで検索と置換を行う",
-		"didSearchReplace": "Kilo Codeはこのファイルで検索と置換を実行しました",
-		"wantsToInsert": "Kilo Codeはこのファイルにコンテンツを挿入したい",
-		"wantsToInsertWithLineNumber": "Kilo Codeはこのファイルの{{lineNumber}}行目にコンテンツを挿入したい",
-		"wantsToInsertAtEnd": "Kilo Codeはこのファイルの末尾にコンテンツを追加したい",
-		"wantsToReadAndXMore": "Kilo Code はこのファイルと他に {{count}} 個のファイルを読み込もうとしています",
-		"wantsToReadMultiple": "Kilo Codeは複数のファイルを読み取ろうとしています",
-		"wantsToApplyBatchChanges": "Kilo Codeは複数のファイルに変更を適用したい",
-		"wantsToGenerateImage": "Kilo Codeは画像を生成したい",
-		"wantsToGenerateImageOutsideWorkspace": "Kilo Codeはワークスペース外で画像を生成したい",
-		"wantsToGenerateImageProtected": "Kilo Codeは保護された場所で画像を生成したい",
-		"didGenerateImage": "Kilo Codeは画像を生成しました"
+		"wantsToRead": "Agenticaはこのファイルを読みたい",
+		"wantsToReadOutsideWorkspace": "Agenticaはワークスペース外のこのファイルを読みたい",
+		"didRead": "Agenticaはこのファイルを読みました",
+		"wantsToEdit": "Agenticaはこのファイルを編集したい",
+		"wantsToEditOutsideWorkspace": "Agenticaはワークスペース外のこのファイルを編集したい",
+		"wantsToEditProtected": "Agenticaは保護された設定ファイルを編集したい",
+		"wantsToCreate": "Agenticaは新しいファイルを作成したい",
+		"wantsToSearchReplace": "Agenticaはこのファイルで検索と置換を行う",
+		"didSearchReplace": "Agenticaはこのファイルで検索と置換を実行しました",
+		"wantsToInsert": "Agenticaはこのファイルにコンテンツを挿入したい",
+		"wantsToInsertWithLineNumber": "Agenticaはこのファイルの{{lineNumber}}行目にコンテンツを挿入したい",
+		"wantsToInsertAtEnd": "Agenticaはこのファイルの末尾にコンテンツを追加したい",
+		"wantsToReadAndXMore": "Agentica はこのファイルと他に {{count}} 個のファイルを読み込もうとしています",
+		"wantsToReadMultiple": "Agenticaは複数のファイルを読み取ろうとしています",
+		"wantsToApplyBatchChanges": "Agenticaは複数のファイルに変更を適用したい",
+		"wantsToGenerateImage": "Agenticaは画像を生成したい",
+		"wantsToGenerateImageOutsideWorkspace": "Agenticaはワークスペース外で画像を生成したい",
+		"wantsToGenerateImageProtected": "Agenticaは保護された場所で画像を生成したい",
+		"didGenerateImage": "Agenticaは画像を生成しました"
 	},
 	"directoryOperations": {
-		"wantsToViewTopLevel": "Kilo Codeはこのディレクトリのトップレベルファイルを表示したい",
-		"didViewTopLevel": "Kilo Codeはこのディレクトリのトップレベルファイルを表示しました",
-		"wantsToViewRecursive": "Kilo Codeはこのディレクトリのすべてのファイルを再帰的に表示したい",
-		"didViewRecursive": "Kilo Codeはこのディレクトリのすべてのファイルを再帰的に表示しました",
-		"wantsToViewDefinitions": "Kilo Codeはこのディレクトリで使用されているソースコード定義名を表示したい",
-		"didViewDefinitions": "Kilo Codeはこのディレクトリで使用されているソースコード定義名を表示しました",
-		"wantsToSearch": "Kilo Codeはこのディレクトリで <code>{{regex}}</code> を検索したい",
-		"didSearch": "Kilo Codeはこのディレクトリで <code>{{regex}}</code> を検索しました",
-		"wantsToSearchOutsideWorkspace": "Kilo Codeはこのディレクトリ（ワークスペース外）で <code>{{regex}}</code> を検索したい",
-		"didSearchOutsideWorkspace": "Kilo Codeはこのディレクトリ（ワークスペース外）で <code>{{regex}}</code> を検索しました",
-		"wantsToViewTopLevelOutsideWorkspace": "Kilo Codeはこのディレクトリ（ワークスペース外）のトップレベルファイルを表示したい",
-		"didViewTopLevelOutsideWorkspace": "Kilo Codeはこのディレクトリ（ワークスペース外）のトップレベルファイルを表示しました",
-		"wantsToViewRecursiveOutsideWorkspace": "Kilo Codeはこのディレクトリ（ワークスペース外）のすべてのファイルを再帰的に表示したい",
-		"didViewRecursiveOutsideWorkspace": "Kilo Codeはこのディレクトリ（ワークスペース外）のすべてのファイルを再帰的に表示しました",
-		"wantsToViewDefinitionsOutsideWorkspace": "Kilo Codeはこのディレクトリ（ワークスペース外）で使用されているソースコード定義名を表示したい",
-		"didViewDefinitionsOutsideWorkspace": "Kilo Codeはこのディレクトリ（ワークスペース外）で使用されているソースコード定義名を表示しました"
+		"wantsToViewTopLevel": "Agenticaはこのディレクトリのトップレベルファイルを表示したい",
+		"didViewTopLevel": "Agenticaはこのディレクトリのトップレベルファイルを表示しました",
+		"wantsToViewRecursive": "Agenticaはこのディレクトリのすべてのファイルを再帰的に表示したい",
+		"didViewRecursive": "Agenticaはこのディレクトリのすべてのファイルを再帰的に表示しました",
+		"wantsToViewDefinitions": "Agenticaはこのディレクトリで使用されているソースコード定義名を表示したい",
+		"didViewDefinitions": "Agenticaはこのディレクトリで使用されているソースコード定義名を表示しました",
+		"wantsToSearch": "Agenticaはこのディレクトリで <code>{{regex}}</code> を検索したい",
+		"didSearch": "Agenticaはこのディレクトリで <code>{{regex}}</code> を検索しました",
+		"wantsToSearchOutsideWorkspace": "Agenticaはこのディレクトリ（ワークスペース外）で <code>{{regex}}</code> を検索したい",
+		"didSearchOutsideWorkspace": "Agenticaはこのディレクトリ（ワークスペース外）で <code>{{regex}}</code> を検索しました",
+		"wantsToViewTopLevelOutsideWorkspace": "Agenticaはこのディレクトリ（ワークスペース外）のトップレベルファイルを表示したい",
+		"didViewTopLevelOutsideWorkspace": "Agenticaはこのディレクトリ（ワークスペース外）のトップレベルファイルを表示しました",
+		"wantsToViewRecursiveOutsideWorkspace": "Agenticaはこのディレクトリ（ワークスペース外）のすべてのファイルを再帰的に表示したい",
+		"didViewRecursiveOutsideWorkspace": "Agenticaはこのディレクトリ（ワークスペース外）のすべてのファイルを再帰的に表示しました",
+		"wantsToViewDefinitionsOutsideWorkspace": "Agenticaはこのディレクトリ（ワークスペース外）で使用されているソースコード定義名を表示したい",
+		"didViewDefinitionsOutsideWorkspace": "Agenticaはこのディレクトリ（ワークスペース外）で使用されているソースコード定義名を表示しました"
 	},
 	"commandOutput": "コマンド出力",
 	"commandExecution": {
@@ -238,18 +238,18 @@
 		"youSaid": "あなたの発言"
 	},
 	"mcp": {
-		"wantsToUseTool": "Kilo Code{{serverName}}でツールを使用したい",
-		"wantsToAccessResource": "Kilo Code{{serverName}}のリソースにアクセスしたい"
+		"wantsToUseTool": "Agentica{{serverName}}でツールを使用したい",
+		"wantsToAccessResource": "Agentica{{serverName}}のリソースにアクセスしたい"
 	},
 	"modes": {
-		"wantsToSwitch": "Kilo Codeは<code>{{mode}}</code>モードに切り替えたい",
-		"wantsToSwitchWithReason": "Kilo Codeは次の理由で<code>{{mode}}</code>モードに切り替えたい: {{reason}}",
-		"didSwitch": "Kilo Codeは<code>{{mode}}</code>モードに切り替えました",
-		"didSwitchWithReason": "Kilo Codeは次の理由で<code>{{mode}}</code>モードに切り替えました: {{reason}}"
+		"wantsToSwitch": "Agenticaは<code>{{mode}}</code>モードに切り替えたい",
+		"wantsToSwitchWithReason": "Agenticaは次の理由で<code>{{mode}}</code>モードに切り替えたい: {{reason}}",
+		"didSwitch": "Agenticaは<code>{{mode}}</code>モードに切り替えました",
+		"didSwitchWithReason": "Agenticaは次の理由で<code>{{mode}}</code>モードに切り替えました: {{reason}}"
 	},
 	"subtasks": {
-		"wantsToCreate": "Kilo Code<code>{{mode}}</code>モードで新しいサブタスクを作成したい",
-		"wantsToFinish": "Kilo Codeはこのサブタスクを終了したい",
+		"wantsToCreate": "Agentica<code>{{mode}}</code>モードで新しいサブタスクを作成したい",
+		"wantsToFinish": "Agenticaはこのサブタスクを終了したい",
 		"newTaskContent": "サブタスク指示",
 		"completionContent": "サブタスク完了",
 		"resultContent": "サブタスク結果",
@@ -257,7 +257,7 @@
 		"completionInstructions": "サブタスク完了！結果を確認し、修正や次のステップを提案できます。問題なければ、親タスクに結果を返すために確認してください。"
 	},
 	"questions": {
-		"hasQuestion": "Kilo Codeは質問があります"
+		"hasQuestion": "Agenticaは質問があります"
 	},
 	"taskCompleted": "タスク完了",
 	"powershell": {
@@ -321,7 +321,7 @@
 		"socialLinks": "<xLink>X</xLink>、<discordLink>Discord</discordLink>、または<redditLink>r/RooCode</redditLink>でフォローしてください 🚀"
 	},
 	"browser": {
-		"rooWantsToUse": "Kilo Codeはブラウザを使用したい",
+		"rooWantsToUse": "Agenticaはブラウザを使用したい",
 		"consoleLogs": "コンソールログ",
 		"noNewLogs": "(新しいログはありません)",
 		"screenshot": "ブラウザのスクリーンショット",
@@ -355,24 +355,24 @@
 	"profileViolationWarning": "現在のプロファイルは組織の設定と互換性がありません",
 	"shellIntegration": {
 		"title": "コマンド実行警告",
-		"description": "コマンドはVSCodeターミナルシェル統合なしで実行されています。この警告を非表示にするには、<settingsLink>Kilo Code設定</settingsLink>の<strong>Terminal</strong>セクションでシェル統合を無効にするか、以下のリンクを使用してVSCodeターミナル統合のトラブルシューティングを行ってください。",
+		"description": "コマンドはVSCodeターミナルシェル統合なしで実行されています。この警告を非表示にするには、<settingsLink>Agentica設定</settingsLink>の<strong>Terminal</strong>セクションでシェル統合を無効にするか、以下のリンクを使用してVSCodeターミナル統合のトラブルシューティングを行ってください。",
 		"troubleshooting": "シェル統合のドキュメントはこちらをクリック"
 	},
 	"ask": {
 		"autoApprovedRequestLimitReached": {
 			"title": "自動承認リクエスト制限に達しました",
-			"description": "Kilo Codeは{{count}}件のAPI自動承認リクエスト制限に達しました。カウントをリセットしてタスクを続行しますか？",
+			"description": "Agenticaは{{count}}件のAPI自動承認リクエスト制限に達しました。カウントをリセットしてタスクを続行しますか？",
 			"button": "リセットして続行"
 		},
 		"autoApprovedCostLimitReached": {
 			"title": "自動承認コスト制限に達しました",
-			"description": "Kilo Codeは自動承認されたコスト制限の${{count}}に達しました。コストをリセットしてタスクを続行しますか？",
+			"description": "Agenticaは自動承認されたコスト制限の${{count}}に達しました。コストをリセットしてタスクを続行しますか？",
 			"button": "リセットして続ける"
 		}
 	},
 	"codebaseSearch": {
-		"wantsToSearch": "Kilo Codeはコードベースで <code>{{query}}</code> を検索したい",
-		"wantsToSearchWithPath": "Kilo Codeは <code>{{path}}</code> 内のコードベースで <code>{{query}}</code> を検索したい",
+		"wantsToSearch": "Agenticaはコードベースで <code>{{query}}</code> を検索したい",
+		"wantsToSearchWithPath": "Agenticaは <code>{{path}}</code> 内のコードベースで <code>{{query}}</code> を検索したい",
 		"didSearch_one": "1件の結果が見つかりました",
 		"didSearch_other": "{{count}}件の結果が見つかりました",
 		"resultTooltip": "類似度スコア: {{score}} (クリックしてファイルを開く)"
@@ -437,7 +437,7 @@
 		"clickToEdit": "クリックしてメッセージを編集"
 	},
 	"slashCommand": {
-		"wantsToRun": "Kilo Codeはスラッシュコマンドを実行したい",
-		"didRun": "Kilo Codeはスラッシュコマンドを実行しました"
+		"wantsToRun": "Agenticaはスラッシュコマンドを実行したい",
+		"didRun": "Agenticaはスラッシュコマンドを実行しました"
 	}
 }

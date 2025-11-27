@@ -1,8 +1,8 @@
 {
-	"name": "kilo-code",
+	"name": "agentica",
 	"displayName": "%extension.displayName%",
 	"description": "%extension.description%",
-	"publisher": "kilocode",
+	"publisher": "genlabs",
 	"version": "4.121.2",
 	"icon": "assets/icons/logo-outline-black.png",
 	"galleryBanner": {
@@ -17,13 +17,13 @@
 		"workspace"
 	],
 	"author": {
-		"name": "Kilo Code"
+		"name": "Genlabs"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Kilo-Org/kilocode"
+		"url": "https://github.com/GenLabsAI/Agentica"
 	},
-	"homepage": "https://kilocode.ai",
+	"homepage": "https://github.com/GenLabsAI/Agentica",
 	"categories": [
 		"AI",
 		"Chat",
@@ -45,8 +45,8 @@
 		"sonnet",
 		"ai",
 		"llama",
-		"Kilo Code",
-		"kilocode"
+		"Agentica",
+		"agentica"
 	],
 	"activationEvents": [
 		"onLanguage",
@@ -56,14 +56,14 @@
 	"contributes": {
 		"walkthroughs": [
 			{
-				"id": "kiloCodeWalkthrough",
-				"title": "5 ways Kilo Code helps you code",
+				"id": "agenticaWalkthrough",
+				"title": "5 ways Agentica helps you code",
 				"description": "You now have a personal AI coding assistant.",
 				"steps": [
 					{
 						"id": "welcome",
 						"title": "Write code for you",
-						"description": "Describe what you want to build. Kilo Code will write it from scratch, generate the files, and run them for you.",
+						"description": "Describe what you want to build. Agentica will write it from scratch, generate the files, and run them for you.",
 						"media": {
 							"markdown": "./dist/walkthrough/step1.md"
 						}
@@ -71,7 +71,7 @@
 					{
 						"id": "getting-started",
 						"title": "Understand your codebase",
-						"description": "Need clarity on how something works? Ask Kilo Code about any part of your files and get a clear explanation.",
+						"description": "Need clarity on how something works? Ask Agentica about any part of your files and get a clear explanation.",
 						"media": {
 							"markdown": "./dist/walkthrough/step2.md"
 						},
@@ -82,7 +82,7 @@
 					{
 						"id": "modes",
 						"title": "Get things working again",
-						"description": "Stuck on an error? Kilo Code can find the issue, fix it, and get your code running.",
+						"description": "Stuck on an error? Agentica can find the issue, fix it, and get your code running.",
 						"media": {
 							"markdown": "./dist/walkthrough/step3.md"
 						}
