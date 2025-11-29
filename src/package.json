@@ -292,6 +292,16 @@
 				"command": "kilo-code.ghost.goToPreviousSuggestion",
 				"title": "%ghost.commands.goToPreviousSuggestion%",
 				"category": "%configuration.title%"
+			},
+			{
+				"command": "agentica.testSavings",
+				"title": "Agentica: Test Savings",
+				"category": "Agentica"
+			},
+			{
+				"command": "agentica.showTotalSaved",
+				"title": "Agentica: Show Total Saved",
+				"category": "Agentica"
 			}
 		],
 		"menus": {
