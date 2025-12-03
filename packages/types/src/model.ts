@@ -82,6 +82,7 @@ export const modelInfoSchema = z.object({
 	// kilocode_change start
 	displayName: z.string().nullish(),
 	preferredIndex: z.number().nullish(),
+	creditsMultiplier: z.number().optional(),
 	// kilocode_change end
 	// Flag to indicate if the model is deprecated and should not be used
 	deprecated: z.boolean().optional(),

@@ -12,7 +12,7 @@ mock/
 # Builds
 bin/
 bin-unpacked/
-*.vsix
+# *.vsix - Just for now!
 
 # Local prompts and rules
 /local-prompts

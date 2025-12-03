@@ -1,173 +1,283 @@
 {
-	"info": {
-		"settings_imported": "Settings imported successfully."
-	},
-	"userFeedback": {
-		"message_update_failed": "Failed to update message",
-		"no_checkpoint_found": "No checkpoint found before this message",
-		"message_updated": "Message updated successfully"
+	"welcome": {
+		"greeting": "Welcome to Agentica!",
+		"introText1": "Agentica is a free, AI coding agent, forked from Cline.",
+		"introText2": "It works with the latest and most powerful AI models.",
+		"introText3": "",
+		"ctaButton": "Get Started",
+		"manualModeButton": "Use your own API key",
+		"alreadySignedUp": "Already signed up?",
+		"loginText": "Log in here"
 	},
 	"lowCreditWarning": {
-		"title": "Low Credit Warning!",
-		"message": "Check to see if you can top up with free credits or purchase some more!"
+		"addCredit": "Add Credit",
+		"lowBalance": "Your Agentica balance is low",
+		"newOrganization": "Using Kilo for work?"
 	},
-	"task": {
-		"noAssistantMessages": "The model's response ended unexpectedly (no assistant messages). This may be a sign of rate limiting.",
-		"notLoggedInError": "Cannot complete request, make sure you are connected and logged in with the selected provider.\n\n{{error}}",
-		"maxCompletionTokens": "The maximum number of completion tokens was reached.",
-		"disableApplyDiff": "If this error keep reoccuring, please disable Editing Through Diffs in Advanced Settings.",
-		"disableEditFile": "If this error keep reoccuring, please disable the Fast Apply experimental feature."
+	"memoryWarning": {
+		"message": "Memory usage is at {{percentage}}%. Please restart your IDE to prevent crashes."
 	},
-	"checkpoints": {
-		"nestedGitRepos": "Checkpoints are unavailable, because a nested Git repository was detected at: {{path}}. Please remove or relocate nested Git repositories to use the checkpoints feature or disable checkpoints in the settings to suppress this warning.",
-		"protectedPaths": "Checkpoints are unavailable in {{workspaceDir}}. Please open a subfolder as workspace to use the checkpoints feature or disable checkpoints in the settings to suppress this warning.",
-		"dismissWarning": "Dismiss"
+	"pagination": {
+		"previous": "Previous",
+		"next": "Next",
+		"page": "Page {{page}} / {{count}}"
 	},
-	"rules": {
-		"actions": {
-			"delete": "Delete",
-			"confirmDelete": "Are you sure you want to delete {{filename}}?",
-			"deleted": "Deleted {{filename}}"
+	"invalidModel": {
+		"alphaPeriodEnded": "🎉 The alpha period for {{model}} has ended! Change to a different model to continue.",
+		"notAllowedForTeam": "⚠️ Your organization does not allow use of the {{model}} model. Change to a different model to continue.",
+		"modelUnavailable": "⚠️ The model {{model}} is unavailable. Change to a different model to continue.",
+		"continueWith": "Continue with {{model}}",
+		"continue": "Continue"
+	},
+	"pricing": {
+		"costUnknown": "cost unknown",
+		"costUnknownDescription": "The API Provider did not provide any cost data or the request was canceled.",
+		"freeModelsLink": "Discover free and budget model options"
+	},
+	"notifications": {
+		"toolRequest": "Tool request waiting for approval",
+		"browserAction": "Browser action waiting for approval",
+		"command": "Command waiting for approval"
+	},
+	"imageWarnings": {
+		"modelNoImageSupport": "Images are not supported by the current model.",
+		"maxImagesReached": "Maximum of 20 images per message. Remove some images to add more.",
+		"imagesRemovedNoSupport": "Images removed, unsupported by model."
+	},
+	"settings": {
+		"sections": {
+			"mcp": "MCP Servers"
 		},
-		"errors": {
-			"noWorkspaceFound": "No workspace folder found",
-			"fileAlreadyExists": "File {{filename}} already exists",
-			"failedToCreateRuleFile": "Failed to create rule file.",
-			"failedToDeleteRuleFile": "Failed to delete rule file."
-		},
-		"templates": {
-			"workflow": {
-				"description": "Workflow description here...",
-				"stepsHeader": "## Steps",
-				"step1": "Step 1",
-				"step2": "Step 2"
+		"provider": {
+			"account": "Agentica Account",
+			"apiKey": "Agentica API Key",
+			"login": "Log in at Agentica",
+			"logout": "Log out from Agentica",
+			"providerRouting": {
+				"title": "Provider Routing",
+				"managedByOrganization": "Manage Organization-level Provider Routing",
+				"createOrganization": "Create an Organization to Manage Provider Routing",
+				"sorting": {
+					"default": "Default provider sorting",
+					"price": "Prefer providers with lower price",
+					"throughput": "Prefer providers with higher throughput",
+					"latency": "Prefer providers with lower latency"
+				},
+				"dataCollection": {
+					"default": "No data policy set",
+					"allowFree": "Allow prompt training (free only)",
+					"allow": "Allow prompt training",
+					"deny": "Deny prompt training",
+					"zdr": "Zero data retention"
+				}
 			},
-			"rule": {
-				"description": "Rule description here...",
-				"guidelinesHeader": "## Guidelines",
-				"guideline1": "Guideline 1",
-				"guideline2": "Guideline 2"
+			"automaticFetch": "The latest models are automatically available in Agentica. If you're unsure which model to choose, Agentica works best with the recommended models listed at the top in <strong>bold face</strong>."
+		},
+		"modelInfo": {
+			"contextWindow": "Context window",
+			"providerBreakdown": "Provider Price and Capability Breakdown",
+			"averageKiloCodeCost": "This is the average actual spent for Agentica using this model over the last week. It may be lower than the listed price due to prompt cache utilization.",
+			"table": {
+				"provider": "Provider",
+				"context": "The endpoint can process this number of tokens (input + output).",
+				"inputPrice": "Cost per million tokens for the prompt.",
+				"outputPrice": "Cost per million tokens for the completion.",
+				"cacheReadPrice": "Cost per million tokens for reading from the cache.",
+				"cacheWritePrice": "Cost per million tokens for writing to the cache."
+			}
+		},
+		"contextManagement": {
+			"allowVeryLargeReads": {
+				"label": "Allow very large file reads",
+				"description": "When enabled, Agentica will perform very large file or MCP output reads even if there is a high chance of overflowing the context window (content size >80% of context window)."
+			}
+		},
+		"systemNotifications": {
+			"label": "Enable System Notifications",
+			"description": "When enabled, Agentica will send system notifications for important events like task completion or errors.",
+			"testButton": "Test Notification",
+			"testTitle": "Agentica",
+			"testMessage": "This is a test notification from Agentica."
+		},
+		"terminal": {
+			"commandGenerator": {
+				"provider": "Terminal Command Generator Provider",
+				"apiConfigId": {
+					"label": "API Configuration",
+					"description": "Select which API configuration to use for generating terminal commands. Leave as 'Use Current Configuration' to use your default settings.",
+					"current": "Use Current Configuration"
+				}
 			}
 		}
 	},
-	"commitMessage": {
-		"activated": "Kilo Code commit message generator activated",
-		"gitNotFound": "⚠️ Git repository not found or git not available",
-		"gitInitError": "⚠️ Git initialization error: {{error}}",
-		"generating": "Kilo: Generating commit message...",
-		"noChanges": "Kilo: No changes found to analyze",
-		"generated": "Kilo: Commit message generated!",
-		"generationFailed": "Kilo: Failed to generate commit message: {{errorMessage}}",
-		"generatingFromUnstaged": "Kilo: Generating message using unstaged changes",
-		"activationFailed": "Kilo: Failed to activate message generator: {{error}}",
-		"providerRegistered": "Kilo: Commit message provider registered",
-		"errors": {
-			"connectionFailed": "Failed to connect to Kilo Code extension",
-			"timeout": "Request timed out after 30 seconds",
-			"invalidResponse": "Invalid response format received from extension",
-			"missingMessage": "No commit message received from extension",
-			"noChanges": "No changes found to commit",
-			"noProject": "No project available",
-			"noWorkspacePath": "Could not determine workspace path for Git repository",
-			"workspaceNotFound": "Could not determine workspace path for Git repository",
-			"processingError": "Error processing commit message generation: {{error}}"
+	"chat": {
+		"condense": {
+			"wantsToCondense": "Agentica wants to condense your conversation",
+			"condenseConversation": "Condense Conversation"
 		},
-		"error": {
-			"title": "Error",
-			"workspacePathNotFound": "Could not determine workspace path for Git repository",
-			"generationFailed": "Failed to generate commit message: {{error}}",
-			"processingFailed": "Error processing commit message generation: {{error}}",
-			"unknown": "Unknown error"
+		"seeNewChanges": "See New Changes",
+		"revertNewChanges": "Revert New Changes",
+		"confirmRevertChanges": "Confirm Revert Changes",
+		"cancelRevertChanges": "Cancel Revert Changes"
+	},
+	"newTaskPreview": {
+		"task": "Task"
+	},
+	"profile": {
+		"title": "Profile",
+		"dashboard": "Dashboard",
+		"logOut": "Log out",
+		"currentBalance": "CURRENT BALANCE",
+		"loading": "Loading...",
+		"organization": "Organization",
+		"personal": "Personal",
+		"shop": {
+			"title": "Buy Credits",
+			"popular": "Popular",
+			"credits": "credits",
+			"action": "Buy Now",
+			"viewAll": "View all pricing options"
 		},
-		"dialogs": {
-			"info": "AI Commit Message",
-			"error": "Error",
-			"success": "Success",
-			"title": "AI Commit Message"
+		"detailedUsage": "Detailed Usage",
+		"createOrganization": "Create an Organization to Track Detailed Usage"
+	},
+	"docs": "Docs",
+	"rules": {
+		"tooltip": "Manage Agentica Rules & Workflows",
+		"ariaLabel": "Agentica Rules",
+		"tabs": {
+			"rules": "Rules",
+			"workflows": "Workflows"
 		},
-		"progress": {
-			"title": "Generating Commit Message",
-			"analyzing": "Analyzing changes...",
-			"connecting": "Connecting to Kilo Code...",
-			"generating": "Generating commit message..."
+		"description": {
+			"rules": "Rules allow you to provide Agentica with instructions it should follow in all modes and for all prompts. They are a persistent way to include context and preferences for all conversations in your workspace or globally.",
+			"workflows": "Workflows are a prepared template for a conversation. Workflows can allow you to define prompts you use frequently, and can include a series of steps to guide Agentica through repetitive tasks, such as deploying a service or submitting a PR. To invoke a workflow, type",
+			"workflowsInChat": "in the chat."
 		},
-		"ui": {
-			"generateButton": "Generate Commit Message",
-			"generateButtonTooltip": "Generates commit message using AI to analyze your code changes"
+		"sections": {
+			"globalRules": "Global Rules",
+			"workspaceRules": "Workspace Rules",
+			"globalWorkflows": "Global Workflows",
+			"workspaceWorkflows": "Workspace Workflows"
+		},
+		"validation": {
+			"invalidFileExtension": "Only .md, .txt, or no file extension allowed"
+		},
+		"placeholders": {
+			"workflowName": "workflow-name (.md, .txt, or no extension)",
+			"ruleName": "rule-name (.md, .txt, or no extension)"
+		},
+		"newFile": {
+			"newWorkflowFile": "New workflow file...",
+			"newRuleFile": "New rule file..."
 		}
+	},
+	"taskTimeline": {
+		"tooltip": {
+			"clickToScroll": "View {{messageType}} (#{{messageNumber}})",
+			"messageTypes": {
+				"browser_action_launch": "browser launch",
+				"browser_action_result": "browser action result",
+				"browser_action": "browser action",
+				"checkpoint_saved": "checkpoint saved",
+				"command": "command execution",
+				"command_output": "command output",
+				"completion_result": "completion result",
+				"condense_context": "condense context",
+				"error": "error message",
+				"followup": "followup question",
+				"mcp_server_response": "MCP server response",
+				"reasoning": "AI reasoning",
+				"text": "AI response",
+				"tool": "tool usage",
+				"user": "user feedback",
+				"unknown": "unknown message type",
+				"use_mcp_server": "MCP server usage"
+			}
+		}
+	},
+	"userFeedback": {
+		"editCancel": "Cancel",
+		"send": "Send",
+		"restoreAndSend": "Restore & Send"
+	},
+	"ideaSuggestionsBox": {
+		"newHere": "New here?",
+		"suggestionText": "<suggestionButton>Click here</suggestionButton> for a cool idea, then tap on <sendIcon /> and watch me do magic!",
+		"ideas": {
+			"idea1": "Make a spinning, glowing 3D sphere that responds to mouse movements. Make the app work in the browser.",
+			"idea2": "Create a portfolio website for a Python software developer",
+			"idea3": "Create a financial app mockup in the browser. Then test if it works",
+			"idea4": "Create a directory website containing the best AI video generation models currently",
+			"idea5": "Create a CSS gradient generator that exports custom stylesheets and shows a live preview",
+			"idea6": "Generate cards that reveal dynamic content beautifully when hovered over",
+			"idea7": "Create a calming interactive starfield that moves with mouse gestures"
+		}
+	},
+	"toolCallStyle": {
+		"title": "Tool Call Style",
+		"description": "Choose how tool calls are formatted in the system prompt. JSON is currently experimental and mostly intended for users interested in contributing to its development.",
+		"automatic": "Let Kilo decide",
+		"xml": "XML",
+		"json": "JSON"
 	},
 	"ghost": {
-		"statusBar": {
-			"enabled": "$(sparkle) Kilo Code Autocomplete",
-			"disabled": "$(circle-slash) Kilo Code Autocomplete",
-			"warning": "$(warning) Kilo Code Autocomplete",
-			"tooltip": {
-				"basic": "Kilo Code Autocomplete",
-				"disabled": "Kilo Code Autocomplete (disabled)",
-				"tokenError": "A valid token must be set to use Autocomplete",
-				"lastCompletion": "Last suggestion:",
-				"sessionTotal": "Session total cost:",
-				"provider": "Provider:",
-				"model": "Model:"
+		"title": "Autocomplete",
+		"settings": {
+			"triggers": "Triggers",
+			"model": "Model",
+			"provider": "Provider",
+			"enableAutoTrigger": {
+				"label": "Pause to Complete",
+				"description": "When enabled, Agentica will automatically trigger Autocomplete when you pause typing. This can be useful for quick fixes and suggestions."
 			},
-			"cost": {
-				"zero": "$0.00",
-				"lessThanCent": "<$0.01"
-			}
-		},
-		"toggleMessage": "Kilo Code Autocomplete {{status}}",
-		"progress": {
-			"title": "Kilo Code",
-			"analyzing": "Analyzing your code...",
-			"generating": "Generating suggested edits...",
-			"processing": "Processing suggested edits...",
-			"showing": "Displaying suggested edits..."
-		},
-		"input": {
-			"title": "Kilo Code: Quick Task",
-			"placeholder": "e.g., 'refactor this function to be more efficient'"
-		},
-		"commands": {
-			"generateSuggestions": "Kilo Code: Generate Suggested Edits",
-			"displaySuggestions": "Display Suggested Edits",
-			"cancelSuggestions": "Cancel Suggested Edits",
-			"applyCurrentSuggestion": "Apply Current Suggested Edit",
-			"applyAllSuggestions": "Apply All Suggested Edits",
-			"category": "Kilo Code"
-		},
-		"codeAction": {
-			"title": "Kilo Code: Suggested Edits"
-		},
-		"chatParticipant": {
-			"fullName": "Kilo Code Agent",
-			"name": "Agent",
-			"description": "I can help you with quick tasks and suggested edits."
-		},
-		"incompatibilityExtensionPopup": {
-			"message": "The Kilo Code Autocomplete is being blocked by a conflict with GitHub Copilot. To fix this, you must disable Copilot's inline suggestions.",
-			"disableCopilot": "Disable Copilot",
-			"disableInlineAssist": "Disable Autocomplete"
+			"autoTriggerDelay": {
+				"label": "Auto Trigger Delay",
+				"description": "The delay in seconds before Agentica triggers Autocomplete after you pause typing. A shorter delay means quicker suggestions, but may be more resource-intensive."
+			},
+			"enableQuickInlineTaskKeybinding": {
+				"label": "Quick Task ({{keybinding}})",
+				"description": "Only need a quick change? Select some code (or don't!) and hit Cmd+I. Describe your goal in plain English (\"create a React component with these props\", \"add error handling to this function\"), and get multiple, ready-to-use suggestions right in your editor. <DocsLink>Edit shortcut</DocsLink>"
+			},
+			"enableSmartInlineTaskKeybinding": {
+				"label": "Manual Autocomplete ({{keybinding}})",
+				"description": "Need a quick fix, completion, or refactor? Kilo will use the surrounding context to offer immediate improvements, keeping you in the flow. <DocsLink>Edit shortcut</DocsLink>"
+			},
+			"keybindingNotFound": "not found",
+			"noModelConfigured": "No suitable autocomplete model found. Please configure a provider in the API settings."
 		}
 	},
-	"seeNewChanges": {
-		"title": "Showing new changes",
-		"checkpointsUnavailable": "Cannot show new changes, checkpoints are unavailable.",
-		"noChanges": "Cannot show new changes, no changes were found.",
-		"error": "Cannot show new changes, an error occured."
+	"virtualProvider": {
+		"title": "Virtual Quota Fallback Provider Settings",
+		"description": "Configure a list of profiles each with their own quota limits. When one provider's quota limits are reached, the next profile in the list will be used until none remain.",
+		"profileLabel": "Profile {{number}}",
+		"primaryProfileLabel": "Profile {{number}} (Primary)",
+		"moveProfileUp": "Move profile up",
+		"moveProfileDown": "Move profile down",
+		"removeProfile": "Remove profile",
+		"selectProfilePlaceholder": "Select profile...",
+		"addProfile": "Add profile",
+		"noProfilesAvailable": "No profiles available. Please configure at least one non-virtual provider profile first.",
+		"tokensLabel": "Tokens",
+		"perMinute": "Per Minute",
+		"perHour": "Per Hour",
+		"perDay": "Per Day",
+		"requestsLabel": "Requests",
+		"dangerZoneTitle": "Danger Zone",
+		"dangerZoneDescription": "These actions are destructive and cannot be undone.",
+		"clearUsageData": "Clear Usage Data",
+		"confirmClearTitle": "Are you sure?",
+		"confirmClearDescription": "This will permanently delete all stored usage data for virtual providers. This action cannot be undone."
 	},
-	"terminalCommandGenerator": {
-		"tipMessage": "Kilo: Press {{shortcut}} to generate terminal commands",
-		"inputPrompt": "Kilo: Describe the command you want to generate",
-		"inputPlaceholder": "e.g., kill the process running on port 3001, find large files, etc",
-		"noActiveTerminal": "Kilo: No active terminal found. Please open a terminal first.",
-		"generatingProgress": "Kilo: Generating terminal command...",
-		"commandGenerated": "Kilo: Generated command: {{command}}",
-		"generationFailed": "Kilo: Failed to generate command: {{error}}",
-		"warningDialog": {
-			"title": "Terminal Safety Warning",
-			"message": "Double-check all generated commands before running them. Terminal actions cannot always be undone— running unverified commands can result in irreversible data loss or system damage. Review and understand the command completely before proceeding!",
-			"okButton": "I Understand",
-			"cancelButton": "Cancel"
+	"marketplace": {
+		"mcp": {
+			"description": "These MCP servers are maintained by the community. Click <1>here</1> to edit your own MCP settings."
+		},
+		"modes": {
+			"description": "These modes are available from the community. Click <1>here</1> to edit your own custom modes."
 		}
+	},
+	"modes": {
+		"shareModesNewBanner": "New: Share modes by creating an organization"
 	}
 }

@@ -54,6 +54,15 @@ export const ModelInfoView = ({
 			supportsLabel={t("settings:modelInfo.supportsPromptCache")}
 			doesNotSupportLabel={t("settings:modelInfo.noPromptCache")}
 		/>,
+		apiProvider === "agentica" && modelInfo?.creditsMultiplier && (
+			<>
+				<span className="font-medium">{t("settings:modelInfo.creditsMultiplier")}:</span>{" "}
+				{modelInfo.creditsMultiplier === 0 
+					? "Free" 
+					: `${modelInfo.creditsMultiplier}x credits`
+				}
+			</>
+		),
 		apiProvider === "gemini" && (
 			<span className="italic">
 				{selectedModelId.includes("pro-preview")

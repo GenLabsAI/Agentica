@@ -49,6 +49,8 @@ import { flushModels, getModels } from "./api/providers/fetchers/modelCache"
 import { ManagedIndexer } from "./services/code-index/managed/ManagedIndexer" // kilocode_change
 import { updateCodeIndexWithKiloProps } from "./services/code-index/managed/webview" // kilocode_change
 import { getCommand } from "./utils/commands"
+import { initializeSavingsTracker } from "./features/savings/agenticaSavings"
+import { registerSimpleSavingsCommands } from "./features/savings/simpleCommands"
 
 /**
  * Built using https://github.com/microsoft/vscode-webview-ui-toolkit
@@ -376,6 +378,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	registerCodeActions(context)
 	registerTerminalActions(context)
+
+	// Initialize simple savings tracker
+	const savingsTracker = initializeSavingsTracker(context)
+	
+	// Register simple commands
+	const simpleCommands = registerSimpleSavingsCommands(context)
+	context.subscriptions.push(...simpleCommands)
 
 	// Allows other extensions to activate once Kilo Code is ready.
 	vscode.commands.executeCommand(`${Package.name}.activationCompleted`)

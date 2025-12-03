@@ -130,6 +130,11 @@ function validateModelsAndKeysProvided(apiConfiguration: ProviderSettings): stri
 			}
 			break
 		// kilocode_change end
+		case "agentica":
+			if (!apiConfiguration.agenticaEmail || !apiConfiguration.agenticaPassword) {
+				return i18next.t("settings:validation.apiKey")
+			}
+			break
 		case "huggingface":
 			if (!apiConfiguration.huggingFaceApiKey) {
 				return i18next.t("settings:validation.apiKey")

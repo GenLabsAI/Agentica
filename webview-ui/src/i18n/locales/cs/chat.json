@@ -1,5 +1,5 @@
 {
-	"greeting": "Co pro tebe může Kilo Code udělat?",
+	"greeting": "Co pro tebe může Agentica udělat?",
 	"task": {
 		"title": "Úkol",
 		"seeMore": "Zobrazit více",
@@ -19,7 +19,7 @@
 		"sharePublicly": "Sdílet veřejně",
 		"sharePubliclyDescription": "Kdokoli s odkazem má přístup",
 		"connectToCloud": "Připojit ke cloudu",
-		"connectToCloudDescription": "Přihlaste se do Kilo Code Cloud pro sdílení úkolů",
+		"connectToCloudDescription": "Přihlaste se do Agentica Cloud pro sdílení úkolů",
 		"sharingDisabledByOrganization": "Sdílení zakázáno organizací",
 		"shareSuccessOrganization": "Odkaz organizace zkopírován do schránky",
 		"shareSuccessPublic": "Veřejný odkaz zkopírován do schránky",
@@ -179,50 +179,50 @@
 		"tokens": "tokeny"
 	},
 	"instructions": {
-		"wantsToFetch": "Kilo Code chce načíst podrobné instrukce pro pomoc s aktuálním úkolem"
+		"wantsToFetch": "Agentica chce načíst podrobné instrukce pro pomoc s aktuálním úkolem"
 	},
 	"fileOperations": {
-		"wantsToRead": "Kilo Code chce přečíst tento soubor:",
-		"wantsToReadMultiple": "Kilo Code chce přečíst více souborů:",
-		"wantsToReadAndXMore": "Kilo Code chce přečíst tento soubor a {{count}} dalších:",
-		"wantsToReadOutsideWorkspace": "Kilo Code chce přečíst tento soubor mimo pracovní prostor:",
-		"didRead": "Kilo Code přečetl tento soubor:",
-		"wantsToEdit": "Kilo Code chce upravit tento soubor:",
-		"wantsToEditOutsideWorkspace": "Kilo Code chce upravit tento soubor mimo pracovní prostor:",
-		"wantsToEditProtected": "Kilo Code chce upravit chráněný konfigurační soubor:",
-		"wantsToApplyBatchChanges": "Kilo Code chce aplikovat změny na více souborů:",
-		"wantsToGenerateImage": "Kilo Code chce vygenerovat obrázek:",
-		"wantsToGenerateImageOutsideWorkspace": "Kilo Code chce vygenerovat obrázek mimo pracovní prostor:",
-		"wantsToGenerateImageProtected": "Kilo Code chce vygenerovat obrázek v chráněném umístění:",
-		"didGenerateImage": "Kilo Code vygeneroval obrázek:",
-		"wantsToCreate": "Kilo Code chce vytvořit nový soubor:",
-		"wantsToSearchReplace": "Kilo Code chce hledat a nahradit v tomto souboru:",
-		"didSearchReplace": "Kilo Code provedl hledání a nahrazení v tomto souboru:",
-		"wantsToInsert": "Kilo Code chce vložit obsah do tohoto souboru:",
-		"wantsToInsertWithLineNumber": "Kilo Code chce vložit obsah do tohoto souboru na řádek {{lineNumber}}:",
-		"wantsToInsertAtEnd": "Kilo Code chce přidat obsah na konec tohoto souboru:"
+		"wantsToRead": "Agentica chce přečíst tento soubor:",
+		"wantsToReadMultiple": "Agentica chce přečíst více souborů:",
+		"wantsToReadAndXMore": "Agentica chce přečíst tento soubor a {{count}} dalších:",
+		"wantsToReadOutsideWorkspace": "Agentica chce přečíst tento soubor mimo pracovní prostor:",
+		"didRead": "Agentica přečetl tento soubor:",
+		"wantsToEdit": "Agentica chce upravit tento soubor:",
+		"wantsToEditOutsideWorkspace": "Agentica chce upravit tento soubor mimo pracovní prostor:",
+		"wantsToEditProtected": "Agentica chce upravit chráněný konfigurační soubor:",
+		"wantsToApplyBatchChanges": "Agentica chce aplikovat změny na více souborů:",
+		"wantsToGenerateImage": "Agentica chce vygenerovat obrázek:",
+		"wantsToGenerateImageOutsideWorkspace": "Agentica chce vygenerovat obrázek mimo pracovní prostor:",
+		"wantsToGenerateImageProtected": "Agentica chce vygenerovat obrázek v chráněném umístění:",
+		"didGenerateImage": "Agentica vygeneroval obrázek:",
+		"wantsToCreate": "Agentica chce vytvořit nový soubor:",
+		"wantsToSearchReplace": "Agentica chce hledat a nahradit v tomto souboru:",
+		"didSearchReplace": "Agentica provedl hledání a nahrazení v tomto souboru:",
+		"wantsToInsert": "Agentica chce vložit obsah do tohoto souboru:",
+		"wantsToInsertWithLineNumber": "Agentica chce vložit obsah do tohoto souboru na řádek {{lineNumber}}:",
+		"wantsToInsertAtEnd": "Agentica chce přidat obsah na konec tohoto souboru:"
 	},
 	"directoryOperations": {
-		"wantsToViewTopLevel": "Kilo Code chce zobrazit soubory nejvyšší úrovně v tomto adresáři:",
-		"didViewTopLevel": "Kilo Code zobrazil soubory nejvyšší úrovně v tomto adresáři:",
-		"wantsToViewTopLevelOutsideWorkspace": "Kilo Code chce zobrazit soubory nejvyšší úrovně v tomto adresáři (mimo pracovní prostor):",
-		"didViewTopLevelOutsideWorkspace": "Kilo Code zobrazil soubory nejvyšší úrovně v tomto adresáři (mimo pracovní prostor):",
-		"wantsToViewRecursive": "Kilo Code chce rekurzivně zobrazit všechny soubory v tomto adresáři:",
-		"didViewRecursive": "Kilo Code rekurzivně zobrazil všechny soubory v tomto adresáři:",
-		"wantsToViewRecursiveOutsideWorkspace": "Kilo Code chce rekurzivně zobrazit všechny soubory v tomto adresáři (mimo pracovní prostor):",
-		"didViewRecursiveOutsideWorkspace": "Kilo Code rekurzivně zobrazil všechny soubory v tomto adresáři (mimo pracovní prostor):",
-		"wantsToViewDefinitions": "Kilo Code chce zobrazit názvy definic zdrojového kódu použité v tomto adresáři:",
-		"didViewDefinitions": "Kilo Code zobrazil názvy definic zdrojového kódu použité v tomto adresáři:",
-		"wantsToViewDefinitionsOutsideWorkspace": "Kilo Code chce zobrazit názvy definic zdrojového kódu použité v tomto adresáři (mimo pracovní prostor):",
-		"didViewDefinitionsOutsideWorkspace": "Kilo Code zobrazil názvy definic zdrojového kódu použité v tomto adresáři (mimo pracovní prostor):",
-		"wantsToSearch": "Kilo Code chce hledat v tomto adresáři <code>{{regex}}</code>:",
-		"didSearch": "Kilo Code hledal v tomto adresáři <code>{{regex}}</code>:",
-		"wantsToSearchOutsideWorkspace": "Kilo Code chce hledat v tomto adresáři (mimo pracovní prostor) <code>{{regex}}</code>:",
-		"didSearchOutsideWorkspace": "Kilo Code hledal v tomto adresáři (mimo pracovní prostor) <code>{{regex}}</code>:"
+		"wantsToViewTopLevel": "Agentica chce zobrazit soubory nejvyšší úrovně v tomto adresáři:",
+		"didViewTopLevel": "Agentica zobrazil soubory nejvyšší úrovně v tomto adresáři:",
+		"wantsToViewTopLevelOutsideWorkspace": "Agentica chce zobrazit soubory nejvyšší úrovně v tomto adresáři (mimo pracovní prostor):",
+		"didViewTopLevelOutsideWorkspace": "Agentica zobrazil soubory nejvyšší úrovně v tomto adresáři (mimo pracovní prostor):",
+		"wantsToViewRecursive": "Agentica chce rekurzivně zobrazit všechny soubory v tomto adresáři:",
+		"didViewRecursive": "Agentica rekurzivně zobrazil všechny soubory v tomto adresáři:",
+		"wantsToViewRecursiveOutsideWorkspace": "Agentica chce rekurzivně zobrazit všechny soubory v tomto adresáři (mimo pracovní prostor):",
+		"didViewRecursiveOutsideWorkspace": "Agentica rekurzivně zobrazil všechny soubory v tomto adresáři (mimo pracovní prostor):",
+		"wantsToViewDefinitions": "Agentica chce zobrazit názvy definic zdrojového kódu použité v tomto adresáři:",
+		"didViewDefinitions": "Agentica zobrazil názvy definic zdrojového kódu použité v tomto adresáři:",
+		"wantsToViewDefinitionsOutsideWorkspace": "Agentica chce zobrazit názvy definic zdrojového kódu použité v tomto adresáři (mimo pracovní prostor):",
+		"didViewDefinitionsOutsideWorkspace": "Agentica zobrazil názvy definic zdrojového kódu použité v tomto adresáři (mimo pracovní prostor):",
+		"wantsToSearch": "Agentica chce hledat v tomto adresáři <code>{{regex}}</code>:",
+		"didSearch": "Agentica hledal v tomto adresáři <code>{{regex}}</code>:",
+		"wantsToSearchOutsideWorkspace": "Agentica chce hledat v tomto adresáři (mimo pracovní prostor) <code>{{regex}}</code>:",
+		"didSearchOutsideWorkspace": "Agentica hledal v tomto adresáři (mimo pracovní prostor) <code>{{regex}}</code>:"
 	},
 	"codebaseSearch": {
-		"wantsToSearch": "Kilo Code chce hledat v kódové základně <code>{{query}}</code>:",
-		"wantsToSearchWithPath": "Kilo Code chce hledat v kódové základně <code>{{query}}</code> v <code>{{path}}</code>:",
+		"wantsToSearch": "Agentica chce hledat v kódové základně <code>{{query}}</code>:",
+		"wantsToSearchWithPath": "Agentica chce hledat v kódové základně <code>{{query}}</code> v <code>{{path}}</code>:",
 		"didSearch_one": "Nalezen 1 výsledek",
 		"didSearch_other": "Nalezeno {{count}} výsledků",
 		"resultTooltip": "Skóre podobnosti: {{score}} (klikni pro otevření souboru)"
@@ -255,18 +255,18 @@
 		"youSaid": "Řekl jsi"
 	},
 	"mcp": {
-		"wantsToUseTool": "Kilo Code chce použít nástroj na MCP serveru {{serverName}}:",
-		"wantsToAccessResource": "Kilo Code chce přistupovat k prostředku na MCP serveru {{serverName}}:"
+		"wantsToUseTool": "Agentica chce použít nástroj na MCP serveru {{serverName}}:",
+		"wantsToAccessResource": "Agentica chce přistupovat k prostředku na MCP serveru {{serverName}}:"
 	},
 	"modes": {
-		"wantsToSwitch": "Kilo Code chce přepnout do režimu {{mode}}",
-		"wantsToSwitchWithReason": "Kilo Code chce přepnout do režimu {{mode}}, protože: {{reason}}",
-		"didSwitch": "Kilo Code přepnul do režimu {{mode}}",
-		"didSwitchWithReason": "Kilo Code přepnul do režimu {{mode}}, protože: {{reason}}"
+		"wantsToSwitch": "Agentica chce přepnout do režimu {{mode}}",
+		"wantsToSwitchWithReason": "Agentica chce přepnout do režimu {{mode}}, protože: {{reason}}",
+		"didSwitch": "Agentica přepnul do režimu {{mode}}",
+		"didSwitchWithReason": "Agentica přepnul do režimu {{mode}}, protože: {{reason}}"
 	},
 	"subtasks": {
-		"wantsToCreate": "Kilo Code chce vytvořit nový podúkol v režimu {{mode}}:",
-		"wantsToFinish": "Kilo Code chce dokončit tento podúkol",
+		"wantsToCreate": "Agentica chce vytvořit nový podúkol v režimu {{mode}}:",
+		"wantsToFinish": "Agentica chce dokončit tento podúkol",
 		"newTaskContent": "Instrukce podúkolu",
 		"completionContent": "Podúkol dokončen",
 		"resultContent": "Výsledky podúkolu",
@@ -274,21 +274,21 @@
 		"completionInstructions": "Podúkol dokončen! Můžeš zkontrolovat výsledky a navrhnout jakékoli opravy nebo další kroky. Pokud vše vypadá dobře, potvrď pro vrácení výsledku do nadřazeného úkolu."
 	},
 	"questions": {
-		"hasQuestion": "Kilo Code má otázku:"
+		"hasQuestion": "Agentica má otázku:"
 	},
 	"taskCompleted": "Úkol dokončen",
 	"error": "Chyba",
 	"diffError": {
 		"title": "Úprava neúspěšná"
 	},
-	"troubleMessage": "Kilo Code má potíže...",
+	"troubleMessage": "Agentica má potíže...",
 	"powershell": {
 		"issues": "Zdá se, že máš problémy s Windows PowerShell, prosím podívej se na toto"
 	},
 	"autoApprove": {
 		"title": "Automatické schvalování:",
 		"none": "Žádné",
-		"description": "Automatické schvalování umožňuje Kilo Code provádět akce bez žádání o povolení. Zapni pouze pro akce, kterým plně důvěřuješ. Podrobnější konfigurace je dostupná v <settingsLink>Nastavení</settingsLink>.",
+		"description": "Automatické schvalování umožňuje Agentica provádět akce bez žádání o povolení. Zapni pouze pro akce, kterým plně důvěřuješ. Podrobnější konfigurace je dostupná v <settingsLink>Nastavení</settingsLink>.",
 		"selectOptionsFirst": "Nejprve vyber alespoň jednu možnost níže pro povolení automatického schvalování",
 		"toggleAriaLabel": "Přepnout automatické schvalování",
 		"disabledAriaLabel": "Automatické schvalování zakázáno - nejprve vyber možnosti",
@@ -307,7 +307,7 @@
 		"title": "Režimy",
 		"marketplace": "Tržiště režimů",
 		"settings": "Nastavení režimů",
-		"description": "Specializované persony které přizpůsobují chování Kilo Code.",
+		"description": "Specializované persony které přizpůsobují chování Agentica.",
 		"searchPlaceholder": "Hledat režimy...",
 		"noResults": "Nebyly nalezeny žádné výsledky",
 		"organizationModes": "Režimy organizace"
@@ -346,7 +346,7 @@
 		"countdownDisplay": "{{count}}s"
 	},
 	"browser": {
-		"rooWantsToUse": "Kilo Code chce použít prohlížeč:",
+		"rooWantsToUse": "Agentica chce použít prohlížeč:",
 		"consoleLogs": "Záznamy konzole",
 		"noNewLogs": "(Žádné nové záznamy)",
 		"screenshot": "Snímek obrazovky prohlížeče",
@@ -380,18 +380,18 @@
 	"profileViolationWarning": "Aktuální profil porušuje nastavení tvé organizace",
 	"shellIntegration": {
 		"title": "Varování provádění příkazu",
-		"description": "Tvůj příkaz se provádí bez integrace shellu terminálu VSCode. Pro potlačení tohoto varování můžeš vypnout integraci shellu v sekci <strong>Terminal</strong> <settingsLink>nastavení Kilo Code</settingsLink> nebo vyřešit integraci terminálu VSCode pomocí odkazu níže.",
+		"description": "Tvůj příkaz se provádí bez integrace shellu terminálu VSCode. Pro potlačení tohoto varování můžeš vypnout integraci shellu v sekci <strong>Terminal</strong> <settingsLink>nastavení Agentica</settingsLink> nebo vyřešit integraci terminálu VSCode pomocí odkazu níže.",
 		"troubleshooting": "Klikni zde pro dokumentaci integrace shellu."
 	},
 	"ask": {
 		"autoApprovedRequestLimitReached": {
 			"title": "Dosažen limit automaticky schválených požadavků",
-			"description": "Kilo Code dosáhl automaticky schváleného limitu {{count}} API požadavků. Chceš resetovat počítadlo a pokračovat v úkolu?",
+			"description": "Agentica dosáhl automaticky schváleného limitu {{count}} API požadavků. Chceš resetovat počítadlo a pokračovat v úkolu?",
 			"button": "Resetovat a pokračovat"
 		},
 		"autoApprovedCostLimitReached": {
 			"title": "Dosažen limit automaticky schválených nákladů",
-			"description": "Kilo Code dosáhl limitu automaticky schválených nákladů ${{count}}. Chceš resetovat náklady a pokračovat v úkolu?",
+			"description": "Agentica dosáhl limitu automaticky schválených nákladů ${{count}}. Chceš resetovat náklady a pokračovat v úkolu?",
 			"button": "Resetovat a pokračovat"
 		}
 	},
@@ -442,8 +442,8 @@
 	},
 	"generateCommitMessage": "Vygenerovat commit zprávu",
 	"slashCommand": {
-		"wantsToRun": "Kilo Code chce spustit slash příkaz:",
-		"didRun": "Kilo Code spustil slash příkaz:"
+		"wantsToRun": "Agentica chce spustit slash příkaz:",
+		"didRun": "Agentica spustil slash příkaz:"
 	},
 	"contextMenu": {
 		"noResults": "Žádné výsledky",

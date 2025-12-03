@@ -19,7 +19,8 @@ function calculateApiCostInternal(
 	const cacheReadsCost = ((modelInfo.cacheReadsPrice || 0) / 1_000_000) * cacheReadInputTokens
 	const baseInputCost = ((modelInfo.inputPrice || 0) / 1_000_000) * inputTokens
 	const outputCost = ((modelInfo.outputPrice || 0) / 1_000_000) * outputTokens
-	const totalCost = cacheWritesCost + cacheReadsCost + baseInputCost + outputCost
+	const creditsMultiplier = modelInfo.creditsMultiplier || 1
+	const totalCost = (cacheWritesCost + cacheReadsCost + baseInputCost + outputCost) * creditsMultiplier
 
 	return {
 		totalInputTokens,

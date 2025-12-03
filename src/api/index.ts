@@ -8,6 +8,7 @@ import { ApiStream } from "./transform/stream"
 import {
 	GlamaHandler,
 	AnthropicHandler,
+	AgenticaHandler,
 	AwsBedrockHandler,
 	CerebrasHandler,
 	OpenRouterHandler,
@@ -129,6 +130,8 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 		// kilocode_change end
 		case "anthropic":
 			return new AnthropicHandler(options)
+		case "agentica":
+			return new AgenticaHandler(options)
 		case "claude-code":
 			return new ClaudeCodeHandler(options)
 		case "glama":
