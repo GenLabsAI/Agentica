@@ -59,6 +59,7 @@ jobs:
           else
             echo "Release already exists for version $version"
             echo "release_exists=true" >> $GITHUB_ENV
+          fi
 
       # Step 5: Create release if it doesn't exist
       - name: Create a release if it doesnt exist
