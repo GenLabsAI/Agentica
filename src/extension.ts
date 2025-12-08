@@ -284,17 +284,17 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// kilocode_change start
 	if (!context.globalState.get("firstInstallCompleted")) {
-		outputChannel.appendLine("First installation detected, opening Kilo Code sidebar!")
+		outputChannel.appendLine("First installation detected, opening Agentica sidebar!")
 		try {
-			await vscode.commands.executeCommand("kilo-code.SidebarProvider.focus")
+			await vscode.commands.executeCommand(`${Package.name}.SidebarProvider.focus`)
 
-			outputChannel.appendLine("Opening Kilo Code walkthrough")
+			outputChannel.appendLine("Opening Agentica walkthrough")
 
 			// this can crash, see:
 			// https://discord.com/channels/1349288496988160052/1395865796026040470
 			await vscode.commands.executeCommand(
 				"workbench.action.openWalkthrough",
-				"kilocode.kilo-code#kiloCodeWalkthrough",
+				`${Package.publisher}.${Package.name}#kiloCodeWalkthrough`,
 				false,
 			)
 
@@ -381,7 +381,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Initialize simple savings tracker
 	const savingsTracker = initializeSavingsTracker(context)
-	
+
 	// Register simple commands
 	const simpleCommands = registerSimpleSavingsCommands(context)
 	context.subscriptions.push(...simpleCommands)
