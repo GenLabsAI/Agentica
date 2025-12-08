@@ -82,102 +82,102 @@ export interface LanguageModelChatSelector {
 // 'settingsButtonClicked' or 'hello'. Webview will hold state.
 export interface ExtensionMessage {
 	type:
-		| "action"
-		| "state"
-		| "selectedImages"
-		| "theme"
-		| "workspaceUpdated"
-		| "invoke"
-		| "messageUpdated"
-		| "mcpServers"
-		| "enhancedPrompt"
-		| "commitSearchResults"
-		| "listApiConfig"
-		| "routerModels"
-		| "openAiModels"
-		| "ollamaModels"
-		| "lmStudioModels"
-		| "vsCodeLmModels"
-		| "huggingFaceModels"
-		| "vsCodeLmApiAvailable"
-		| "updatePrompt"
-		| "systemPrompt"
-		| "autoApprovalEnabled"
-		| "yoloMode" // kilocode_change
-		| "updateCustomMode"
-		| "deleteCustomMode"
-		| "exportModeResult"
-		| "importModeResult"
-		| "checkRulesDirectoryResult"
-		| "deleteCustomModeCheck"
-		| "currentCheckpointUpdated"
-		| "checkpointInitWarning"
-		| "showHumanRelayDialog"
-		| "humanRelayResponse"
-		| "humanRelayCancel"
-		| "insertTextToChatArea" // kilocode_change
-		| "browserToolEnabled"
-		| "browserConnectionResult"
-		| "remoteBrowserEnabled"
-		| "ttsStart"
-		| "ttsStop"
-		| "maxReadFileLine"
-		| "fileSearchResults"
-		| "toggleApiConfigPin"
-		| "mcpMarketplaceCatalog" // kilocode_change
-		| "mcpDownloadDetails" // kilocode_change
-		| "showSystemNotification" // kilocode_change
-		| "openInBrowser" // kilocode_change
-		| "acceptInput"
-		| "focusChatInput" // kilocode_change
-		| "setHistoryPreviewCollapsed"
-		| "commandExecutionStatus"
-		| "mcpExecutionStatus"
-		| "vsCodeSetting"
-		| "profileDataResponse" // kilocode_change
-		| "balanceDataResponse" // kilocode_change
-		| "updateProfileData" // kilocode_change
-		| "profileConfigurationForEditing" // kilocode_change: Response with profile config for editing
-		| "authenticatedUser"
-		| "condenseTaskContextResponse"
-		| "singleRouterModelFetchResponse"
-		| "indexingStatusUpdate"
-		| "indexCleared"
-		| "codebaseIndexConfig"
-		| "rulesData" // kilocode_change
-		| "marketplaceInstallResult"
-		| "marketplaceRemoveResult"
-		| "marketplaceData"
-		| "mermaidFixResponse" // kilocode_change
-		| "tasksByIdResponse" // kilocode_change
-		| "taskHistoryResponse" // kilocode_change
-		| "shareTaskSuccess"
-		| "codeIndexSettingsSaved"
-		| "codeIndexSecretStatus"
-		| "showDeleteMessageDialog"
-		| "showEditMessageDialog"
-		| "kilocodeNotificationsResponse" // kilocode_change
-		| "usageDataResponse" // kilocode_change
-		| "keybindingsResponse" // kilocode_change
-		| "autoPurgeEnabled" // kilocode_change
-		| "autoPurgeDefaultRetentionDays" // kilocode_change
-		| "autoPurgeFavoritedTaskRetentionDays" // kilocode_change
-		| "autoPurgeCompletedTaskRetentionDays" // kilocode_change
-		| "autoPurgeIncompleteTaskRetentionDays" // kilocode_change
-		| "manualPurge" // kilocode_change
-		| "commands"
-		| "insertTextIntoTextarea"
-		| "dismissedUpsells"
-		| "showTimestamps" // kilocode_change
-		| "organizationSwitchResult"
-		| "managedIndexerState" // kilocode_change
+	| "action"
+	| "state"
+	| "selectedImages"
+	| "theme"
+	| "workspaceUpdated"
+	| "invoke"
+	| "messageUpdated"
+	| "mcpServers"
+	| "enhancedPrompt"
+	| "commitSearchResults"
+	| "listApiConfig"
+	| "routerModels"
+	| "openAiModels"
+	| "ollamaModels"
+	| "lmStudioModels"
+	| "vsCodeLmModels"
+	| "huggingFaceModels"
+	| "vsCodeLmApiAvailable"
+	| "updatePrompt"
+	| "systemPrompt"
+	| "autoApprovalEnabled"
+	| "yoloMode" // kilocode_change
+	| "updateCustomMode"
+	| "deleteCustomMode"
+	| "exportModeResult"
+	| "importModeResult"
+	| "checkRulesDirectoryResult"
+	| "deleteCustomModeCheck"
+	| "currentCheckpointUpdated"
+	| "checkpointInitWarning"
+	| "showHumanRelayDialog"
+	| "humanRelayResponse"
+	| "humanRelayCancel"
+	| "insertTextToChatArea" // kilocode_change
+	| "browserToolEnabled"
+	| "browserConnectionResult"
+	| "remoteBrowserEnabled"
+	| "ttsStart"
+	| "ttsStop"
+	| "maxReadFileLine"
+	| "fileSearchResults"
+	| "toggleApiConfigPin"
+	| "mcpMarketplaceCatalog" // kilocode_change
+	| "mcpDownloadDetails" // kilocode_change
+	| "showSystemNotification" // kilocode_change
+	| "openInBrowser" // kilocode_change
+	| "acceptInput"
+	| "focusChatInput" // kilocode_change
+	| "setHistoryPreviewCollapsed"
+	| "commandExecutionStatus"
+	| "mcpExecutionStatus"
+	| "vsCodeSetting"
+	| "profileDataResponse" // kilocode_change
+	| "balanceDataResponse" // kilocode_change
+	| "updateProfileData" // kilocode_change
+	| "profileConfigurationForEditing" // kilocode_change: Response with profile config for editing
+	| "authenticatedUser"
+	| "condenseTaskContextResponse"
+	| "singleRouterModelFetchResponse"
+	| "indexingStatusUpdate"
+	| "indexCleared"
+	| "codebaseIndexConfig"
+	| "rulesData" // kilocode_change
+	| "marketplaceInstallResult"
+	| "marketplaceRemoveResult"
+	| "marketplaceData"
+	| "mermaidFixResponse" // kilocode_change
+	| "tasksByIdResponse" // kilocode_change
+	| "taskHistoryResponse" // kilocode_change
+	| "shareTaskSuccess"
+	| "codeIndexSettingsSaved"
+	| "codeIndexSecretStatus"
+	| "showDeleteMessageDialog"
+	| "showEditMessageDialog"
+	| "kilocodeNotificationsResponse" // kilocode_change
+	| "usageDataResponse" // kilocode_change
+	| "keybindingsResponse" // kilocode_change
+	| "autoPurgeEnabled" // kilocode_change
+	| "autoPurgeDefaultRetentionDays" // kilocode_change
+	| "autoPurgeFavoritedTaskRetentionDays" // kilocode_change
+	| "autoPurgeCompletedTaskRetentionDays" // kilocode_change
+	| "autoPurgeIncompleteTaskRetentionDays" // kilocode_change
+	| "manualPurge" // kilocode_change
+	| "commands"
+	| "insertTextIntoTextarea"
+	| "dismissedUpsells"
+	| "showTimestamps" // kilocode_change
+	| "organizationSwitchResult"
+	| "managedIndexerState" // kilocode_change
 	text?: string
 	// kilocode_change start
 	payload?:
-		| ProfileDataResponsePayload
-		| BalanceDataResponsePayload
-		| TasksByIdResponsePayload
-		| TaskHistoryResponsePayload
+	| ProfileDataResponsePayload
+	| BalanceDataResponsePayload
+	| TasksByIdResponsePayload
+	| TaskHistoryResponsePayload
 	// kilocode_change end
 	// Checkpoint warning message
 	checkpointWarning?: {
@@ -185,19 +185,20 @@ export interface ExtensionMessage {
 		timeout: number
 	}
 	action?:
-		| "chatButtonClicked"
-		| "mcpButtonClicked"
-		| "settingsButtonClicked"
-		| "historyButtonClicked"
-		| "promptsButtonClicked"
-		| "profileButtonClicked" // kilocode_change
-		| "marketplaceButtonClicked"
-		| "cloudButtonClicked"
-		| "didBecomeVisible"
-		| "focusInput"
-		| "switchTab"
-		| "focusChatInput" // kilocode_change
-		| "toggleAutoApprove"
+	| "chatButtonClicked"
+	| "mcpButtonClicked"
+	| "settingsButtonClicked"
+	| "historyButtonClicked"
+	| "promptsButtonClicked"
+	| "profileButtonClicked" // kilocode_change
+	| "marketplaceButtonClicked"
+	| "cloudButtonClicked"
+	| "didBecomeVisible"
+	| "focusInput"
+	| "switchTab"
+	| "focusChatInput" // kilocode_change
+	| "toggleAutoApprove"
+	| "upgradeButtonClicked" // kilocode_change
 	invoke?: "newChat" | "sendMessage" | "primaryButtonClick" | "secondaryButtonClick" | "setChatBoxMessage"
 	state?: ExtensionState
 	images?: string[]
@@ -500,23 +501,23 @@ export type ExtensionState = Pick<
 
 export interface ClineSayTool {
 	tool:
-		| "editedExistingFile"
-		| "appliedDiff"
-		| "newFileCreated"
-		| "codebaseSearch"
-		| "readFile"
-		| "fetchInstructions"
-		| "listFilesTopLevel"
-		| "listFilesRecursive"
-		| "listCodeDefinitionNames"
-		| "searchFiles"
-		| "switchMode"
-		| "newTask"
-		| "finishTask"
-		| "insertContent"
-		| "generateImage"
-		| "imageGenerated"
-		| "runSlashCommand"
+	| "editedExistingFile"
+	| "appliedDiff"
+	| "newFileCreated"
+	| "codebaseSearch"
+	| "readFile"
+	| "fetchInstructions"
+	| "listFilesTopLevel"
+	| "listFilesRecursive"
+	| "listCodeDefinitionNames"
+	| "searchFiles"
+	| "switchMode"
+	| "newTask"
+	| "finishTask"
+	| "insertContent"
+	| "generateImage"
+	| "imageGenerated"
+	| "runSlashCommand"
 	path?: string
 	diff?: string
 	content?: string

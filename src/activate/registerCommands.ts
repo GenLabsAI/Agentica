@@ -75,7 +75,7 @@ export const registerCommands = (options: RegisterCommandOptions) => {
 }
 
 const getCommandsMap = ({ context, outputChannel }: RegisterCommandOptions): Record<CommandId, any> => ({
-	activationCompleted: () => {},
+	activationCompleted: () => { },
 	cloudButtonClicked: () => {
 		const visibleProvider = getVisibleProviderOrLog(outputChannel)
 
@@ -157,13 +157,16 @@ const getCommandsMap = ({ context, outputChannel }: RegisterCommandOptions): Rec
 	},
 	// kilocode_change begin
 	profileButtonClicked: () => {
+		// Removed per user request
+	},
+	upgradeButtonClicked: () => {
 		const visibleProvider = getVisibleProviderOrLog(outputChannel)
 
 		if (!visibleProvider) {
 			return
 		}
 
-		visibleProvider.postMessageToWebview({ type: "action", action: "profileButtonClicked" })
+		visibleProvider.postMessageToWebview({ type: "action", action: "upgradeButtonClicked" })
 	},
 	helpButtonClicked: () => {
 		vscode.env.openExternal(vscode.Uri.parse(getAppUrl()))
