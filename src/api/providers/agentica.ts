@@ -1,5 +1,6 @@
 import type { ModelInfo, AgenticaModelId } from "@roo-code/types"
 import { AGENTICA_DEFAULT_BASE_URL, agenticaDefaultModelId, agenticaModels } from "@roo-code/types"
+import OpenAI from "openai"
 
 import type { ApiHandlerOptions } from "../../shared/api"
 
@@ -12,70 +13,48 @@ import { calculateApiCostOpenAI } from "../../shared/cost"
 
 export class AgenticaHandler extends BaseProvider implements SingleCompletionHandler {
 	private options: ApiHandlerOptions
-	private client: any
+	private client: OpenAI
 
 	constructor(options: ApiHandlerOptions) {
 		super()
 		this.options = options
 
-		// Generate API key from email and bcrypt-compatible hash
-		this.generateApiKey().then(apiKey => {
-			// Using OpenAI-compatible client for Agentica
-			import("openai").then(({ default: OpenAI }) => {
-				this.client = new OpenAI({
-					baseURL: this.options.agenticaBaseUrl || AGENTICA_DEFAULT_BASE_URL,
-					apiKey: apiKey,
-				})
-			}).catch(error => {
-				console.error("Failed to import OpenAI:", error)
-				// Fallback to mock client
-				this.client = {
-					chat: {
-						completions: {
-							create: async () => ({})
-						}
-					}
-				}
-			})
-		}).catch(error => {
-			console.error("Failed to generate API key:", error)
-			// Fallback to mock client
-			this.client = {
-				chat: {
-					completions: {
-						create: async () => ({})
-					}
-				}
+		const apiKey = this.generateApiKey()
+		this.client = new OpenAI({
+			baseURL: this.options.agenticaBaseUrl || AGENTICA_DEFAULT_BASE_URL,
+			apiKey: apiKey,
+			defaultHeaders: {
+				"HTTP-Referer": "https://agentica.com",
+				"X-Title": "Agentica Extension"
 			}
 		})
 	}
 
 	async completePrompt(prompt: string): Promise<string> {
-		const stream = await this.client.chat.completions.create({
-			model: agenticaDefaultModelId,
-			messages: [{ role: "user", content: prompt }],
-			stream: false,
-		})
+		try {
+			const response = await this.client.chat.completions.create({
+				model: agenticaDefaultModelId,
+				messages: [{ role: "user", content: prompt }],
+				stream: false,
+			})
 
-		return stream.choices?.[0]?.message?.content || ""
+			return response.choices[0]?.message?.content || ""
+		} catch (error) {
+			console.error("Agentica completePrompt error:", error)
+			throw error
+		}
 	}
 
-	private async generateApiKey(): Promise<string> {
+	private generateApiKey(): string {
 		const email = this.options.agenticaEmail || ""
 		const password = this.options.agenticaPassword || ""
 
 		if (!email || !password) {
-			return ""
+			return "dummy-key"
 		}
 
-		try {
-			// Send plaintext email and password - server will handle bcrypt comparison
-			// Format: email|password (server will parse and authenticate)
-			return `${email}|${password}`
-		} catch (error) {
-			console.error("Error generating API key:", error)
-			return ""
-		}
+		// Send plaintext email and password - server will handle authentication
+		return `${email}|${password}`
 	}
 
 	async *createMessage(
@@ -92,32 +71,40 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 			defaultTemperature: 0.7,
 		})
 
-		const stream = await this.client.chat.completions.create({
-			model: model.id,
-			max_tokens: model.maxTokens,
-			messages: [{ role: "system", content: systemPrompt }, ...messages],
-			stream: true,
-			...modelParams,
-		})
+		try {
+			const stream = await this.client.chat.completions.create({
+				model: model.id,
+				max_tokens: model.maxTokens,
+				messages: [{ role: "system", content: systemPrompt }, ...messages],
+				stream: true,
+				...modelParams,
+			}) as AsyncIterable<OpenAI.Chat.Completions.ChatCompletionChunk>
 
-		for await (const chunk of stream) {
-			const delta = chunk.choices?.[0]?.delta
-			if (delta?.content) {
-				yield {
-					type: "text",
-					text: delta.content,
+			for await (const chunk of stream) {
+				const delta = chunk.choices?.[0]?.delta
+				if (delta?.content) {
+					yield {
+						type: "text",
+						text: delta.content,
+					}
+				}
+
+				if (chunk.usage) {
+					yield {
+						type: "usage",
+						inputTokens: chunk.usage.prompt_tokens || 0,
+						outputTokens: chunk.usage.completion_tokens || 0,
+						cacheWriteTokens: chunk.usage.cache_write_input_tokens || 0,
+						cacheReadTokens: chunk.usage.cache_read_input_tokens || 0,
+					}
 				}
 			}
-			
-			if (chunk.usage) {
-				yield {
-					type: "usage",
-					inputTokens: chunk.usage.prompt_tokens || 0,
-					outputTokens: chunk.usage.completion_tokens || 0,
-					cacheWriteTokens: chunk.usage.cache_write_input_tokens || 0,
-					cacheReadTokens: chunk.usage.cache_read_input_tokens || 0,
-				}
-			}
+		} catch (error: any) {
+			console.error("Agentica createMessage error:", error)
+			// Ensure we yield an error so the UI stops loading
+			// Note: The UI layer usually handles exceptions from the generator, 
+			// but we want to make sure it's propagated correctly.
+			throw error
 		}
 	}
 
@@ -132,7 +119,6 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 	async calculateApiCost(): Promise<number> {
 		try {
 			const modelInfo = this.getModel().info
-			// Mock usage data since we don't have getUsage method
 			const usage = { inputTokens: 0, outputTokens: 0, cacheWriteTokens: 0, cacheReadTokens: 0 }
 			const costResult = calculateApiCostOpenAI(modelInfo, usage.inputTokens, usage.outputTokens, usage.cacheWriteTokens, usage.cacheReadTokens)
 			return costResult.totalCost
