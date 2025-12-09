@@ -10,7 +10,6 @@ mock/
 *.orig
 
 # Builds
-bin/
 bin-unpacked/
 # *.vsix - Just for now!
 
