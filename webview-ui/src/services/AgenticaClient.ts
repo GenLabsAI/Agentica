@@ -30,11 +30,12 @@ export interface UpgradeResponse {
 }
 
 export class AgenticaClient {
-    private baseUrl = "/agentica/v1"
+    private baseUrl: string
     private token: string
 
-    constructor(token: string) {
+    constructor(token: string, baseUrl?: string) {
         this.token = token
+        this.baseUrl = baseUrl || "https://api.genlabs.dev/agentica/v1"
     }
 
     private getHeaders() {

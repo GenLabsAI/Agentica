@@ -19,10 +19,14 @@ const PlansView: React.FC<PlansViewProps> = ({ onDone }) => {
     const [selectedPlanId, setSelectedPlanId] = useState<string>("")
     const [isDowngrade, setIsDowngrade] = useState(false)
 
-    const client = new AgenticaClient(apiConfiguration?.agenticaPassword || "") // Using password as token based on user request format
+    const client = new AgenticaClient(
+        `${apiConfiguration?.agenticaEmail || ""}|${apiConfiguration?.agenticaPassword || ""}`,
+        apiConfiguration?.agenticaBaseUrl,
+    )
 
     const fetchSubscription = async () => {
         setLoading(true)
+        setError(null)
         try {
             const data = await client.getSubscription()
             setSubscription(data)
