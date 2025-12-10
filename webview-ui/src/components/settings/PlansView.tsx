@@ -168,9 +168,7 @@ const PlansView: React.FC<PlansViewProps> = ({ onDone }) => {
                 isDowngrade={isDowngrade}
                 client={client}
                 onSuccess={handleUpgradeSuccess}
-                email={apiConfiguration?.agenticaEmail || "your account"}
-                currentCredits={userCredits}
-                planCost={selectedPlan?.cost || 0}
+
             />
         </div>
     )
