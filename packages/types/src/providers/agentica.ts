@@ -51,17 +51,6 @@ export const agenticaModels = {
 		creditsMultiplier: 0, // Free model - 0x credits
 		isFree: true,
 	},
-	"kimi-k2-instruct-0905": {
-		maxTokens: 128_000,
-		contextWindow: 128_000,
-		supportsImages: false,
-		supportsPromptCache: false,
-		inputPrice: 0,
-		outputPrice: 0,
-		description: "Kimi K2 Instruct - large context model with enhanced instruction following capabilities.",
-		creditsMultiplier: 0, // Free model - 0x credits
-		isFree: true,
-	},
 	"kimi-k2": {
 		maxTokens: 128_000,
 		contextWindow: 128_000,
@@ -69,18 +58,7 @@ export const agenticaModels = {
 		supportsPromptCache: false,
 		inputPrice: 0,
 		outputPrice: 0,
-		description: "Moonshot AI Kimi K2 model.",
-		creditsMultiplier: 0, // Free model - 0x credits
-		isFree: true,
-	},
-	"v3.1-terminus": {
-		maxTokens: 64_000,
-		contextWindow: 128_000,
-		supportsImages: false,
-		supportsPromptCache: false,
-		inputPrice: 0,
-		outputPrice: 0,
-		description: "DeepSeek V3.1 Terminus.",
+		description: "Kimi K2",
 		creditsMultiplier: 0, // Free model - 0x credits
 		isFree: true,
 	},
@@ -102,7 +80,7 @@ export const agenticaModels = {
 		supportsPromptCache: false,
 		inputPrice: 0,
 		outputPrice: 0,
-		description: "GLM 4.6 (paid plans only, no credit cost).",
+		description: "GLM 4.6 (Free on Paid plans).",
 		requiresPaidPlan: true,
 		// No creditsMultiplier - paid-free model requires paid plan
 	},
@@ -113,7 +91,7 @@ export const agenticaModels = {
 		supportsPromptCache: false,
 		inputPrice: 0,
 		outputPrice: 0,
-		description: "Kimi K2 Thinking (paid plans only, no credit cost).",
+		description: "Kimi K2 Thinking (free on paid plans).",
 		requiresPaidPlan: true,
 		// No creditsMultiplier - paid-free model requires paid plan
 	},
@@ -185,8 +163,8 @@ export const agenticaModels = {
 		contextWindow: 128_000,
 		supportsImages: false,
 		supportsPromptCache: true,
-		inputPrice: 3.0, // $3 per million input tokens
-		outputPrice: 12.0, // $12 per million output tokens
+		inputPrice: 0.2, // $3 per million input tokens
+		outputPrice: 1.5, // $12 per million output tokens
 		description: "Grok Code Fast 1.",
 	},
 } as const satisfies Record<string, ModelInfo>

@@ -22,7 +22,7 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 					Sign in with GenLabs
 				</h3>
 				<p style={{ margin: "0 0 12px 0", fontSize: "12px", color: "var(--vscode-descriptionForeground)", lineHeight: "1.4" }}>
-					Enter your GenLabs account credentials to use Agentica's deca-2.5-pro model.
+					Enter your GenLabs account credentials to use Agentica's models.
 				</p>
 			</div>
 

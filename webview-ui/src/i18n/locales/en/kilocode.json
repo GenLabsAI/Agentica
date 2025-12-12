@@ -3,7 +3,7 @@
 		"greeting": "Welcome to Agentica!",
 		"introText1": "Agentica is a free, open source AI coding agent.",
 		"introText2": "It works with the latest AI models like Claude Sonnet 4.5, Gemini 2.5 Pro, GPT-5, and 450+ more.",
-		"introText3": "Create a free account and get $20 in bonus credits when you top-up for the first time.",
+		"introText3": "Create a free account and get 200 free requests/day.",
 		"ctaButton": "Get Started",
 		"manualModeButton": "Use your own API key",
 		"alreadySignedUp": "Already signed up?",
@@ -12,7 +12,7 @@
 	"lowCreditWarning": {
 		"addCredit": "Add Credit",
 		"lowBalance": "Your Agentica balance is low",
-		"newOrganization": "Using Kilo for work?"
+		"newOrganization": "Using Agentica for work?"
 	},
 	"memoryWarning": {
 		"message": "Memory usage is at {{percentage}}%. Please restart your IDE to prevent crashes."
