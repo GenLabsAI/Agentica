@@ -7,9 +7,11 @@ import { BottomApiConfig } from "./BottomApiConfig" // kilocode_change
 
 interface BottomControlsProps {
 	showApiConfig?: boolean
+	showCodeReviewButton?: boolean
+	onCodeReviewClick?: () => void
 }
 
-const BottomControls: React.FC<BottomControlsProps> = ({ showApiConfig = false }) => {
+const BottomControls: React.FC<BottomControlsProps> = ({ showApiConfig = false, showCodeReviewButton = false, onCodeReviewClick }) => {
 	const { t } = useAppTranslation()
 
 	const showFeedbackOptions = () => {
@@ -23,6 +25,13 @@ const BottomControls: React.FC<BottomControlsProps> = ({ showApiConfig = false }
 			</div>
 			<div className="flex flex-row justify-end w-auto">
 				<div className="flex items-center gap-1">
+					{showCodeReviewButton && (
+						<BottomButton
+							iconClass="codicon-check-circle"
+							title={t("chat:codeReview.button", "Review with Deca")}
+							onClick={onCodeReviewClick || (() => {})}
+						/>
+					)}
 					<KiloRulesToggleModal />
 					<BottomButton
 						iconClass="codicon-feedback"

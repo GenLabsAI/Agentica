@@ -109,6 +109,8 @@ export interface ExtensionMessage {
 	| "exportModeResult"
 	| "importModeResult"
 	| "checkRulesDirectoryResult"
+	| "startCodeReview"
+	| "codeReviewResult"
 	| "deleteCustomModeCheck"
 	| "currentCheckpointUpdated"
 	| "checkpointInitWarning"
@@ -618,3 +620,28 @@ export interface ClineApiReqInfo {
 }
 
 export type ClineApiReqCancelReason = "streaming_failed" | "user_cancelled"
+
+// Code Review Message Types
+export interface StartCodeReviewMessage {
+	type: "startCodeReview"
+	taskId: string
+}
+
+export interface CodeReviewResultMessage {
+	type: "codeReviewResult"
+	success: boolean
+	review?: import("../../webview-ui/src/components/chat/CodeReviewDialog").CodeReviewResult
+	error?: string
+}
+
+export interface RequestFileContentMessage {
+	type: "requestFileContent"
+	filePath: string
+}
+
+export interface FileContentResponseMessage {
+	type: "fileContentResponse"
+	filePath: string
+	content?: string
+	error?: string
+}

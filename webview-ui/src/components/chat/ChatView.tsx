@@ -62,6 +62,7 @@ import { CheckpointWarning } from "./CheckpointWarning"
 import { IdeaSuggestionsBox } from "../kilocode/chat/IdeaSuggestionsBox" // kilocode_change
 import { KilocodeNotifications } from "../kilocode/KilocodeNotifications" // kilocode_change
 import { QueuedMessages } from "./QueuedMessages"
+import { CodeReviewDialog } from "./CodeReviewDialog"
 import { buildDocLink } from "@/utils/docLinks"
 // import DismissibleUpsell from "../common/DismissibleUpsell" // kilocode_change: unused
 // import { useCloudUpsell } from "@src/hooks/useCloudUpsell" // kilocode_change: unused
@@ -133,7 +134,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		historyPreviewCollapsed, // Added historyPreviewCollapsed
 		soundEnabled,
 		soundVolume,
-		// cloudIsAuthenticated, // kilocode_change
+		cloudIsAuthenticated, // kilocode_change
 		messageQueue = [],
 		sendMessageOnEnter, // kilocode_change
 	} = useExtensionState()
@@ -184,6 +185,25 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 	// Has to be after api_req_finished are all reduced into api_req_started messages.
 	const apiMetrics = useMemo(() => getApiMetrics(modifiedMessages), [modifiedMessages])
 
+	// Check if the task is complete by looking at the last relevant message (skipping resume messages)
+	const isTaskComplete = useMemo(() =>
+		messages && messages.length > 0
+			? (() => {
+					const lastRelevantIndex = findLastIndex(
+						messages,
+						(m) => !(m.ask === "resume_task" || m.ask === "resume_completed_task"),
+					)
+					return lastRelevantIndex !== -1
+						? messages[lastRelevantIndex]?.ask === "completion_result"
+						: false
+				})()
+			: false,
+		[messages]
+	)
+
+	// Check if code review button should be shown
+	const shouldShowCodeReview = isTaskComplete && ["code", "architect"].includes(mode) && cloudIsAuthenticated
+
 	const [inputValue, setInputValue] = useState("")
 	const inputValueRef = useRef(inputValue)
 	const textAreaRef = useRef<HTMLTextAreaElement>(null)
@@ -208,6 +228,12 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 	const [checkpointWarning, setCheckpointWarning] = useState<
 		{ type: "WAIT_TIMEOUT" | "INIT_TIMEOUT"; timeout: number } | undefined
 	>(undefined)
+
+	// Code review state
+	const [showCodeReviewDialog, setShowCodeReviewDialog] = useState(false)
+	const [codeReviewLoading, setCodeReviewLoading] = useState(false)
+	const [codeReviewResult, setCodeReviewResult] = useState<any>(null)
+	const [codeReviewError, setCodeReviewError] = useState<string | null>(null)
 	const [isCondensing, setIsCondensing] = useState<boolean>(false)
 	const [showAnnouncementModal, setShowAnnouncementModal] = useState(false)
 	const everVisibleMessagesTsRef = useRef<LRUCache<number, boolean>>(
@@ -829,6 +855,52 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 
 	const shouldDisableImages = !model?.supportsImages || selectedImages.length >= MAX_IMAGES_PER_MESSAGE
 
+	// Code review handlers
+	const handleStartCodeReview = useCallback(() => {
+		if (!currentTaskItem) return
+
+		setCodeReviewLoading(true)
+		setCodeReviewError(null)
+		setCodeReviewResult(null)
+		setShowCodeReviewDialog(true)
+
+		// Send message to start code review
+		vscode.postMessage({
+			type: "startCodeReview",
+			taskId: currentTaskItem.id,
+		})
+	}, [currentTaskItem])
+
+	const handleCloseCodeReview = useCallback(() => {
+		setShowCodeReviewDialog(false)
+		setCodeReviewResult(null)
+		setCodeReviewError(null)
+	}, [])
+
+	const handleFixIssues = useCallback((selectedIssues: any[]) => {
+		if (selectedIssues.length === 0) return
+
+		// Format the issues for the chat
+		let issuesText = "Please fix the following issues:\n\n"
+		selectedIssues.forEach((issue, index) => {
+			issuesText += `${index + 1}. **${issue.title}** (${issue.severity} priority)\n`
+			issuesText += `   - ${issue.description}\n`
+			if (issue.suggestion) {
+				issuesText += `   - Suggestion: ${issue.suggestion}\n`
+			}
+			if (issue.file) {
+				issuesText += `   - File: ${issue.file}${issue.line ? `:${issue.line}` : ''}\n`
+			}
+			issuesText += "\n"
+		})
+
+		// Set the input value to include the issues
+		setInputValue(issuesText)
+
+		// Focus the input
+		setTimeout(() => textAreaRef.current?.focus(), 100)
+	}, [])
+
 	const handleMessage = useCallback(
 		(e: MessageEvent) => {
 			const message: ExtensionMessage = e.data
@@ -853,6 +925,14 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 						setSelectedImages((prevImages: string[]) =>
 							appendImages(prevImages, message.images, MAX_IMAGES_PER_MESSAGE),
 						)
+					}
+					break
+				case "codeReviewResult":
+					setCodeReviewLoading(false)
+					if (message.success) {
+						setCodeReviewResult(message.review)
+					} else {
+						setCodeReviewError(message.error || "Failed to generate code review")
 					}
 					break
 				case "invoke":
@@ -2206,7 +2286,11 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 				sendMessageOnEnter={sendMessageOnEnter} // kilocode_change
 			/>
 			{/* kilocode_change: added settings toggle the profile and model selection */}
-			<BottomControls showApiConfig />
+			<BottomControls
+				showApiConfig
+				showCodeReviewButton={shouldShowCodeReview}
+				onCodeReviewClick={handleStartCodeReview}
+			/>
 			{/* kilocode_change: end */}
 
 			{/* kilocode_change: disable {isProfileDisabled && (
@@ -2218,6 +2302,15 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			<div id="roo-portal" />
 			{/* kilocode_change: disable  */}
 			{/* <CloudUpsellDialog open={isUpsellOpen} onOpenChange={closeUpsell} onConnect={handleConnect} /> */}
+			<CodeReviewDialog
+				isOpen={showCodeReviewDialog}
+				onClose={handleCloseCodeReview}
+				isLoading={codeReviewLoading}
+				review={codeReviewResult}
+				error={codeReviewError || undefined}
+				onStartReview={handleStartCodeReview}
+				onFixIssues={handleFixIssues}
+			/>
 		</div>
 	)
 }

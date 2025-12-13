@@ -4034,5 +4034,85 @@ export const webviewMessageHandler = async (
 			}
 		}
 		// kilocode_change end
+
+		case "startCodeReview": {
+			try {
+				const { taskId } = message
+
+				// Get the task messages
+				const task = provider.getTask(taskId)
+				if (!task) {
+					await provider.postMessageToWebview({
+						type: "codeReviewResult",
+						success: false,
+						error: "Task not found"
+					})
+					break
+				}
+
+				// Import the code review service
+				const { CodeReviewService } = await import("../../services/code-review/CodeReviewService")
+
+				// Create and initialize the service
+				const codeReviewService = new CodeReviewService(CloudService.instance!, provider.cwd)
+				await codeReviewService.initialize()
+
+				// Extract task changes
+				const { directoryTree, diff, mode, taskDescription } = await codeReviewService.extractTaskChanges(
+					taskId,
+					task.messages
+				)
+
+				// Generate the review
+				const review = await codeReviewService.generateCodeReview(directoryTree, diff, mode, taskDescription)
+
+				// Send the result back to the webview
+				await provider.postMessageToWebview({
+					type: "codeReviewResult",
+					success: true,
+					review
+				})
+
+			} catch (error) {
+				provider.log(`Error in code review: ${error instanceof Error ? error.message : String(error)}`)
+				await provider.postMessageToWebview({
+					type: "codeReviewResult",
+					success: false,
+					error: error instanceof Error ? error.message : "Failed to generate code review"
+				})
+			}
+			break
+		}
+
+		case "requestFileContent": {
+			try {
+				const { filePath } = message
+
+				// Import the code review service
+				const { CodeReviewService } = await import("../../services/code-review/CodeReviewService")
+
+				// Create service instance
+				const codeReviewService = new CodeReviewService(CloudService.instance!)
+
+				// Request file content
+				const content = await codeReviewService.requestFileContent(filePath)
+
+				// Send the file content back to continue the agent loop
+				await provider.postMessageToWebview({
+					type: "fileContentResponse",
+					filePath,
+					content
+				})
+
+			} catch (error) {
+				provider.log(`Error requesting file content: ${error instanceof Error ? error.message : String(error)}`)
+				await provider.postMessageToWebview({
+					type: "fileContentResponse",
+					filePath: message.filePath,
+					error: error instanceof Error ? error.message : "Failed to read file"
+				})
+			}
+			break
+		}
 	}
 }

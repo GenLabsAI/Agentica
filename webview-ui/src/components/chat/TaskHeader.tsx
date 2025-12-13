@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import { useCloudUpsell } from "@src/hooks/useCloudUpsell"
 import { CloudUpsellDialog } from "@src/components/cloud/CloudUpsellDialog"
 import DismissibleUpsell from "@src/components/common/DismissibleUpsell"
-import { FoldVertical, ChevronUp, ChevronDown } from "lucide-react"
+import { FoldVertical, ChevronUp, ChevronDown, CheckCircle } from "lucide-react"
 import prettyBytes from "pretty-bytes"
 
 import type { ClineMessage } from "@roo-code/types"
@@ -23,6 +23,7 @@ import { TaskActions } from "./TaskActions"
 import { ContextWindowProgress } from "./ContextWindowProgress"
 import { Mention } from "./Mention"
 import { TodoListDisplay } from "./TodoListDisplay"
+import { CodeReviewDialog, type CodeReviewResult } from "./CodeReviewDialog"
 
 export interface TaskHeaderProps {
 	task: ClineMessage
@@ -50,10 +51,14 @@ const TaskHeader = ({
 	todos,
 }: TaskHeaderProps) => {
 	const { t } = useTranslation()
-	const { apiConfiguration, currentTaskItem, clineMessages } = useExtensionState()
+	const { apiConfiguration, currentTaskItem, clineMessages, mode, cloudIsAuthenticated } = useExtensionState()
 	const { id: modelId, info: model } = useSelectedModel(apiConfiguration)
 	const [isTaskExpanded, setIsTaskExpanded] = useState(false)
 	const [showLongRunningTaskMessage, setShowLongRunningTaskMessage] = useState(false)
+	const [showCodeReviewDialog, setShowCodeReviewDialog] = useState(false)
+	const [codeReviewLoading, setCodeReviewLoading] = useState(false)
+	const [codeReviewResult, setCodeReviewResult] = useState<CodeReviewResult | null>(null)
+	const [codeReviewError, setCodeReviewError] = useState<string | null>(null)
 	const { isOpen, openUpsell, closeUpsell, handleConnect } = useCloudUpsell({
 		autoOpenOnAuth: false,
 	})
@@ -72,6 +77,9 @@ const TaskHeader = ({
 				})()
 			: false
 
+	// Check if code review button should be shown
+	const shouldShowCodeReview = isTaskComplete && ["code", "architect"].includes(mode) && cloudIsAuthenticated
+
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			if (currentTaskItem && !isTaskComplete) {
@@ -85,6 +93,46 @@ const TaskHeader = ({
 	const textContainerRef = useRef<HTMLDivElement>(null)
 	const textRef = useRef<HTMLDivElement>(null)
 	const contextWindow = model?.contextWindow || 1
+
+	// Handle code review
+	const handleStartCodeReview = () => {
+		if (!currentTaskItem) return
+
+		setCodeReviewLoading(true)
+		setCodeReviewError(null)
+		setCodeReviewResult(null)
+		setShowCodeReviewDialog(true)
+
+		// Send message to start code review
+		vscode.postMessage({
+			type: "startCodeReview",
+			taskId: currentTaskItem.id,
+		})
+	}
+
+	const handleCloseCodeReview = () => {
+		setShowCodeReviewDialog(false)
+		setCodeReviewResult(null)
+		setCodeReviewError(null)
+	}
+
+	// Listen for code review results
+	useEffect(() => {
+		const handleMessage = (event: MessageEvent) => {
+			const message = event.data
+			if (message.type === "codeReviewResult") {
+				setCodeReviewLoading(false)
+				if (message.success) {
+					setCodeReviewResult(message.review)
+				} else {
+					setCodeReviewError(message.error || "Failed to generate code review")
+				}
+			}
+		}
+
+		window.addEventListener("message", handleMessage)
+		return () => window.removeEventListener("message", handleMessage)
+	}, [])
 
 	const condenseButton = (
 		<StandardTooltip content={t("chat:task.condenseContext")}>
@@ -322,12 +370,40 @@ const TaskHeader = ({
 						{/* Footer with task management buttons */}
 						<div onClick={(e) => e.stopPropagation()}>
 							<TaskActions item={currentTaskItem} buttonsDisabled={buttonsDisabled} />
+							{shouldShowCodeReview && (
+								<div className="mt-2">
+									<StandardTooltip content={t("chat:codeReview.tooltip", "Get an AI-powered review of the code changes")}>
+										<button
+											onClick={handleStartCodeReview}
+											disabled={buttonsDisabled}
+											className="flex items-center gap-2 px-3 py-1.5 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white text-sm rounded-md transition-colors disabled:cursor-not-allowed">
+											<CheckCircle className="w-4 h-4" />
+											{t("chat:codeReview.button", "Review with Deca")}
+										</button>
+									</StandardTooltip>
+								</div>
+							)}
 						</div>
 					</>
 				)}
 			</div>
 			<TodoListDisplay todos={todos ?? (task as any)?.tool?.todos ?? []} />
 			<CloudUpsellDialog open={isOpen} onOpenChange={closeUpsell} onConnect={handleConnect} />
+			<CodeReviewDialog
+				isOpen={showCodeReviewDialog}
+				onClose={handleCloseCodeReview}
+				isLoading={codeReviewLoading}
+				review={codeReviewResult}
+				error={codeReviewError}
+				onStartReview={handleStartCodeReview}
+				onFixIssues={(selectedIssues) => {
+					// For TaskHeader, we need to inject into the chat somehow
+					// This would require passing a callback from the parent component
+					// For now, we'll just close the dialog
+					console.log('Selected issues for fixing:', selectedIssues)
+					handleCloseCodeReview()
+				}}
+			/>
 		</div>
 	)
 }

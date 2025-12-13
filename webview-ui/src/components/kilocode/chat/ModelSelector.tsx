@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import { SelectDropdown, DropdownOptionType } from "@/components/ui"
 import { OPENROUTER_DEFAULT_PROVIDER_NAME, type ProviderSettings } from "@roo-code/types"
 import { vscode } from "@src/utils/vscode"
@@ -9,7 +9,6 @@ import { useProviderModels } from "../hooks/useProviderModels"
 import { getModelIdKey, getSelectedModelId } from "../hooks/useSelectedModel"
 import { usePreferredModels } from "@/components/ui/hooks/kilocode/usePreferredModels"
 import { AgenticaClient } from "@/services/AgenticaClient"
-import { UpgradeModal } from "../../settings/UpgradeModal"
 
 // Helper function to format cost for Agentica models
 const formatAgenticaCost = (modelInfo?: any): string => {
@@ -62,10 +61,6 @@ export const ModelSelector = ({
 	const modelIdKey = getModelIdKey({ provider })
 
 	const modelsIds = usePreferredModels(providerModels)
-
-	// Agentica subscription and upgrade modal state
-	const [upgradeModalOpen, setUpgradeModalOpen] = useState(false)
-	const [agenticaClient, setAgenticaClient] = useState<AgenticaClient | null>(null)
 	const options = useMemo(() => {
 		const missingModelIds = modelsIds.indexOf(selectedModelId) >= 0 ? [] : [selectedModelId]
 		return missingModelIds.concat(modelsIds).map((modelId) => {
@@ -109,12 +104,11 @@ export const ModelSelector = ({
 					`${apiConfiguration?.agenticaEmail || ""}|${apiConfiguration?.agenticaPassword || ""}`,
 					apiConfiguration?.agenticaBaseUrl,
 				)
-				setAgenticaClient(client)
 				const subscription = await client.getSubscription()
 
-				// If user doesn't have premium access, show upgrade modal
+				// If user doesn't have premium access, navigate to plans page
 				if (!subscription.limits.allow_premium) {
-					setUpgradeModalOpen(true)
+					vscode.postMessage({ type: "switchTab", tab: "plans" })
 					return
 				}
 			} catch (error) {
@@ -153,35 +147,19 @@ export const ModelSelector = ({
 	}
 
 	return (
-		<>
-			<SelectDropdown
-				value={selectedModelId}
-				disabled={disabled}
-				title={t("chat:selectApiConfig")}
-				options={options}
-				onChange={onChange}
-				contentClassName="max-h-[300px] overflow-y-auto"
-				triggerClassName={cn(
-					"w-full text-ellipsis overflow-hidden p-0",
-					"bg-transparent border-transparent hover:bg-transparent hover:border-transparent",
-				)}
-				triggerIcon={false}
-				itemClassName="group"
-			/>
-
-			{agenticaClient && (
-				<UpgradeModal
-					isOpen={upgradeModalOpen}
-					onClose={() => setUpgradeModalOpen(false)}
-					planId="pro" // Default to pro plan for premium models
-					isDowngrade={false}
-					client={agenticaClient}
-					onSuccess={() => {
-						// Could refresh subscription data here if needed
-						setUpgradeModalOpen(false)
-					}}
-				/>
+		<SelectDropdown
+			value={selectedModelId}
+			disabled={disabled}
+			title={t("chat:selectApiConfig")}
+			options={options}
+			onChange={onChange}
+			contentClassName="max-h-[300px] overflow-y-auto"
+			triggerClassName={cn(
+				"w-full text-ellipsis overflow-hidden p-0",
+				"bg-transparent border-transparent hover:bg-transparent hover:border-transparent",
 			)}
-		</>
+			triggerIcon={false}
+			itemClassName="group"
+		/>
 	)
 }

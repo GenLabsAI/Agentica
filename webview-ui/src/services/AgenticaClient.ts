@@ -72,4 +72,29 @@ export class AgenticaClient {
         })
         return response.data
     }
+
+    async callMinimaxM2(prompt: string, conversationHistory?: Array<{role: string, content: string}>): Promise<string> {
+        const messages = conversationHistory ? [...conversationHistory] : []
+
+        // Add the current prompt as a user message
+        messages.push({ role: "user", content: prompt })
+
+        const response = await axios.post(`${this.baseUrl}/minimax-m2/chat`, {
+            messages,
+            model: "MiniMax-M2",
+            temperature: 0.1, // Lower temperature for more consistent reviews
+            max_tokens: 4096
+        }, {
+            headers: this.getHeaders(),
+        })
+
+        const result = response.data.response || response.data.content || response.data
+
+        // Add the response to conversation history for future calls
+        if (conversationHistory) {
+            conversationHistory.push({ role: "assistant", content: result })
+        }
+
+        return result
+    }
 }
