@@ -46,6 +46,7 @@ export type UpdateGlobalStateMessage<K extends keyof GlobalState = keyof GlobalS
 
 export interface WebviewMessage {
 	type:
+		| "action"
 		| "updateTodoList"
 		| "deleteMultipleTasksWithIds"
 		| "currentApiConfigName"

@@ -32,7 +32,7 @@ const formatAgenticaCost = (modelInfo?: any): string => {
 			return "Free"
 		}
 		const cost = modelInfo.creditsMultiplier * 0.001
-		return `$${cost.toFixed(3)}`
+	return `$${cost.toFixed(3)}`
 	}
 
 	return "Free"
@@ -108,7 +108,7 @@ export const ModelSelector = ({
 
 				// If user doesn't have premium access, navigate to plans page
 				if (!subscription.limits.allow_premium) {
-					vscode.postMessage({ type: "action", action: "upgradeButtonClicked" })
+					vscode.postMessage({ type: "action", action: "switchTab", tab: "plans" })
 					return
 				}
 			} catch (error) {
