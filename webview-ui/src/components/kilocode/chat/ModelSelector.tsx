@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { SelectDropdown, DropdownOptionType } from "@/components/ui"
 import { OPENROUTER_DEFAULT_PROVIDER_NAME, type ProviderSettings } from "@roo-code/types"
 import { vscode } from "@src/utils/vscode"
@@ -9,6 +9,7 @@ import { useProviderModels } from "../hooks/useProviderModels"
 import { getModelIdKey, getSelectedModelId } from "../hooks/useSelectedModel"
 import { usePreferredModels } from "@/components/ui/hooks/kilocode/usePreferredModels"
 import { AgenticaClient } from "@/services/AgenticaClient"
+import { UpgradeModal } from "@/components/settings/UpgradeModal"
 
 // Helper function to format cost for Agentica models
 const formatAgenticaCost = (modelInfo?: any): string => {
@@ -52,6 +53,9 @@ export const ModelSelector = ({
 	virtualQuotaActiveModel, //kilocode_change
 }: ModelSelectorProps) => {
 	const { t } = useAppTranslation()
+	const [upgradeModalOpen, setUpgradeModalOpen] = useState(false)
+	const [selectedPlanId, setSelectedPlanId] = useState("")
+	const [checkingSubscription, setCheckingSubscription] = useState(false)
 	const { provider, providerModels, providerDefaultModel, isLoading, isError } = useProviderModels(apiConfiguration)
 	const selectedModelId = getSelectedModelId({
 		provider,
@@ -100,20 +104,25 @@ export const ModelSelector = ({
 		     (modelInfo.inputPrice && modelInfo.inputPrice > 0) ||
 		     (modelInfo.outputPrice && modelInfo.outputPrice > 0))) {
 			try {
+				setCheckingSubscription(true)
 				const client = new AgenticaClient(
 					`${apiConfiguration?.agenticaEmail || ""}|${apiConfiguration?.agenticaPassword || ""}`,
 					apiConfiguration?.agenticaBaseUrl,
 				)
 				const subscription = await client.getSubscription()
 
-				// If user doesn't have premium access, navigate to plans page
+				// If user doesn't have premium access, show upgrade modal
 				if (!subscription.limits.allow_premium) {
-					vscode.postMessage({ type: "action", action: "switchTab", tab: "plans" })
+					setSelectedPlanId("plus") // Default to plus plan for upgrade
+					setUpgradeModalOpen(true)
+					setCheckingSubscription(false)
 					return
 				}
 			} catch (error) {
 				console.error("Failed to check Agentica subscription:", error)
 				// If we can't check subscription, allow the change (fail open)
+			} finally {
+				setCheckingSubscription(false)
 			}
 		}
 
@@ -128,7 +137,7 @@ export const ModelSelector = ({
 		})
 	}
 
-	if (isLoading) {
+	if (isLoading || checkingSubscription) {
 		return null
 	}
 
@@ -146,20 +155,40 @@ export const ModelSelector = ({
 		return <span className="text-xs text-vscode-descriptionForeground opacity-70 truncate">{fallbackText}</span>
 	}
 
+	const handleUpgradeSuccess = () => {
+		setUpgradeModalOpen(false)
+		// After successful upgrade, the user can try selecting the model again
+	}
+
 	return (
-		<SelectDropdown
-			value={selectedModelId}
-			disabled={disabled}
-			title={t("chat:selectApiConfig")}
-			options={options}
-			onChange={onChange}
-			contentClassName="max-h-[300px] overflow-y-auto"
-			triggerClassName={cn(
-				"w-full text-ellipsis overflow-hidden p-0",
-				"bg-transparent border-transparent hover:bg-transparent hover:border-transparent",
+		<>
+			<SelectDropdown
+				value={selectedModelId}
+				disabled={disabled}
+				title={t("chat:selectApiConfig")}
+				options={options}
+				onChange={onChange}
+				contentClassName="max-h-[300px] overflow-y-auto"
+				triggerClassName={cn(
+					"w-full text-ellipsis overflow-hidden p-0",
+					"bg-transparent border-transparent hover:bg-transparent hover:border-transparent",
+				)}
+				triggerIcon={false}
+				itemClassName="group"
+			/>
+			{upgradeModalOpen && (
+				<UpgradeModal
+					isOpen={upgradeModalOpen}
+					onClose={() => setUpgradeModalOpen(false)}
+					planId={selectedPlanId}
+					isDowngrade={false}
+					client={new AgenticaClient(
+						`${apiConfiguration?.agenticaEmail || ""}|${apiConfiguration?.agenticaPassword || ""}`,
+						apiConfiguration?.agenticaBaseUrl
+					)}
+					onSuccess={handleUpgradeSuccess}
+				/>
 			)}
-			triggerIcon={false}
-			itemClassName="group"
-		/>
+		</>
 	)
 }
