@@ -627,10 +627,12 @@ export interface StartCodeReviewMessage {
 	taskId: string
 }
 
+import type { CodeReviewResult } from "@roo-code/types"
+
 export interface CodeReviewResultMessage {
 	type: "codeReviewResult"
 	success: boolean
-	review?: import("../../webview-ui/src/components/chat/CodeReviewDialog").CodeReviewResult
+	review?: CodeReviewResult
 	error?: string
 }
 

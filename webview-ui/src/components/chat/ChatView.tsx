@@ -16,6 +16,7 @@ import type { ClineAsk, ClineMessage, McpServerUse } from "@roo-code/types"
 import { ClineSayBrowserAction, ClineSayTool, ExtensionMessage } from "@roo/ExtensionMessage"
 import { McpServer, McpTool } from "@roo/mcp"
 import { findLast } from "@roo/array"
+import { findLastIndex } from "../../shared/array"
 import { FollowUpData, SuggestionItem } from "@roo-code/types"
 import { combineApiRequests } from "@roo/combineApiRequests"
 import { combineCommandSequences } from "@roo/combineCommandSequences"
@@ -63,6 +64,7 @@ import { IdeaSuggestionsBox } from "../kilocode/chat/IdeaSuggestionsBox" // kilo
 import { KilocodeNotifications } from "../kilocode/KilocodeNotifications" // kilocode_change
 import { QueuedMessages } from "./QueuedMessages"
 import { CodeReviewDialog } from "./CodeReviewDialog"
+import type { CodeReviewIssue, CodeReviewResult } from "@roo-code/types"
 import { buildDocLink } from "@/utils/docLinks"
 // import DismissibleUpsell from "../common/DismissibleUpsell" // kilocode_change: unused
 // import { useCloudUpsell } from "@src/hooks/useCloudUpsell" // kilocode_change: unused
@@ -191,7 +193,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			? (() => {
 					const lastRelevantIndex = findLastIndex(
 						messages,
-						(m) => !(m.ask === "resume_task" || m.ask === "resume_completed_task"),
+						(m: ClineMessage) => !(m.ask === "resume_task" || m.ask === "resume_completed_task"),
 					)
 					return lastRelevantIndex !== -1
 						? messages[lastRelevantIndex]?.ask === "completion_result"

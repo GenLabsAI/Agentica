@@ -28,7 +28,7 @@ const BottomControls: React.FC<BottomControlsProps> = ({ showApiConfig = false, 
 					{showCodeReviewButton && (
 						<BottomButton
 							iconClass="codicon-check-circle"
-							title={t("chat:codeReview.button", "Review with Deca")}
+							title="Review with Deca"
 							onClick={onCodeReviewClick || (() => {})}
 						/>
 					)}
