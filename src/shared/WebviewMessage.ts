@@ -274,6 +274,7 @@ export interface WebviewMessage {
 		| "filterMarketplaceItems"
 		| "mcpButtonClicked"
 		| "marketplaceButtonClicked"
+		| "upgradeButtonClicked"
 		| "installMarketplaceItem"
 		| "installMarketplaceItemWithParameters"
 		| "cancelMarketplaceInstall"
