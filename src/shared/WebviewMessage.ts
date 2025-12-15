@@ -386,6 +386,7 @@ export interface WebviewMessage {
 	upsellId?: string // For dismissUpsell
 	list?: string[] // For dismissedUpsells response
 	organizationId?: string | null // For organization switching
+	taskId?: string // For code review messages
 	codeIndexSettings?: {
 		// Global state settings
 		codebaseIndexEnabled: boolean

@@ -313,6 +313,7 @@ export interface ExtensionMessage {
 			}
 		}
 	}> // kilocode_change
+	review?: CodeReviewResult // For code review result messages
 }
 
 export type ExtensionState = Pick<

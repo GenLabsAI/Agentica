@@ -6,7 +6,7 @@ import { CheckCircle, AlertTriangle, Wrench, BookOpen, TestTube, X, Loader2 } fr
 import { vscode } from "@src/utils/vscode"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { Modal } from "@src/components/common/Modal"
-import { CodeBlock } from "@src/components/common/CodeBlock"
+import CodeBlock from "@src/components/common/CodeBlock"
 
 export interface CodeReviewIssue {
   title: string
@@ -164,7 +164,7 @@ export const CodeReviewDialog: React.FC<CodeReviewDialogProps> = ({
           <div className="flex items-center gap-3">
             <CheckCircle className="w-6 h-6 text-green-600" />
             <h2 className="text-lg font-semibold text-vscode-foreground">
-              {t("chat:codeReview.title", "Code Review with Deca")}
+              {t("chat:codeReview.title", { defaultValue: "Code Review with Deca" })}
             </h2>
           </div>
           <VSCodeButton appearance="icon" onClick={onClose}>
@@ -189,7 +189,7 @@ export const CodeReviewDialog: React.FC<CodeReviewDialogProps> = ({
               <div className="flex items-center gap-3">
                 <Loader2 className="w-6 h-6 animate-spin text-vscode-progressBar-background" />
                 <span className="text-vscode-descriptionForeground">
-                  {t("chat:codeReview.loading", "Analyzing code changes...")}
+                  {t("chat:codeReview.loading", { defaultValue: "Analyzing code changes..." })}
                 </span>
               </div>
             </div>
@@ -199,13 +199,13 @@ export const CodeReviewDialog: React.FC<CodeReviewDialogProps> = ({
             <div className="text-center py-12">
               <CheckCircle className="w-12 h-12 text-vscode-descriptionForeground mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-vscode-foreground mb-2">
-                {t("chat:codeReview.ready", "Ready for Review")}
+                {t("chat:codeReview.ready", { defaultValue: "Ready for Review" })}
               </h3>
               <p className="text-vscode-descriptionForeground mb-6">
-                {t("chat:codeReview.description", "Get an AI-powered review of the code changes made during this task.")}
+                {t("chat:codeReview.description", { defaultValue: "Get an AI-powered review of the code changes made during this task." })}
               </p>
               <VSCodeButton onClick={onStartReview}>
-                {t("chat:codeReview.start", "Start Code Review")}
+                {t("chat:codeReview.start", { defaultValue: "Start Code Review" })}
               </VSCodeButton>
             </div>
           )}
@@ -369,11 +369,11 @@ export const CodeReviewDialog: React.FC<CodeReviewDialogProps> = ({
             </div>
             <div className="flex gap-2">
               <VSCodeButton appearance="secondary" onClick={onClose}>
-                {t("common:close", "Close")}
+                {t("common:close", { defaultValue: "Close" })}
               </VSCodeButton>
               {selectedIssues.size > 0 && onFixIssues && (
                 <VSCodeButton appearance="primary" onClick={handleFixIssues}>
-                  {t("chat:codeReview.fixButton", "Fix Issues")}
+                  {t("chat:codeReview.fixButton", { defaultValue: "Fix Issues" })}
                 </VSCodeButton>
               )}
             </div>

@@ -374,13 +374,13 @@ const TaskHeader = ({
 							<TaskActions item={currentTaskItem} buttonsDisabled={buttonsDisabled} />
 							{shouldShowCodeReview && (
 								<div className="mt-2">
-									<StandardTooltip content={t("chat:codeReview.tooltip", "Get an AI-powered review of the code changes")}>
+									<StandardTooltip content={t("chat:codeReview.tooltip", { defaultValue: "Get an AI-powered review of the code changes" })}>
 										<button
 											onClick={handleStartCodeReview}
 											disabled={buttonsDisabled}
 											className="flex items-center gap-2 px-3 py-1.5 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white text-sm rounded-md transition-colors disabled:cursor-not-allowed">
 											<CheckCircle className="w-4 h-4" />
-											{t("chat:codeReview.button", "Review with Deca")}
+											{t("chat:codeReview.button", { defaultValue: "Review with Deca" })}
 										</button>
 									</StandardTooltip>
 								</div>
@@ -395,8 +395,8 @@ const TaskHeader = ({
 				isOpen={showCodeReviewDialog}
 				onClose={handleCloseCodeReview}
 				isLoading={codeReviewLoading}
-				review={codeReviewResult}
-				error={codeReviewError}
+				review={codeReviewResult || undefined}
+				error={codeReviewError || undefined}
 				onStartReview={handleStartCodeReview}
 				onFixIssues={(selectedIssues: CodeReviewIssue[]) => {
 					// For TaskHeader, we need to inject into the chat somehow
