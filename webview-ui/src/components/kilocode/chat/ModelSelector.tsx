@@ -108,7 +108,7 @@ export const ModelSelector = ({
 
 				// If user doesn't have premium access, navigate to plans page
 				if (!subscription.limits.allow_premium) {
-					vscode.postMessage({ type: "switchTab", tab: "plans" })
+      vscode.postMessage({ type: "switchTab", tab: "cloud" })
 					return
 				}
 			} catch (error) {

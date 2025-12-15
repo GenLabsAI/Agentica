@@ -12,6 +12,7 @@ import { getModelMaxOutputTokens } from "@roo/api"
 import { findLastIndex } from "@roo/array"
 
 import { formatLargeNumber } from "@src/utils/format"
+import { vscode } from "@src/utils/vscode"
 import { cn } from "@src/lib/utils"
 import { StandardTooltip } from "@src/components/ui"
 import { useExtensionState } from "@src/context/ExtensionStateContext"
@@ -24,6 +25,7 @@ import { ContextWindowProgress } from "./ContextWindowProgress"
 import { Mention } from "./Mention"
 import { TodoListDisplay } from "./TodoListDisplay"
 import { CodeReviewDialog, type CodeReviewResult } from "./CodeReviewDialog"
+import type { CodeReviewIssue } from "@roo-code/types"
 
 export interface TaskHeaderProps {
 	task: ClineMessage
@@ -396,7 +398,7 @@ const TaskHeader = ({
 				review={codeReviewResult}
 				error={codeReviewError}
 				onStartReview={handleStartCodeReview}
-				onFixIssues={(selectedIssues) => {
+				onFixIssues={(selectedIssues: CodeReviewIssue[]) => {
 					// For TaskHeader, we need to inject into the chat somehow
 					// This would require passing a callback from the parent component
 					// For now, we'll just close the dialog

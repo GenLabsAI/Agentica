@@ -192,6 +192,7 @@ export interface WebviewMessage {
 		| "checkpointRestore"
 		| "requestCheckpointRestoreApproval"
 		| "seeNewChanges" // kilocode_change
+		| "startCodeReview"
 		| "deleteMcpServer"
 		| "maxOpenTabsContext"
 		| "maxWorkspaceFiles"
