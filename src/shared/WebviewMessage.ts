@@ -324,6 +324,7 @@ export interface WebviewMessage {
 		| "requestManagedIndexerState" // kilocode_change
 	text?: string
 	editedMessageContent?: string
+	action?: string
 	tab?: "settings" | "history" | "mcp" | "modes" | "chat" | "marketplace" | "cloud" | "plans"
 	disabled?: boolean
 	context?: string

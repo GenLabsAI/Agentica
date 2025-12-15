@@ -1,6 +1,6 @@
 import type { WebviewApi } from "vscode-webview"
 
-import { MaybeTypedWebviewMessage as WebviewMessage } from "@roo/WebviewMessage" // kilocode_change - using MaybeTypedWebviewMessage
+import { WebviewMessage } from "@roo/WebviewMessage"
 
 /**
  * A utility wrapper around the acquireVsCodeApi() function, which enables
