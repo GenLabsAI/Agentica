@@ -195,6 +195,7 @@ export interface ExtensionMessage {
 	| "profileButtonClicked" // kilocode_change
 	| "marketplaceButtonClicked"
 	| "cloudButtonClicked"
+	| "upgradeButtonClicked"
 	| "didBecomeVisible"
 	| "focusInput"
 	| "switchTab"
