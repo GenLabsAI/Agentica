@@ -85,7 +85,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, pla
                     gap: "16px",
                 }}>
                 <h2 style={{ margin: 0, fontSize: "1.5em", fontWeight: "600" }}>
-                    {isDowngrade ? "Confirm Downgrade" : "Spend Credits"}
+                    {isDowngrade ? "Confirm Downgrade" : `Upgrade to ${planId.charAt(0).toUpperCase() + planId.slice(1)}`}
                 </h2>
 
                 {isDowngrade ? (
@@ -117,19 +117,35 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, pla
                             borderLeft: "4px solid var(--vscode-textBlockQuote-border)",
                             borderRadius: "2px"
                         }}>
-                            {creditsLoading ? (
-                                <span>Loading credits...</span>
-                            ) : (
-                                <>
-                                    You currently have <strong>{userCredits !== null ? userCredits : '---'}</strong> credits.
-                                    {hasInsufficientCredits && (
-                                        <div style={{ marginTop: "8px" }}>
-                                            <VSCodeLink href="https://genlabs.dev/credits" target="_blank">
-                                                Buy more by signing into your GenLabs account
-                                            </VSCodeLink>
-                                        </div>
-                                    )}
-                                </>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                {creditsLoading ? (
+                                    <span>Loading credits...</span>
+                                ) : (
+                                    <span>
+                                        You currently have <strong>{userCredits !== null ? userCredits : '---'}</strong> credits.
+                                    </span>
+                                )}
+                                <VSCodeButton 
+                                    appearance="icon" 
+                                    onClick={() => {
+                                        setCreditsLoading(true)
+                                        client.getUserCredits()
+                                            .then((data) => setUserCredits(data.credits))
+                                            .catch((err) => console.error("Failed to refresh credits", err))
+                                            .finally(() => setCreditsLoading(false))
+                                    }}
+                                    disabled={creditsLoading}
+                                    title="Refresh credits"
+                                >
+                                    <span className={`codicon codicon-refresh ${creditsLoading ? 'rotating' : ''}`} />
+                                </VSCodeButton>
+                            </div>
+                            {hasInsufficientCredits && (
+                                <div style={{ marginTop: "8px" }}>
+                                    <VSCodeLink href="https://genlabs.dev/credits" target="_blank">
+                                        Buy more by signing into your GenLabs account
+                                    </VSCodeLink>
+                                </div>
                             )}
                         </div>
                     </div>
