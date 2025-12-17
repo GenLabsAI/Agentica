@@ -220,8 +220,8 @@ export const agenticaModels = {
 		contextWindow: 128_000,
 		supportsImages: true,
 		supportsPromptCache: true,
-		inputPrice: 0.15,    // $0.15 per million tokens
-		outputPrice: 0.60,   // $0.60 per million tokens
+		inputPrice: 0.50,    // $0.50 per million tokens
+		outputPrice: 3.00,   // $3.00 per million tokens
 		description: "Gemini 3 Flash",
 	},
 } as const satisfies Record<string, ModelInfo>
