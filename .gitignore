@@ -65,3 +65,7 @@ qdrant_storage/
 # allow multiple local clones with different workspaces with different colors
 # to make it easier to work on features in parallel
 *.code-workspace
+
+# Custom git commit/push macros
+git-commit-push.bat
+quick-commit.sh

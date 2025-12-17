@@ -7,36 +7,26 @@ export const agenticaDefaultModelId: AgenticaModelId = "deca-coder-flash"
 export const AGENTICA_DEFAULT_BASE_URL = "https://api.genlabs.dev/agentica/v1" as const
 
 export const agenticaModels = {
-	"deca-coder-flash": {
-		maxTokens: 64_000,
-		contextWindow: 200_000,
-		supportsImages: false,
-		supportsPromptCache: false,
-		inputPrice: 0,
-		outputPrice: 0,
-		description: "Agentica's deca-coder-flash general-purpose reasoning and coding model (OpenAI-compatible).",
-		creditsMultiplier: 0, // Free model - 0x credits
-		isFree: true,
-	},
-	"qwen3-coder": {
-		maxTokens: 32_000,
+	// Free Models
+	"kimi-k2": {
+		maxTokens: 128_000,
 		contextWindow: 128_000,
 		supportsImages: false,
 		supportsPromptCache: false,
 		inputPrice: 0,
 		outputPrice: 0,
-		description: "Qwen3 Coder - specialized coding model with enhanced code generation capabilities.",
+		description: "Moonshot AI Kimi K2 model",
 		creditsMultiplier: 0, // Free model - 0x credits
 		isFree: true,
 	},
-	"deepseek-v3.1-terminus": {
-		maxTokens: 64_000,
+	"deca-2.5-pro-low": {
+		maxTokens: 128_000,
 		contextWindow: 128_000,
 		supportsImages: false,
 		supportsPromptCache: false,
 		inputPrice: 0,
 		outputPrice: 0,
-		description: "DeepSeek v3.1 Terminus - advanced reasoning and coding model with improved performance.",
+		description: "2.5 pro low",
 		creditsMultiplier: 0, // Free model - 0x credits
 		isFree: true,
 	},
@@ -47,18 +37,29 @@ export const agenticaModels = {
 		supportsPromptCache: false,
 		inputPrice: 0,
 		outputPrice: 0,
-		description: "MiniMax M2 - efficient language model optimized for conversational AI.",
+		description: "Minimax M2 model",
 		creditsMultiplier: 0, // Free model - 0x credits
 		isFree: true,
 	},
-	"kimi-k2": {
-		maxTokens: 128_000,
+	"deepseek-v3.1-terminus": {
+		maxTokens: 64_000,
 		contextWindow: 128_000,
 		supportsImages: false,
 		supportsPromptCache: false,
 		inputPrice: 0,
 		outputPrice: 0,
-		description: "Kimi K2",
+		description: "DeepSeek V3.1 Terminus",
+		creditsMultiplier: 0, // Free model - 0x credits
+		isFree: true,
+	},
+	"qwen3-coder": {
+		maxTokens: 32_000,
+		contextWindow: 128_000,
+		supportsImages: false,
+		supportsPromptCache: false,
+		inputPrice: 0,
+		outputPrice: 0,
+		description: "Qwen 3 Coder 480B",
 		creditsMultiplier: 0, // Free model - 0x credits
 		isFree: true,
 	},
@@ -69,10 +70,22 @@ export const agenticaModels = {
 		supportsPromptCache: false,
 		inputPrice: 0,
 		outputPrice: 0,
-		description: "GPT OSS 120B.",
+		description: "GPT OSS 120B",
 		creditsMultiplier: 0, // Free model - 0x credits
 		isFree: true,
 	},
+	"deca-coder-flash": {
+		maxTokens: 64_000,
+		contextWindow: 200_000,
+		supportsImages: false,
+		supportsPromptCache: false,
+		inputPrice: 0,
+		outputPrice: 0,
+		description: "Deca Coder Flash (routes via classification)",
+		creditsMultiplier: 0, // Free model - 0x credits
+		isFree: true,
+	},
+	// Paid-Free Models (OpenRouter)
 	"glm-4.6": {
 		maxTokens: 32_000,
 		contextWindow: 128_000,
@@ -80,9 +93,8 @@ export const agenticaModels = {
 		supportsPromptCache: false,
 		inputPrice: 0,
 		outputPrice: 0,
-		description: "GLM 4.6 (Free on Paid plans).",
+		description: "GLM 4.6 (paid plans only, no credit cost)",
 		requiresPaidPlan: true,
-		// No creditsMultiplier - paid-free model requires paid plan
 	},
 	"kimi-k2-thinking": {
 		maxTokens: 128_000,
@@ -91,80 +103,125 @@ export const agenticaModels = {
 		supportsPromptCache: false,
 		inputPrice: 0,
 		outputPrice: 0,
-		description: "Kimi K2 Thinking (free on paid plans).",
+		description: "Kimi K2 Thinking (paid plans only, no credit cost)",
 		requiresPaidPlan: true,
-		// No creditsMultiplier - paid-free model requires paid plan
 	},
+	// Premium Models (OpenRouter)
 	"claude-4.5-sonnet": {
 		maxTokens: 64_000,
 		contextWindow: 200_000,
 		supportsImages: true,
 		supportsPromptCache: true,
-		inputPrice: 3.0, // $3 per million input tokens
-		outputPrice: 15.0, // $15 per million output tokens
-		description: "Claude 4.5 Sonnet.",
+		inputPrice: 3.00,    // $3.00 per million tokens
+		outputPrice: 15.00,  // $15.00 per million tokens
+		description: "Claude 4.5 Sonnet",
 	},
 	"claude-4.5-opus": {
 		maxTokens: 64_000,
 		contextWindow: 200_000,
 		supportsImages: true,
 		supportsPromptCache: true,
-		inputPrice: 5.0, // $5 per million input tokens
-		outputPrice: 25.0, // $25 per million output tokens
-		description: "Claude 4.5 Opus.",
+		inputPrice: 5.00,    // $5.00 per million tokens
+		outputPrice: 25.00,  // $25.00 per million tokens
+		description: "Claude 4.5 Opus",
 	},
-	"gpt-5.1": {
+	"gpt-5.2": {
 		maxTokens: 128_000,
 		contextWindow: 128_000,
 		supportsImages: true,
 		supportsPromptCache: true,
-		inputPrice: 1.25, // $1.25 per million input tokens
-		outputPrice: 10, // $10 per million output tokens
-		description: "GPT-5.1.",
+		inputPrice: 1.75,    // $1.75 per million tokens
+		outputPrice: 14.00,  // $14.00 per million tokens
+		description: "GPT-5.2",
 	},
 	"gpt-5.1-codex": {
 		maxTokens: 128_000,
 		contextWindow: 128_000,
 		supportsImages: false,
 		supportsPromptCache: true,
-		inputPrice: 1.25, // $1.25 per million input tokens
-		outputPrice: 10, // $10 per million output tokens
-		description: "GPT-5.1 Codex.",
+		inputPrice: 1.25,    // $1.25 per million tokens
+		outputPrice: 10.00,  // $10.00 per million tokens
+		description: "GPT-5.1 Codex",
 	},
-	"gpt-5.1-mini": {
+	"gpt-5.1-codex-mini": {
 		maxTokens: 64_000,
 		contextWindow: 128_000,
-		supportsImages: true,
+		supportsImages: false,
 		supportsPromptCache: true,
-		inputPrice: 0.25, // $0.25 per million input tokens
-		outputPrice: 0.2, // $0.2 per million output tokens
-		description: "GPT-5.1 Mini.",
+		inputPrice: 0.25,    // $0.25 per million tokens
+		outputPrice: 2.00,   // $2.00 per million tokens
+		description: "GPT-5.1 Codex Mini",
 	},
 	"gemini-3-pro": {
 		maxTokens: 64_000,
 		contextWindow: 1_000_000,
 		supportsImages: true,
 		supportsPromptCache: true,
-		inputPrice: 2.0, // $2 per million input tokens
-		outputPrice: 12.0, // $12 per million output tokens
-		description: "Gemini 3 Pro.",
+		inputPrice: 2.00,    // $2.00 per million tokens
+		outputPrice: 12.00,  // $12.00 per million tokens
+		description: "Gemini 3 Pro",
+	},
+	"gemini-2.5-flash": {
+		maxTokens: 128_000,
+		contextWindow: 1_000_000,
+		supportsImages: true,
+		supportsPromptCache: true,
+		inputPrice: 0.30,    // $0.30 per million tokens
+		outputPrice: 2.50,   // $2.50 per million tokens
+		description: "Gemini 2.5 Flash",
 	},
 	"grok-4": {
 		maxTokens: 128_000,
 		contextWindow: 128_000,
 		supportsImages: true,
 		supportsPromptCache: true,
-		inputPrice: 3.0, // $5 per million input tokens
-		outputPrice: 15.0, // $15 per million output tokens
-		description: "Grok 4.",
+		inputPrice: 3.00,    // $3.00 per million tokens
+		outputPrice: 15.00,  // $15.00 per million tokens
+		description: "Grok 4",
+	},
+	"grok-4.1-fast": {
+		maxTokens: 128_000,
+		contextWindow: 128_000,
+		supportsImages: true,
+		supportsPromptCache: true,
+		inputPrice: 0.20,    // $0.20 per million tokens
+		outputPrice: 0.50,   // $0.50 per million tokens
+		description: "Grok 4.1 Fast",
 	},
 	"grok-code-fast-1": {
 		maxTokens: 64_000,
 		contextWindow: 128_000,
 		supportsImages: false,
 		supportsPromptCache: true,
-		inputPrice: 0.2, // $3 per million input tokens
-		outputPrice: 1.5, // $12 per million output tokens
-		description: "Grok Code Fast 1.",
+		inputPrice: 0.20,    // $0.20 per million tokens
+		outputPrice: 1.50,   // $1.50 per million tokens
+		description: "Grok Code Fast 1",
+	},
+	"deca-2.5-pro-high": {
+		maxTokens: 128_000,
+		contextWindow: 200_000,
+		supportsImages: false,
+		supportsPromptCache: true,
+		inputPrice: 1.25,   // $1.25 per million tokens
+		outputPrice: 4.00,  // $4.00 per million tokens
+		description: "2.5 pro high",
+	},
+	"deca-2.5-mini": {
+		maxTokens: 64_000,
+		contextWindow: 128_000,
+		supportsImages: false,
+		supportsPromptCache: true,
+		inputPrice: 0.50,   // $0.50 per million tokens
+		outputPrice: 1.50,  // $1.50 per million tokens
+		description: "2.5 mini premium model",
+	},
+	"gemini-3-flash": {
+		maxTokens: 64_000,
+		contextWindow: 128_000,
+		supportsImages: true,
+		supportsPromptCache: true,
+		inputPrice: 0.15,    // $0.15 per million tokens
+		outputPrice: 0.60,   // $0.60 per million tokens
+		description: "Gemini 3 Flash",
 	},
 } as const satisfies Record<string, ModelInfo>
