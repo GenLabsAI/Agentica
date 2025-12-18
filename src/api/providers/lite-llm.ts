@@ -1,11 +1,7 @@
 import OpenAI from "openai"
 import { Anthropic } from "@anthropic-ai/sdk" // Keep for type usage only
 
-import {
-	 litellmDefaultModelId,
-	 litellmDefaultModelInfo,
-	 getActiveToolUseStyle, // kilocode_change
-} from "@roo-code/types"
+import { litellmDefaultModelId, litellmDefaultModelInfo, TOOL_PROTOCOL } from "@roo-code/types"
 
 import { calculateApiCostOpenAI } from "../../shared/cost"
 
@@ -16,7 +12,7 @@ import { convertToOpenAiMessages } from "../transform/openai-format"
 
 import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from "../index"
 import { RouterProvider } from "./router-provider"
-import { addNativeToolCallsToParams, processNativeToolCallsFromDelta } from "./kilocode/nativeToolCallHelpers"
+import { addNativeToolCallsToParams, ToolCallAccumulator } from "./kilocode/nativeToolCallHelpers"
 
 /**
  * LiteLLM provider handler
@@ -121,6 +117,14 @@ export class LiteLLMHandler extends RouterProvider implements SingleCompletionHa
 		// Check if this is a GPT-5 model that requires max_completion_tokens instead of max_tokens
 		const isGPT5Model = this.isGpt5(modelId)
 
+		// Check if model supports native tools and tools are provided with native protocol
+		const supportsNativeTools = info.supportsNativeTools ?? false
+		const useNativeTools =
+			supportsNativeTools &&
+			metadata?.tools &&
+			metadata.tools.length > 0 &&
+			metadata?.toolProtocol === TOOL_PROTOCOL.NATIVE
+
 		const requestOptions: OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming = {
 			model: modelId,
 			messages: [systemMessage, ...enhancedMessages],
@@ -128,6 +132,9 @@ export class LiteLLMHandler extends RouterProvider implements SingleCompletionHa
 			stream_options: {
 				include_usage: true,
 			},
+			...(useNativeTools && { tools: this.convertToolsForOpenAI(metadata.tools) }),
+			...(useNativeTools && metadata.tool_choice && { tool_choice: metadata.tool_choice }),
+			...(useNativeTools && { parallel_tool_calls: metadata?.parallelToolCalls ?? false }),
 		}
 
 		// GPT-5 models require max_completion_tokens instead of the deprecated max_tokens parameter
@@ -141,21 +148,33 @@ export class LiteLLMHandler extends RouterProvider implements SingleCompletionHa
 			requestOptions.temperature = this.options.modelTemperature ?? 0
 		}
 
-		addNativeToolCallsToParams(requestOptions, this.options, metadata) // kilocode_change
-
 		try {
 			const { data: completion } = await this.client.chat.completions.create(requestOptions).withResponse()
 
 			let lastUsage
 
+			const toolCallAccumulator = new ToolCallAccumulator() // kilocode_change
 			for await (const chunk of completion) {
 				const delta = chunk.choices[0]?.delta
 				const usage = chunk.usage as LiteLLMUsage
 
-				yield* processNativeToolCallsFromDelta(delta, getActiveToolUseStyle(this.options)) // kilocode_change
+				yield* toolCallAccumulator.processChunk(chunk) // kilocode_change
 
 				if (delta?.content) {
 					yield { type: "text", text: delta.content }
+				}
+
+				// Handle tool calls in stream - emit partial chunks for NativeToolCallParser
+				if (delta?.tool_calls) {
+					for (const toolCall of delta.tool_calls) {
+						yield {
+							type: "tool_call_partial",
+							index: toolCall.index,
+							id: toolCall.id,
+							name: toolCall.function?.name,
+							arguments: toolCall.function?.arguments,
+						}
+					}
 				}
 
 				if (usage) {

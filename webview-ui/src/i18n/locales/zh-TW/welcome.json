@@ -16,7 +16,7 @@
 			"incentive": "免費試用 Roo"
 		}
 	},
-	"chooseProvider": "Agentica 需要 API 金鑰才能發揮魔力。",
+
 	"startRouter": "我們建議使用 LLM 路由器：",
 	"startCustom": "或者您可以使用自己的 API 金鑰：",
 	"telemetry": {
@@ -25,3 +25,4 @@
 	},
 	"importSettings": "匯入設定"
 }
+

@@ -2,20 +2,24 @@
  * Tests for /new command
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { newCommand } from "../new.js"
 import type { CommandContext } from "../core/types.js"
 import { createMockContext } from "./helpers/mockContext.js"
 
 describe("/new command", () => {
 	let mockContext: CommandContext
+
 	beforeEach(() => {
-		// Mock process.stdout.write to capture terminal clearing
 		vi.spyOn(process.stdout, "write").mockImplementation(() => true)
 
 		mockContext = createMockContext({
 			input: "/new",
 		})
+	})
+
+	afterEach(() => {
+		vi.restoreAllMocks()
 	})
 
 	describe("Command metadata", () => {
@@ -88,10 +92,13 @@ describe("/new command", () => {
 				callOrder.push("replaceMessages")
 			})
 
+			mockContext.refreshTerminal = vi.fn().mockImplementation(async () => {
+				callOrder.push("refreshTerminal")
+			})
+
 			await newCommand.handler(mockContext)
 
-			// Operations should execute in this order
-			expect(callOrder).toEqual(["clearTask", "replaceMessages"])
+			expect(callOrder).toEqual(["clearTask", "replaceMessages", "refreshTerminal"])
 		})
 
 		it("should handle clearTask errors gracefully", async () => {
@@ -121,11 +128,10 @@ describe("/new command", () => {
 		it("should create a complete fresh start experience", async () => {
 			await newCommand.handler(mockContext)
 
-			// Verify all cleanup operations were performed
 			expect(mockContext.clearTask).toHaveBeenCalled()
 			expect(mockContext.replaceMessages).toHaveBeenCalled()
+			expect(mockContext.refreshTerminal).toHaveBeenCalled()
 
-			// Verify welcome message was replaced
 			const replacedMessages = (mockContext.replaceMessages as ReturnType<typeof vi.fn>).mock.calls[0][0]
 			expect(replacedMessages).toHaveLength(1)
 			expect(replacedMessages[0].type).toBe("welcome")

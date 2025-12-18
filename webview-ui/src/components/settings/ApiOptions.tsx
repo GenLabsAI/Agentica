@@ -26,13 +26,14 @@ import {
 	syntheticDefaultModelId,
 	ovhCloudAiEndpointsDefaultModelId,
 	inceptionDefaultModelId,
-	nativeFunctionCallingProviders,
+	MODEL_SELECTION_ENABLED,
 	// kilocode_change end
 	mistralDefaultModelId,
 	xaiDefaultModelId,
 	groqDefaultModelId,
 	cerebrasDefaultModelId,
 	chutesDefaultModelId,
+	basetenDefaultModelId,
 	bedrockDefaultModelId,
 	vertexDefaultModelId,
 	sambaNovaDefaultModelId,
@@ -46,6 +47,9 @@ import {
 	deepInfraDefaultModelId,
 	minimaxDefaultModelId,
 	agenticaDefaultModelId,
+	nanoGptDefaultModelId, //kilocode_change
+	type ToolProtocol,
+	TOOL_PROTOCOL,
 } from "@roo-code/types"
 
 import { vscode } from "@src/utils/vscode"
@@ -76,6 +80,7 @@ import {
 import {
 	Anthropic,
 	Agentica,
+	Baseten,
 	Bedrock,
 	Cerebras,
 	Chutes,
@@ -91,6 +96,7 @@ import {
 	LiteLLM,
 	Mistral,
 	Moonshot,
+	NanoGpt, // kilocode_change
 	Ollama,
 	OpenAI,
 	OpenAICompatible,
@@ -109,6 +115,7 @@ import {
 	Synthetic,
 	OvhCloudAiEndpoints,
 	Inception,
+	SapAiCore,
 	// kilocode_change end
 	ZAi,
 	Fireworks,
@@ -131,12 +138,13 @@ import { TodoListSettingsControl } from "./TodoListSettingsControl"
 import { TemperatureControl } from "./TemperatureControl"
 import { RateLimitSecondsControl } from "./RateLimitSecondsControl"
 import { ConsecutiveMistakeLimitControl } from "./ConsecutiveMistakeLimitControl"
-import { ToolUseControl } from "./kilocode/ToolUseControl" // kilocode_change
 import { BedrockCustomArn } from "./providers/BedrockCustomArn"
 import { KiloCode } from "../kilocode/settings/providers/KiloCode" // kilocode_change
+import { RooBalanceDisplay } from "./providers/RooBalanceDisplay"
 import { buildDocLink } from "@src/utils/docLinks"
 import { KiloProviderRouting, KiloProviderRoutingManagedByOrganization } from "./providers/KiloProviderRouting"
 import { RateLimitAfterControl } from "./RateLimitAfterSettings" // kilocode_change
+import { BookOpenText } from "lucide-react"
 
 export interface ApiOptionsProps {
 	uriScheme: string | undefined
@@ -164,13 +172,7 @@ const ApiOptions = ({
 	currentApiConfigName, // kilocode_change
 }: ApiOptionsProps) => {
 	const { t } = useAppTranslation()
-	const {
-		organizationAllowList,
-		uiKind, // kilocode_change
-		kiloCodeWrapperProperties, // kilocode_change
-		kilocodeDefaultModel,
-		cloudIsAuthenticated,
-	} = useExtensionState()
+	const { organizationAllowList, kilocodeDefaultModel, cloudIsAuthenticated } = useExtensionState()
 
 	const [customHeaders, setCustomHeaders] = useState<[string, string][]>(() => {
 		const headers = apiConfiguration?.openAiHeaders || {}
@@ -232,6 +234,7 @@ const ApiOptions = ({
 		geminiApiKey: apiConfiguration?.geminiApiKey,
 		googleGeminiBaseUrl: apiConfiguration?.googleGeminiBaseUrl,
 		chutesApiKey: apiConfiguration?.chutesApiKey,
+		syntheticApiKey: apiConfiguration?.syntheticApiKey,
 	})
 
 	//const { data: openRouterModelProviders } = useOpenRouterModelProviders(
@@ -284,6 +287,7 @@ const ApiOptions = ({
 				selectedProvider === "litellm" ||
 				selectedProvider === "deepinfra" ||
 				selectedProvider === "chutes" || // kilocode_change
+				selectedProvider === "synthetic" || // kilocode_change
 				selectedProvider === "roo"
 			) {
 				vscode.postMessage({ type: "requestRouterModels" })
@@ -318,6 +322,7 @@ const ApiOptions = ({
 
 	const selectedProviderModels = useMemo(() => {
 		const models = MODELS_BY_PROVIDER[selectedProvider]
+
 		if (!models) return []
 
 		const filteredModels = filterModels(models, selectedProvider, organizationAllowList)
@@ -385,6 +390,7 @@ const ApiOptions = ({
 				unbound: { field: "unboundModelId", default: unboundDefaultModelId },
 				requesty: { field: "requestyModelId", default: requestyDefaultModelId },
 				litellm: { field: "litellmModelId", default: litellmDefaultModelId },
+				"nano-gpt": { field: "nanoGptModelId", default: nanoGptDefaultModelId }, // kilocode_change
 				anthropic: { field: "apiModelId", default: anthropicDefaultModelId },
 				cerebras: { field: "apiModelId", default: cerebrasDefaultModelId },
 				"claude-code": { field: "apiModelId", default: claudeCodeDefaultModelId },
@@ -399,6 +405,7 @@ const ApiOptions = ({
 				xai: { field: "apiModelId", default: xaiDefaultModelId },
 				groq: { field: "apiModelId", default: groqDefaultModelId },
 				chutes: { field: "apiModelId", default: chutesDefaultModelId },
+				baseten: { field: "apiModelId", default: basetenDefaultModelId },
 				bedrock: { field: "apiModelId", default: bedrockDefaultModelId },
 				vertex: { field: "apiModelId", default: vertexDefaultModelId },
 				sambanova: { field: "apiModelId", default: sambaNovaDefaultModelId },
@@ -484,6 +491,16 @@ const ApiOptions = ({
 		}
 	}, [selectedProvider])
 
+	// Calculate the default protocol that would be used if toolProtocol is not set
+	// Mirrors the simplified logic in resolveToolProtocol.ts:
+	// 1. User preference (toolProtocol) - handled by the select value binding
+	// 2. Model default - use if available
+	// 3. XML fallback
+	const defaultProtocol = selectedModelInfo?.defaultToolProtocol || TOOL_PROTOCOL.XML
+
+	// Show the tool protocol selector when model supports native tools
+	const showToolProtocolSelector = selectedModelInfo?.supportsNativeTools === true
+
 	// Convert providers to SearchableSelect options
 	// kilocode_change start: no organizationAllowList
 	const providerOptions = useMemo(
@@ -496,15 +513,40 @@ const ApiOptions = ({
 	// kilocode_change end
 	return (
 		<div className="flex flex-col gap-3">
+			{/* kilocode_change start - autocomplete profile type system */}
+			{/* Profile Type Display (read-only for existing profiles) */}
+			{MODEL_SELECTION_ENABLED && (
+				<div className="flex flex-col gap-1">
+					<label className="block font-medium mb-1">{t("settings:providers.profileType")}</label>
+					<div className="px-3 py-2 bg-vscode-input-background border border-vscode-input-border rounded text-vscode-input-foreground">
+						{apiConfiguration.profileType === "autocomplete"
+							? t("settings:providers.profileTypeAutocomplete")
+							: t("settings:providers.profileTypeChat")}
+						{apiConfiguration.profileType === "autocomplete" && (
+							<span className="ml-2 text-vscode-descriptionForeground">
+								{t("settings:providers.autocompleteLabel")}
+							</span>
+						)}
+					</div>
+					<div className="text-vscode-descriptionForeground text-sm mt-1">
+						{t("settings:providers.profileTypeDescription")}
+					</div>
+				</div>
+			)}
+			{/* kilocode_change end */}
+
 			<div className="flex flex-col gap-1 relative">
 				<div className="flex justify-between items-center">
-					<label className="block font-medium mb-1">{t("settings:providers.apiProvider")}</label>
-					{docs && (
-						<div className="text-xs text-vscode-descriptionForeground">
-							<VSCodeLink href={docs.url} className="hover:text-vscode-foreground" target="_blank">
-								{t("settings:providers.providerDocumentation", { provider: docs.name })}
+					<label className="block font-medium">{t("settings:providers.apiProvider")}</label>
+					{selectedProvider === "roo" && cloudIsAuthenticated ? (
+						<RooBalanceDisplay />
+					) : (
+						docs && (
+							<VSCodeLink href={docs.url} target="_blank" className="flex gap-2">
+								{docs.name}
+								<BookOpenText className="size-4 inline ml-2" />
 							</VSCodeLink>
-						</div>
+						)
 					)}
 				</div>
 				<SearchableSelect
@@ -530,9 +572,6 @@ const ApiOptions = ({
 					currentApiConfigName={currentApiConfigName}
 					routerModels={routerModels}
 					organizationAllowList={organizationAllowList}
-					uriScheme={uriScheme}
-					uiKind={uiKind}
-					kiloCodeWrapperProperties={kiloCodeWrapperProperties}
 					kilocodeDefaultModel={kilocodeDefaultModel}
 				/>
 			)}
@@ -545,7 +584,7 @@ const ApiOptions = ({
 					routerModels={routerModels}
 					selectedModelId={selectedModelId}
 					uriScheme={uriScheme}
-					fromWelcomeView={fromWelcomeView}
+					simplifySettings={fromWelcomeView}
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
 				/>
@@ -560,6 +599,7 @@ const ApiOptions = ({
 					refetchRouterModels={refetchRouterModels}
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
@@ -571,6 +611,7 @@ const ApiOptions = ({
 					uriScheme={uriScheme}
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
@@ -581,6 +622,7 @@ const ApiOptions = ({
 					routerModels={routerModels}
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
@@ -592,6 +634,7 @@ const ApiOptions = ({
 					refetchRouterModels={refetchRouterModels}
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
@@ -609,7 +652,11 @@ const ApiOptions = ({
 			{/* kilocode_change end */}
 
 			{selectedProvider === "anthropic" && (
-				<Anthropic apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+				<Anthropic
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					simplifySettings={fromWelcomeView}
+				/>
 			)}
 
 			{selectedProvider === "agentica" && (
@@ -617,7 +664,11 @@ const ApiOptions = ({
 			)}
 
 			{selectedProvider === "claude-code" && (
-				<ClaudeCode apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+				<ClaudeCode
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					simplifySettings={fromWelcomeView}
+				/>
 			)}
 
 			{selectedProvider === "openai-native" && (
@@ -625,6 +676,7 @@ const ApiOptions = ({
 					apiConfiguration={apiConfiguration}
 					setApiConfigurationField={setApiConfigurationField}
 					selectedModelInfo={selectedModelInfo}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
@@ -641,7 +693,19 @@ const ApiOptions = ({
 			{/* kilocode_change end */}
 
 			{selectedProvider === "mistral" && (
-				<Mistral apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+				<Mistral
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					simplifySettings={fromWelcomeView}
+				/>
+			)}
+
+			{selectedProvider === "baseten" && (
+				<Baseten
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					simplifySettings={fromWelcomeView}
+				/>
 			)}
 
 			{selectedProvider === "bedrock" && (
@@ -649,6 +713,7 @@ const ApiOptions = ({
 					apiConfiguration={apiConfiguration}
 					setApiConfigurationField={setApiConfigurationField}
 					selectedModelInfo={selectedModelInfo}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
@@ -656,7 +721,7 @@ const ApiOptions = ({
 				<Vertex
 					apiConfiguration={apiConfiguration}
 					setApiConfigurationField={setApiConfigurationField}
-					fromWelcomeView={fromWelcomeView}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
@@ -678,32 +743,65 @@ const ApiOptions = ({
 					setApiConfigurationField={setApiConfigurationField}
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
 			{selectedProvider === "lmstudio" && (
-				<LMStudio apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+				<LMStudio
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					simplifySettings={fromWelcomeView}
+				/>
 			)}
 
 			{selectedProvider === "deepseek" && (
-				<DeepSeek apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+				<DeepSeek
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					simplifySettings={fromWelcomeView}
+				/>
 			)}
 
 			{selectedProvider === "doubao" && (
-				<Doubao apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+				<Doubao
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					simplifySettings={fromWelcomeView}
+				/>
 			)}
 
 			{selectedProvider === "qwen-code" && (
-				<QwenCode apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+				<QwenCode
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					simplifySettings={fromWelcomeView}
+				/>
 			)}
 
 			{selectedProvider === "moonshot" && (
-				<Moonshot apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+				<Moonshot
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					simplifySettings={fromWelcomeView}
+				/>
 			)}
 
 			{selectedProvider === "minimax" && (
 				<MiniMax apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
+
+			{/* kilocode_change start */}
+			{selectedProvider === "nano-gpt" && (
+				<NanoGpt
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					routerModels={routerModels}
+					organizationAllowList={organizationAllowList}
+					modelValidationError={modelValidationError}
+				/>
+			)}
+			{/* kilocode_change end */}
 
 			{selectedProvider === "vscode-lm" && (
 				<VSCodeLM apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
@@ -736,6 +834,7 @@ const ApiOptions = ({
 					routerModels={routerModels}
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
@@ -758,6 +857,7 @@ const ApiOptions = ({
 					setApiConfigurationField={setApiConfigurationField}
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
@@ -775,6 +875,7 @@ const ApiOptions = ({
 					setApiConfigurationField={setApiConfigurationField}
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
@@ -785,6 +886,7 @@ const ApiOptions = ({
 					routerModels={routerModels}
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
@@ -802,12 +904,15 @@ const ApiOptions = ({
 			{selectedProvider === "fireworks" && (
 				<Fireworks apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
+
 			{
-				// kilocode_change start
 				selectedProvider === "synthetic" && (
 					<Synthetic
 						apiConfiguration={apiConfiguration}
 						setApiConfigurationField={setApiConfigurationField}
+						routerModels={routerModels}
+						organizationAllowList={organizationAllowList}
+						modelValidationError={modelValidationError}
 					/>
 				)
 				// kilocode_change end
@@ -821,12 +926,19 @@ const ApiOptions = ({
 					cloudIsAuthenticated={cloudIsAuthenticated}
 					organizationAllowList={organizationAllowList}
 					modelValidationError={modelValidationError}
+					simplifySettings={fromWelcomeView}
 				/>
 			)}
 
 			{selectedProvider === "featherless" && (
 				<Featherless apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
 			)}
+
+			{/* kilocode_change start */}
+			{selectedProvider === "sap-ai-core" && (
+				<SapAiCore apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+			)}
+			{/* kilocode_change end */}
 
 			{selectedProviderModels.length > 0 && (
 				<>
@@ -889,24 +1001,25 @@ const ApiOptions = ({
 				</>
 			)}
 
-			{selectedProvider === "roo" ? (
-				<SimpleThinkingBudget
-					key={`${selectedProvider}-${selectedModelId}`}
-					apiConfiguration={apiConfiguration}
-					setApiConfigurationField={setApiConfigurationField}
-					modelInfo={selectedModelInfo}
-				/>
-			) : (
-				<ThinkingBudget
-					key={`${selectedProvider}-${selectedModelId}`}
-					apiConfiguration={apiConfiguration}
-					setApiConfigurationField={setApiConfigurationField}
-					modelInfo={selectedModelInfo}
-				/>
-			)}
+			{!fromWelcomeView &&
+				(selectedProvider === "roo" ? (
+					<SimpleThinkingBudget
+						key={`${selectedProvider}-${selectedModelId}`}
+						apiConfiguration={apiConfiguration}
+						setApiConfigurationField={setApiConfigurationField}
+						modelInfo={selectedModelInfo}
+					/>
+				) : (
+					<ThinkingBudget
+						key={`${selectedProvider}-${selectedModelId}`}
+						apiConfiguration={apiConfiguration}
+						setApiConfigurationField={setApiConfigurationField}
+						modelInfo={selectedModelInfo}
+					/>
+				))}
 
 			{/* Gate Verbosity UI by capability flag */}
-			{selectedModelInfo?.supportsVerbosity && (
+			{!fromWelcomeView && selectedModelInfo?.supportsVerbosity && (
 				<Verbosity
 					apiConfiguration={apiConfiguration}
 					setApiConfigurationField={setApiConfigurationField}
@@ -942,16 +1055,6 @@ const ApiOptions = ({
 							todoListEnabled={apiConfiguration.todoListEnabled}
 							onChange={(field, value) => setApiConfigurationField(field, value)}
 						/>
-						{
-							// kilocode_change start
-							nativeFunctionCallingProviders.includes(selectedProvider) && (
-								<ToolUseControl
-									toolStyle={apiConfiguration.toolStyle}
-									onChange={(field, value) => setApiConfigurationField(field, value)}
-								/>
-							)
-							// kilocode_change end
-						}
 						<DiffSettingsControl
 							diffEnabled={apiConfiguration.diffEnabled}
 							fuzzyMatchThreshold={apiConfiguration.fuzzyMatchThreshold}
@@ -962,6 +1065,7 @@ const ApiOptions = ({
 								value={apiConfiguration.modelTemperature}
 								onChange={handleInputChange("modelTemperature", noTransform)}
 								maxValue={2}
+								defaultValue={selectedModelInfo?.defaultTemperature}
 							/>
 						)}
 						{
@@ -1028,6 +1132,39 @@ const ApiOptions = ({
 								</div>
 							)
 							kilocode_change end */}
+						{showToolProtocolSelector && (
+							<div>
+								<label className="block font-medium mb-1">{t("settings:toolProtocol.label")}</label>
+								<Select
+									value={apiConfiguration.toolProtocol || "default"}
+									onValueChange={(value) => {
+										const newValue = value === "default" ? undefined : (value as ToolProtocol)
+										setApiConfigurationField("toolProtocol", newValue)
+									}}>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder={t("settings:common.select")} />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="default">
+											{t("settings:toolProtocol.default")} (
+											{defaultProtocol === TOOL_PROTOCOL.NATIVE
+												? t("settings:toolProtocol.native")
+												: t("settings:toolProtocol.xml")}
+											)
+										</SelectItem>
+										<SelectItem value={TOOL_PROTOCOL.XML}>
+											{t("settings:toolProtocol.xml")}
+										</SelectItem>
+										<SelectItem value={TOOL_PROTOCOL.NATIVE}>
+											{t("settings:toolProtocol.native")}
+										</SelectItem>
+									</SelectContent>
+								</Select>
+								<div className="text-sm text-vscode-descriptionForeground mt-1">
+									{t("settings:toolProtocol.description")}
+								</div>
+							</div>
+						)}
 					</CollapsibleContent>
 				</Collapsible>
 			)}

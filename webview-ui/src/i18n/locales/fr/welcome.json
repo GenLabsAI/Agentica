@@ -16,7 +16,7 @@
 			"incentive": "Essayez Roo gratuitement"
 		}
 	},
-	"chooseProvider": "Pour faire sa magie, Agentica a besoin d'une clé API.",
+
 	"startRouter": "Nous recommandons d'utiliser un routeur LLM :",
 	"startCustom": "Ou tu peux apporter ta propre clé API :",
 	"telemetry": {
@@ -25,3 +25,4 @@
 	},
 	"importSettings": "Importer les paramètres"
 }
+

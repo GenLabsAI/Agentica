@@ -32,6 +32,8 @@ import {
 } from "./WebviewMessage"
 import { ClineRulesToggles } from "./cline-rules"
 import { KiloCodeWrapperProperties } from "./kilocode/wrapper"
+import { DeploymentRecord } from "../api/providers/fetchers/sap-ai-core"
+import { STTSegment } from "./sttContract" // kilocode_change: STT segment type
 // kilocode_change end
 
 // Command interface for frontend/backend communication
@@ -82,104 +84,132 @@ export interface LanguageModelChatSelector {
 // 'settingsButtonClicked' or 'hello'. Webview will hold state.
 export interface ExtensionMessage {
 	type:
-	| "action"
-	| "state"
-	| "selectedImages"
-	| "theme"
-	| "workspaceUpdated"
-	| "invoke"
-	| "messageUpdated"
-	| "mcpServers"
-	| "enhancedPrompt"
-	| "commitSearchResults"
-	| "listApiConfig"
-	| "routerModels"
-	| "openAiModels"
-	| "ollamaModels"
-	| "lmStudioModels"
-	| "vsCodeLmModels"
-	| "huggingFaceModels"
-	| "vsCodeLmApiAvailable"
-	| "updatePrompt"
-	| "systemPrompt"
-	| "autoApprovalEnabled"
-	| "yoloMode" // kilocode_change
-	| "updateCustomMode"
-	| "deleteCustomMode"
-	| "exportModeResult"
-	| "importModeResult"
-	| "checkRulesDirectoryResult"
-	| "startCodeReview"
-	| "codeReviewResult"
-	| "deleteCustomModeCheck"
-	| "currentCheckpointUpdated"
-	| "checkpointInitWarning"
-	| "showHumanRelayDialog"
-	| "humanRelayResponse"
-	| "humanRelayCancel"
-	| "insertTextToChatArea" // kilocode_change
-	| "browserToolEnabled"
-	| "browserConnectionResult"
-	| "remoteBrowserEnabled"
-	| "ttsStart"
-	| "ttsStop"
-	| "maxReadFileLine"
-	| "fileSearchResults"
-	| "toggleApiConfigPin"
-	| "mcpMarketplaceCatalog" // kilocode_change
-	| "mcpDownloadDetails" // kilocode_change
-	| "showSystemNotification" // kilocode_change
-	| "openInBrowser" // kilocode_change
-	| "acceptInput"
-	| "focusChatInput" // kilocode_change
-	| "setHistoryPreviewCollapsed"
-	| "commandExecutionStatus"
-	| "mcpExecutionStatus"
-	| "vsCodeSetting"
-	| "profileDataResponse" // kilocode_change
-	| "balanceDataResponse" // kilocode_change
-	| "updateProfileData" // kilocode_change
-	| "profileConfigurationForEditing" // kilocode_change: Response with profile config for editing
-	| "authenticatedUser"
-	| "condenseTaskContextResponse"
-	| "singleRouterModelFetchResponse"
-	| "indexingStatusUpdate"
-	| "indexCleared"
-	| "codebaseIndexConfig"
-	| "rulesData" // kilocode_change
-	| "marketplaceInstallResult"
-	| "marketplaceRemoveResult"
-	| "marketplaceData"
-	| "mermaidFixResponse" // kilocode_change
-	| "tasksByIdResponse" // kilocode_change
-	| "taskHistoryResponse" // kilocode_change
-	| "shareTaskSuccess"
-	| "codeIndexSettingsSaved"
-	| "codeIndexSecretStatus"
-	| "showDeleteMessageDialog"
-	| "showEditMessageDialog"
-	| "kilocodeNotificationsResponse" // kilocode_change
-	| "usageDataResponse" // kilocode_change
-	| "keybindingsResponse" // kilocode_change
-	| "autoPurgeEnabled" // kilocode_change
-	| "autoPurgeDefaultRetentionDays" // kilocode_change
-	| "autoPurgeFavoritedTaskRetentionDays" // kilocode_change
-	| "autoPurgeCompletedTaskRetentionDays" // kilocode_change
-	| "autoPurgeIncompleteTaskRetentionDays" // kilocode_change
-	| "manualPurge" // kilocode_change
-	| "commands"
-	| "insertTextIntoTextarea"
-	| "dismissedUpsells"
-	| "showTimestamps" // kilocode_change
-	| "organizationSwitchResult"
-	| "managedIndexerState" // kilocode_change
+		| "action"
+		| "state"
+		| "selectedImages"
+		| "theme"
+		| "workspaceUpdated"
+		| "invoke"
+		| "messageUpdated"
+		| "mcpServers"
+		| "enhancedPrompt"
+		| "commitSearchResults"
+		| "listApiConfig"
+		| "routerModels"
+		| "openAiModels"
+		| "ollamaModels"
+		| "lmStudioModels"
+		| "vsCodeLmModels"
+		| "huggingFaceModels"
+		| "sapAiCoreModels" // kilocode_change
+		| "sapAiCoreDeployments" // kilocode_change
+		| "vsCodeLmApiAvailable"
+		| "updatePrompt"
+		| "systemPrompt"
+		| "autoApprovalEnabled"
+		| "yoloMode" // kilocode_change
+		| "updateCustomMode"
+		| "deleteCustomMode"
+		| "exportModeResult"
+		| "importModeResult"
+		| "checkRulesDirectoryResult"
+		| "startCodeReview"
+		| "codeReviewResult"
+		| "deleteCustomModeCheck"
+		| "currentCheckpointUpdated"
+		| "checkpointInitWarning"
+		| "showHumanRelayDialog"
+		| "humanRelayResponse"
+		| "humanRelayCancel"
+		| "insertTextToChatArea" // kilocode_change
+		| "browserToolEnabled"
+		| "browserConnectionResult"
+		| "remoteBrowserEnabled"
+		| "ttsStart"
+		| "ttsStop"
+		| "maxReadFileLine"
+		| "fileSearchResults"
+		| "toggleApiConfigPin"
+		| "mcpMarketplaceCatalog" // kilocode_change
+		| "mcpDownloadDetails" // kilocode_change
+		| "showSystemNotification" // kilocode_change
+		| "openInBrowser" // kilocode_change
+		| "acceptInput"
+		| "focusChatInput" // kilocode_change
+		| "stt:started" // kilocode_change: STT session started
+		| "stt:transcript" // kilocode_change: STT transcript update
+		| "stt:volume" // kilocode_change: STT volume level
+		| "stt:stopped" // kilocode_change: STT session stopped
+		| "setHistoryPreviewCollapsed"
+		| "commandExecutionStatus"
+		| "mcpExecutionStatus"
+		| "vsCodeSetting"
+		| "profileDataResponse" // kilocode_change
+		| "balanceDataResponse" // kilocode_change
+		| "updateProfileData" // kilocode_change
+		| "profileConfigurationForEditing" // kilocode_change: Response with profile config for editing
+		| "authenticatedUser"
+		| "condenseTaskContextResponse"
+		| "singleRouterModelFetchResponse"
+		| "rooCreditBalance"
+		| "indexingStatusUpdate"
+		| "indexCleared"
+		| "codebaseIndexConfig"
+		| "rulesData" // kilocode_change
+		| "marketplaceInstallResult"
+		| "marketplaceRemoveResult"
+		| "marketplaceData"
+		| "mermaidFixResponse" // kilocode_change
+		| "tasksByIdResponse" // kilocode_change
+		| "taskHistoryResponse" // kilocode_change
+		| "shareTaskSuccess"
+		| "codeIndexSettingsSaved"
+		| "codeIndexSecretStatus"
+		| "showDeleteMessageDialog"
+		| "showEditMessageDialog"
+		| "kilocodeNotificationsResponse" // kilocode_change
+		| "usageDataResponse" // kilocode_change
+		| "keybindingsResponse" // kilocode_change
+		| "autoPurgeEnabled" // kilocode_change
+		| "autoPurgeDefaultRetentionDays" // kilocode_change
+		| "autoPurgeFavoritedTaskRetentionDays" // kilocode_change
+		| "autoPurgeCompletedTaskRetentionDays" // kilocode_change
+		| "autoPurgeIncompleteTaskRetentionDays" // kilocode_change
+		| "manualPurge" // kilocode_change
+		| "commands"
+		| "insertTextIntoTextarea"
+		| "dismissedUpsells"
+		| "interactionRequired"
+		| "managedIndexerState" // kilocode_change
+		| "managedIndexerEnabled" // kilocode_change
+		| "browserSessionUpdate"
+		| "browserSessionNavigate"
+		| "organizationSwitchResult"
+		| "showTimestamps" // kilocode_change
+		| "apiMessagesSaved" // kilocode_change: File save event for API messages
+		| "taskMessagesSaved" // kilocode_change: File save event for task messages
+		| "taskMetadataSaved" // kilocode_change: File save event for task metadata
+		| "singleCompletionResult" // kilocode_change
+		| "deviceAuthStarted" // kilocode_change: Device auth initiated
+		| "deviceAuthPolling" // kilocode_change: Device auth polling update
+		| "deviceAuthComplete" // kilocode_change: Device auth successful
+		| "deviceAuthFailed" // kilocode_change: Device auth failed
+		| "deviceAuthCancelled" // kilocode_change: Device auth cancelled
+		| "chatCompletionResult" // kilocode_change: FIM completion result for chat text area
+		| "deviceAuthFailed" // kilocode_change: Device auth failed
+		| "deviceAuthCancelled" // kilocode_change: Device auth cancelled
+		| "chatCompletionResult" // kilocode_change: FIM completion result for chat text area
 	text?: string
 	// kilocode_change start
+	completionRequestId?: string // Correlation ID from request
+	completionText?: string // The completed text
+	completionError?: string // Error message if failed
 	payload?:
-	| ProfileDataResponsePayload
-	| BalanceDataResponsePayload
-	| TasksByIdResponsePayload
-	| TaskHistoryResponsePayload
+		| ProfileDataResponsePayload
+		| BalanceDataResponsePayload
+		| TasksByIdResponsePayload
+		| TaskHistoryResponsePayload
+		| [string, string] // For file save events [taskId, filePath]
 	// kilocode_change end
 	// Checkpoint warning message
 	checkpointWarning?: {
@@ -187,21 +217,20 @@ export interface ExtensionMessage {
 		timeout: number
 	}
 	action?:
-	| "chatButtonClicked"
-	| "mcpButtonClicked"
-	| "settingsButtonClicked"
-	| "historyButtonClicked"
-	| "promptsButtonClicked"
-	| "profileButtonClicked" // kilocode_change
-	| "marketplaceButtonClicked"
-	| "cloudButtonClicked"
-	| "upgradeButtonClicked"
-	| "didBecomeVisible"
-	| "focusInput"
-	| "switchTab"
-	| "focusChatInput" // kilocode_change
-	| "toggleAutoApprove"
-	| "upgradeButtonClicked" // kilocode_change
+		| "chatButtonClicked"
+		| "mcpButtonClicked"
+		| "settingsButtonClicked"
+		| "historyButtonClicked"
+		| "promptsButtonClicked"
+		| "profileButtonClicked" // kilocode_change
+		| "marketplaceButtonClicked"
+		| "cloudButtonClicked"
+		| "upgradeButtonClicked"
+		| "didBecomeVisible"
+		| "focusInput"
+		| "switchTab"
+		| "focusChatInput" // kilocode_change
+		| "toggleAutoApprove"
 	invoke?: "newChat" | "sendMessage" | "primaryButtonClick" | "secondaryButtonClick" | "setChatBoxMessage"
 	state?: ExtensionState
 	images?: string[]
@@ -234,6 +263,8 @@ export interface ExtensionMessage {
 			}
 		}>
 	}>
+	sapAiCoreModels?: ModelRecord // kilocode_change
+	sapAiCoreDeployments?: DeploymentRecord // kilocode_change
 	mcpServers?: McpServer[]
 	commits?: GitCommit[]
 	listApiConfig?: ProviderSettingsEntry[]
@@ -243,6 +274,11 @@ export interface ExtensionMessage {
 	slug?: string
 	success?: boolean
 	values?: Record<string, any>
+	sessionId?: string // kilocode_change: STT session ID
+	segments?: STTSegment[] // kilocode_change: STT transcript segments (complete state)
+	isFinal?: boolean // kilocode_change: STT transcript is final
+	level?: number // kilocode_change: STT volume level (0-1)
+	reason?: "completed" | "cancelled" | "error" // kilocode_change: STT stop reason
 	requestId?: string
 	promptText?: string
 	results?: { path: string; type: "file" | "folder"; label?: string }[]
@@ -294,6 +330,8 @@ export interface ExtensionMessage {
 	queuedMessages?: QueuedMessage[]
 	list?: string[] // For dismissedUpsells
 	organizationId?: string | null // For organizationSwitchResult
+	// kilocode_change start: Managed Indexer
+	managedIndexerEnabled?: boolean
 	managedIndexerState?: Array<{
 		workspaceFolderPath: string
 		workspaceFolderName: string
@@ -315,6 +353,19 @@ export interface ExtensionMessage {
 		}
 	}> // kilocode_change
 	review?: CodeReviewResult // For code review result messages
+	}> // kilocode_change end: Managed Indexer
+	browserSessionMessages?: ClineMessage[] // For browser session panel updates
+	isBrowserSessionActive?: boolean // For browser session panel updates
+	stepIndex?: number // For browserSessionNavigate: the target step index to display
+	// kilocode_change start: Device auth data
+	deviceAuthCode?: string
+	deviceAuthVerificationUrl?: string
+	deviceAuthExpiresIn?: number
+	deviceAuthTimeRemaining?: number
+	deviceAuthToken?: string
+	deviceAuthUserEmail?: string
+	deviceAuthError?: string
+	// kilocode_change end: Device auth data
 }
 
 export type ExtensionState = Pick<
@@ -322,9 +373,7 @@ export type ExtensionState = Pick<
 	| "currentApiConfigName"
 	| "listApiConfigMeta"
 	| "pinnedApiConfigs"
-	// | "lastShownAnnouncementId"
 	| "customInstructions"
-	// | "taskHistory" // Optional in GlobalSettings, required here.
 	| "dismissedUpsells"
 	| "autoApprovalEnabled"
 	| "yoloMode" // kilocode_change
@@ -333,10 +382,9 @@ export type ExtensionState = Pick<
 	| "alwaysAllowWrite"
 	| "alwaysAllowWriteOutsideWorkspace"
 	| "alwaysAllowWriteProtected"
-	// | "writeDelayMs" // Optional in GlobalSettings, required here.
+	| "alwaysAllowDelete" // kilocode_change
 	| "alwaysAllowBrowser"
 	| "alwaysApproveResubmit"
-	// | "requestDelaySeconds" // Optional in GlobalSettings, required here.
 	| "alwaysAllowMcp"
 	| "alwaysAllowModeSwitch"
 	| "alwaysAllowSubtasks"
@@ -356,16 +404,11 @@ export type ExtensionState = Pick<
 	| "remoteBrowserEnabled"
 	| "cachedChromeHostUrl"
 	| "remoteBrowserHost"
-	// | "enableCheckpoints" // Optional in GlobalSettings, required here.
 	| "ttsEnabled"
 	| "ttsSpeed"
 	| "soundEnabled"
 	| "soundVolume"
-	// | "maxOpenTabsContext" // Optional in GlobalSettings, required here.
-	// | "maxWorkspaceFiles" // Optional in GlobalSettings, required here.
-	// | "showRooIgnoredFiles" // Optional in GlobalSettings, required here.
-	// | "maxReadFileLine" // Optional in GlobalSettings, required here.
-	| "maxConcurrentFileReads" // Optional in GlobalSettings, required here.
+	| "maxConcurrentFileReads"
 	| "allowVeryLargeReads" // kilocode_change
 	| "terminalOutputLineLimit"
 	| "terminalOutputCharacterLimit"
@@ -383,14 +426,10 @@ export type ExtensionState = Pick<
 	| "fuzzyMatchThreshold"
 	| "morphApiKey" // kilocode_change: Morph fast apply - global setting
 	| "fastApplyModel" // kilocode_change: Fast Apply model selection
+	| "fastApplyApiProvider" // kilocode_change: Fast Apply model api base url
 	// | "experiments" // Optional in GlobalSettings, required here.
 	| "language"
-	// | "telemetrySetting" // Optional in GlobalSettings, required here.
-	// | "mcpEnabled" // Optional in GlobalSettings, required here.
-	// | "enableMcpServerCreation" // Optional in GlobalSettings, required here.
-	// | "mode" // Optional in GlobalSettings, required here.
 	| "modeApiConfigs"
-	// | "customModes" // Optional in GlobalSettings, required here.
 	| "customModePrompts"
 	| "customSupportPrompts"
 	| "enhancementApiConfigId"
@@ -417,11 +456,13 @@ export type ExtensionState = Pick<
 	| "systemNotificationsEnabled" // kilocode_change
 	| "includeDiagnosticMessages"
 	| "maxDiagnosticMessages"
+	| "imageGenerationProvider"
 	| "openRouterImageGenerationSelectedModel"
 	| "includeTaskHistoryInEnhance"
 	| "reasoningBlockCollapsed"
 	| "includeCurrentTime"
 	| "includeCurrentCost"
+	| "maxGitStatusFiles"
 > & {
 	version: string
 	clineMessages: ClineMessage[]
@@ -481,6 +522,8 @@ export type ExtensionState = Pick<
 	organizationAllowList: OrganizationAllowList
 	organizationSettingsVersion?: number
 
+	isBrowserSessionActive: boolean // Actual browser session state
+
 	autoCondenseContext: boolean
 	autoCondenseContextPercent: number
 	marketplaceItems?: MarketplaceItem[]
@@ -501,6 +544,8 @@ export type ExtensionState = Pick<
 	featureRoomoteControlEnabled: boolean
 	virtualQuotaActiveModel?: { id: string; info: ModelInfo } // kilocode_change: Add virtual quota active model for UI display
 	showTimestamps?: boolean // kilocode_change: Show timestamps in chat messages
+	debug?: boolean
+	speechToTextStatus?: { available: boolean; reason?: "openaiKeyMissing" | "ffmpegNotInstalled" } // kilocode_change: Speech-to-text availability status with failure reason
 }
 
 export interface ClineSayTool {
@@ -522,9 +567,29 @@ export interface ClineSayTool {
 	| "generateImage"
 	| "imageGenerated"
 	| "runSlashCommand"
+		| "editedExistingFile"
+		| "appliedDiff"
+		| "newFileCreated"
+		| "codebaseSearch"
+		| "readFile"
+		| "fetchInstructions"
+		| "listFilesTopLevel"
+		| "listFilesRecursive"
+		| "listCodeDefinitionNames"
+		| "searchFiles"
+		| "switchMode"
+		| "newTask"
+		| "finishTask"
+		| "generateImage"
+		| "imageGenerated"
+		| "runSlashCommand"
+		| "updateTodoList"
+		| "deleteFile" // kilocode_change: Handles both files and directories
 	path?: string
 	diff?: string
 	content?: string
+	// Unified diff statistics computed by the extension
+	diffStats?: { added: number; removed: number }
 	regex?: string
 	filePattern?: string
 	mode?: string
@@ -534,6 +599,14 @@ export interface ClineSayTool {
 	additionalFileCount?: number // Number of additional files in the same read_file request
 	lineNumber?: number
 	query?: string
+	// kilocode_change start: Directory stats - only present when deleting directories
+	stats?: {
+		files: number
+		directories: number
+		size: number
+		isComplete: boolean
+	}
+	// kilocode_change end
 	batchFiles?: Array<{
 		path: string
 		lineSnippet: string
@@ -546,6 +619,8 @@ export interface ClineSayTool {
 		changeCount: number
 		key: string
 		content: string
+		// Per-file unified diff statistics computed by the extension
+		diffStats?: { added: number; removed: number }
 		diffs?: Array<{
 			content: string
 			startLine?: number
@@ -574,6 +649,7 @@ export const browserActions = [
 	"click",
 	"hover",
 	"type",
+	"press",
 	"scroll_down",
 	"scroll_up",
 	"resize",
@@ -587,6 +663,7 @@ export interface ClineSayBrowserAction {
 	coordinate?: string
 	size?: string
 	text?: string
+	executedCoordinate?: string
 }
 
 export type BrowserActionResult = {
@@ -594,6 +671,8 @@ export type BrowserActionResult = {
 	logs?: string
 	currentUrl?: string
 	currentMousePosition?: string
+	viewportWidth?: number
+	viewportHeight?: number
 }
 
 export interface ClineAskUseMcpServer {

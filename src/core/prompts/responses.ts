@@ -3,9 +3,12 @@ import * as path from "path"
 import * as diff from "diff"
 import { RooIgnoreController, LOCK_TEXT_SYMBOL } from "../ignore/RooIgnoreController"
 import { RooProtectedController } from "../protect/RooProtectedController"
-import { ToolUseStyle } from "@roo-code/types" // kilocode_change
+import * as vscode from "vscode"
+import { ToolProtocol, isNativeProtocol, TOOL_PROTOCOL } from "@roo-code/types"
+import { Package } from "../../shared/package"
 
 export const formatResponse = {
+	// kilocode_change start
 	duplicateFileReadNotice: () =>
 		`[[NOTE] This file read has been removed to save space in the context window. Refer to the latest file read for the most up to date version of this file.]`,
 
@@ -14,84 +17,135 @@ export const formatResponse = {
 
 	condense: () =>
 		`The user has accepted the condensed conversation summary you generated. This summary covers important details of the historical conversation with the user which has been truncated.\n<explicit_instructions type="condense_response">It's crucial that you respond by ONLY asking the user what you should work on next. You should NOT take any initiative or make any assumptions about continuing with work. For example you should NOT suggest file changes or attempt to read any files.\nWhen asking the user what you should work on next, you can reference information in the summary which was just generated. However, you should NOT reference information outside of what's contained in the summary for this response. Keep this response CONCISE.</explicit_instructions>`,
+	// kilocode_change end
+	toolDenied: (protocol?: ToolProtocol) => {
+		if (isNativeProtocol(protocol ?? TOOL_PROTOCOL.XML)) {
+			return JSON.stringify({
+				status: "denied",
+				message: "The user denied this operation.",
+			})
+		}
+		return `The user denied this operation.`
+	},
 
-	toolDenied: () => `The user denied this operation.`,
+	toolDeniedWithFeedback: (feedback?: string, protocol?: ToolProtocol) => {
+		if (isNativeProtocol(protocol ?? TOOL_PROTOCOL.XML)) {
+			return JSON.stringify({
+				status: "denied",
+				message: "The user denied this operation and provided the following feedback",
+				feedback: feedback,
+			})
+		}
+		return `The user denied this operation and provided the following feedback:\n<feedback>\n${feedback}\n</feedback>`
+	},
 
-	toolDeniedWithFeedback: (feedback?: string) =>
-		`The user denied this operation and provided the following feedback:\n<feedback>\n${feedback}\n</feedback>`,
+	toolApprovedWithFeedback: (feedback?: string, protocol?: ToolProtocol) => {
+		if (isNativeProtocol(protocol ?? TOOL_PROTOCOL.XML)) {
+			return JSON.stringify({
+				status: "approved",
+				message: "The user approved this operation and provided the following context",
+				feedback: feedback,
+			})
+		}
+		return `The user approved this operation and provided the following context:\n<feedback>\n${feedback}\n</feedback>`
+	},
 
-	toolApprovedWithFeedback: (feedback?: string) =>
-		`The user approved this operation and provided the following context:\n<feedback>\n${feedback}\n</feedback>`,
+	toolError: (error?: string, protocol?: ToolProtocol) => {
+		if (isNativeProtocol(protocol ?? TOOL_PROTOCOL.XML)) {
+			return JSON.stringify({
+				status: "error",
+				message: "The tool execution failed",
+				error: error,
+			})
+		}
+		return `The tool execution failed with the following error:\n<error>\n${error}\n</error>`
+	},
 
-	toolError: (error?: string) => `The tool execution failed with the following error:\n<error>\n${error}\n</error>`,
+	rooIgnoreError: (path: string, protocol?: ToolProtocol) => {
+		if (isNativeProtocol(protocol ?? TOOL_PROTOCOL.XML)) {
+			return JSON.stringify({
+				status: "error",
+				type: "access_denied",
+				message: "Access blocked by .kilocodeignore",
+				path: path,
+				suggestion: "Try to continue without this file, or ask the user to update the .kilocodeignore file",
+			})
+		}
+		return `Access to ${path} is blocked by the .kilocodeignore file settings. You must try to continue in the task without using this file, or ask the user to update the .kilocodeignore file.`
+	},
 
-	rooIgnoreError: (path: string) =>
-		`Access to ${path} is blocked by the .kilocodeignore file settings. You must try to continue in the task without using this file, or ask the user to update the .kilocodeignore file.`,
+	noToolsUsed: (protocol?: ToolProtocol) => {
+		const instructions = getToolInstructionsReminder(protocol)
 
-	noToolsUsed: (toolUseStyle_kilocode: ToolUseStyle) =>
-		`[ERROR] You did not use a tool in your previous response! Please retry with a tool use.
+		return `[ERROR] You did not use a tool in your previous response! Please retry with a tool use.
 
-${toolUseStyle_kilocode === "json" ? "" : toolUseInstructionsReminder}
+${instructions}
 
 # Next Steps
 
 If you have completed the user's task, use the attempt_completion tool.
 If you require additional information from the user, use the ask_followup_question tool.
 Otherwise, if you have not completed the task and do not need additional information, then proceed with the next step of the task.
-(This is an automated message, so do not respond to it conversationally.)`,
-
-	tooManyMistakes: (feedback?: string) =>
-		`You seem to be having trouble proceeding. The user has provided the following feedback to help guide you:\n<feedback>\n${feedback}\n</feedback>`,
-
-	missingToolParameterError: (paramName: string, toolUseStyle_kilocode: ToolUseStyle) =>
-		`Missing value for required parameter '${paramName}'. Please retry with complete response.\n\n${toolUseStyle_kilocode === "json" ? "" : toolUseInstructionsReminder}`,
-
-	lineCountTruncationError: (
-		actualLineCount: number,
-		isNewFile: boolean,
-		diffStrategyEnabled: boolean = false,
-		toolUseStyle_kilocode: ToolUseStyle,
-	) => {
-		const truncationMessage = `Note: Your response may have been truncated because it exceeded your output limit. You wrote ${actualLineCount} lines of content, but the line_count parameter was either missing or not included in your response.`
-
-		const newFileGuidance =
-			`This appears to be a new file.\n` +
-			`${truncationMessage}\n\n` +
-			`RECOMMENDED APPROACH:\n` +
-			`1. Try again with the line_count parameter in your response if you forgot to include it\n` +
-			`2. Or break your content into smaller chunks - first use write_to_file with the initial chunk\n` +
-			`3. Then use insert_content to append additional chunks\n`
-
-		let existingFileApproaches = [
-			`1. Try again with the line_count parameter in your response if you forgot to include it`,
-		]
-
-		if (diffStrategyEnabled) {
-			existingFileApproaches.push(`2. Or try using apply_diff instead of write_to_file for targeted changes`)
-		}
-
-		existingFileApproaches.push(
-			`${diffStrategyEnabled ? "3" : "2"}. Or use insert_content to add specific content at particular lines`,
-		)
-
-		const existingFileGuidance =
-			`This appears to be content for an existing file.\n` +
-			`${truncationMessage}\n\n` +
-			`RECOMMENDED APPROACH:\n` +
-			`${existingFileApproaches.join("\n")}\n`
-
-		return `${isNewFile ? newFileGuidance : existingFileGuidance}\n${toolUseStyle_kilocode === "json" ? "" : toolUseInstructionsReminder}`
+(This is an automated message, so do not respond to it conversationally.)`
 	},
 
-	invalidMcpToolArgumentError: (serverName: string, toolName: string) =>
-		`Invalid JSON argument used with ${serverName} for ${toolName}. Please retry with a properly formatted JSON argument.`,
+	tooManyMistakes: (feedback?: string, protocol?: ToolProtocol) => {
+		if (isNativeProtocol(protocol ?? TOOL_PROTOCOL.XML)) {
+			return JSON.stringify({
+				status: "guidance",
+				message: "You seem to be having trouble proceeding",
+				feedback: feedback,
+			})
+		}
+		return `You seem to be having trouble proceeding. The user has provided the following feedback to help guide you:\n<feedback>\n${feedback}\n</feedback>`
+	},
 
-	unknownMcpToolError: (serverName: string, toolName: string, availableTools: string[]) => {
+	missingToolParameterError: (paramName: string, protocol?: ToolProtocol) => {
+		const instructions = getToolInstructionsReminder(protocol)
+
+		return `Missing value for required parameter '${paramName}'. Please retry with complete response.\n\n${instructions}`
+	},
+
+	invalidMcpToolArgumentError: (serverName: string, toolName: string, protocol?: ToolProtocol) => {
+		if (isNativeProtocol(protocol ?? TOOL_PROTOCOL.XML)) {
+			return JSON.stringify({
+				status: "error",
+				type: "invalid_argument",
+				message: "Invalid JSON argument",
+				server: serverName,
+				tool: toolName,
+				suggestion: "Please retry with a properly formatted JSON argument",
+			})
+		}
+		return `Invalid JSON argument used with ${serverName} for ${toolName}. Please retry with a properly formatted JSON argument.`
+	},
+
+	unknownMcpToolError: (serverName: string, toolName: string, availableTools: string[], protocol?: ToolProtocol) => {
+		if (isNativeProtocol(protocol ?? TOOL_PROTOCOL.XML)) {
+			return JSON.stringify({
+				status: "error",
+				type: "unknown_tool",
+				message: "Tool does not exist on server",
+				server: serverName,
+				tool: toolName,
+				available_tools: availableTools.length > 0 ? availableTools : [],
+				suggestion: "Please use one of the available tools or check if the server is properly configured",
+			})
+		}
 		const toolsList = availableTools.length > 0 ? availableTools.join(", ") : "No tools available"
 		return `Tool '${toolName}' does not exist on server '${serverName}'.\n\nAvailable tools on this server: ${toolsList}\n\nPlease use one of the available tools or check if the server is properly configured.`
 	},
 
-	unknownMcpServerError: (serverName: string, availableServers: string[]) => {
+	unknownMcpServerError: (serverName: string, availableServers: string[], protocol?: ToolProtocol) => {
+		if (isNativeProtocol(protocol ?? TOOL_PROTOCOL.XML)) {
+			return JSON.stringify({
+				status: "error",
+				type: "unknown_server",
+				message: "Server is not configured",
+				server: serverName,
+				available_servers: availableServers.length > 0 ? availableServers : [],
+			})
+		}
 		const serversList = availableServers.length > 0 ? availableServers.join(", ") : "No servers available"
 		return `Server '${serverName}' is not configured. Available servers: ${serversList}`
 	},
@@ -192,7 +246,9 @@ Otherwise, if you have not completed the task and do not need additional informa
 
 	createPrettyPatch: (filename = "file", oldStr?: string, newStr?: string) => {
 		// strings cannot be undefined or diff throws exception
-		const patch = diff.createPatch(filename.toPosix(), oldStr || "", newStr || "")
+		const patch = diff.createPatch(filename.toPosix(), oldStr || "", newStr || "", undefined, undefined, {
+			context: 3,
+		})
 		const lines = patch.split("\n")
 		const prettyPatchLines = lines.slice(4)
 		return prettyPatchLines.join("\n")
@@ -233,3 +289,20 @@ I have completed the task...
 </attempt_completion>
 
 Always use the actual tool name as the XML tag name for proper parsing and execution.`
+
+const toolUseInstructionsReminderNative = `# Reminder: Instructions for Tool Use
+
+Tools are invoked using the platform's native tool calling mechanism. Each tool requires specific parameters as defined in the tool descriptions. Refer to the tool definitions provided in your system instructions for the correct parameter structure and usage examples.
+
+Always ensure you provide all required parameters for the tool you wish to use.`
+
+/**
+ * Gets the appropriate tool use instructions reminder based on the protocol.
+ *
+ * @param protocol - Optional tool protocol, defaults to XML if not provided
+ * @returns The tool use instructions reminder text
+ */
+function getToolInstructionsReminder(protocol?: ToolProtocol): string {
+	const effectiveProtocol = protocol ?? TOOL_PROTOCOL.XML
+	return isNativeProtocol(effectiveProtocol) ? toolUseInstructionsReminderNative : toolUseInstructionsReminder
+}

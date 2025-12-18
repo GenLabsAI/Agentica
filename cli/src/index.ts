@@ -7,12 +7,13 @@ loadEnvFile()
 import { Command } from "commander"
 import { existsSync } from "fs"
 import { CLI } from "./cli.js"
-import { DEFAULT_MODES } from "./constants/modes/defaults.js"
+import { DEFAULT_MODES, getAllModes } from "./constants/modes/defaults.js"
 import { getTelemetryService } from "./services/telemetry/index.js"
 import { Package } from "./constants/package.js"
 import openConfigFile from "./config/openConfig.js"
-import authWizard from "./utils/authWizard.js"
+import authWizard from "./auth/index.js"
 import { configExists } from "./config/persistence.js"
+import { loadCustomModes } from "./config/customModes.js"
 import { envConfigExists, getMissingEnvVars } from "./config/env-config.js"
 import { getParallelModeParams } from "./parallel/parallel.js"
 import { DEBUG_MODES, DEBUG_FUNCTIONS } from "./debug/index.js"
@@ -21,7 +22,8 @@ import { logs } from "./services/logs.js"
 const program = new Command()
 let cli: CLI | null = null
 
-// Get list of valid mode slugs
+// Get list of valid mode slugs from default modes
+// Custom modes will be loaded and validated per workspace
 const validModes = DEFAULT_MODES.map((mode) => mode.slug)
 
 program
@@ -31,7 +33,9 @@ program
 	.option("-m, --mode <mode>", `Set the mode of operation (${validModes.join(", ")})`)
 	.option("-w, --workspace <path>", "Path to the workspace directory", process.cwd())
 	.option("-a, --auto", "Run in autonomous mode (non-interactive)", false)
+	.option("--yolo", "Auto-approve all tool permissions", false)
 	.option("-j, --json", "Output messages as JSON (requires --auto)", false)
+	.option("-i, --json-io", "Bidirectional JSON mode (no TUI, stdin/stdout enabled)", false)
 	.option("-c, --continue", "Resume the last conversation from this workspace", false)
 	.option("-t, --timeout <seconds>", "Timeout in seconds for autonomous mode (requires --auto)", parseInt)
 	.option(
@@ -41,15 +45,11 @@ program
 	.option("-eb, --existing-branch <branch>", "(Parallel mode only) Instructs the agent to work on an existing branch")
 	.option("-pv, --provider <id>", "Select provider by ID (e.g., 'kilocode-1')")
 	.option("-mo, --model <model>", "Override model for the selected provider")
+	.option("-s, --session <sessionId>", "Restore a session by ID")
+	.option("-f, --fork <shareId>", "Fork a session by ID")
 	.option("--nosplash", "Disable the welcome message and update notifications", false)
 	.argument("[prompt]", "The prompt or command to execute")
 	.action(async (prompt, options) => {
-		// Validate mode if provided
-		if (options.mode && !validModes.includes(options.mode)) {
-			console.error(`Error: Invalid mode "${options.mode}". Valid modes are: ${validModes.join(", ")}`)
-			process.exit(1)
-		}
-
 		// Validate that --existing-branch requires --parallel
 		if (options.existingBranch && !options.parallel) {
 			console.error("Error: --existing-branch option requires --parallel flag to be enabled")
@@ -62,15 +62,14 @@ program
 			process.exit(1)
 		}
 
-		// Validate that piped stdin requires autonomous mode
-		if (!process.stdin.isTTY && !options.auto) {
-			console.error("Error: Piped input requires --auto flag to be enabled")
-			process.exit(1)
-		}
+		// Load custom modes from workspace
+		const customModes = await loadCustomModes(options.workspace)
+		const allModes = getAllModes(customModes)
+		const allValidModes = allModes.map((mode) => mode.slug)
 
-		// Validate that JSON mode requires autonomous mode
-		if (options.json && !options.auto) {
-			console.error("Error: --json option requires --auto flag to be enabled")
+		// Validate mode if provided
+		if (options.mode && !allValidModes.includes(options.mode)) {
+			console.error(`Error: Invalid mode "${options.mode}". Valid modes are: ${allValidModes.join(", ")}`)
 			process.exit(1)
 		}
 
@@ -114,6 +113,24 @@ program
 		// Validate that continue mode is not used with a prompt
 		if (options.continue && finalPrompt) {
 			console.error("Error: --continue option cannot be used with a prompt argument")
+			process.exit(1)
+		}
+
+		// Validate that --fork and --session are not used together
+		if (options.fork && options.session) {
+			console.error("Error: --fork and --session options cannot be used together")
+			process.exit(1)
+		}
+
+		// Validate that piped stdin requires autonomous mode or json-io mode
+		if (!process.stdin.isTTY && !options.auto && !options.jsonIo) {
+			console.error("Error: Piped input requires --auto or --json-io flag to be enabled")
+			process.exit(1)
+		}
+
+		// Validate that --json requires --auto (--json-io is independent)
+		if (options.json && !options.auto) {
+			console.error("Error: --json option requires --auto flag to be enabled")
 			process.exit(1)
 		}
 
@@ -190,18 +207,26 @@ program
 
 		logs.debug("Starting Kilo Code CLI", "Index", { options })
 
+		const jsonIoMode = options.jsonIo
+
 		cli = new CLI({
 			mode: options.mode,
 			workspace: finalWorkspace,
 			ci: options.auto,
-			json: options.json,
+			yolo: options.yolo,
+			// json-io mode implies json output (both modes output JSON to stdout)
+			json: options.json || jsonIoMode,
+			jsonInteractive: jsonIoMode,
 			prompt: finalPrompt,
 			timeout: options.timeout,
+			customModes: customModes,
 			parallel: options.parallel,
 			worktreeBranch,
 			continue: options.continue,
 			provider: options.provider,
 			model: options.model,
+			session: options.session,
+			fork: options.fork,
 			noSplash: options.nosplash,
 		})
 		await cli.start()
@@ -220,7 +245,12 @@ program
 	.command("config")
 	.description("Open the configuration file in your default editor")
 	.action(async () => {
-		await openConfigFile()
+		try {
+			await openConfigFile()
+		} catch (_error) {
+			// Error already logged by openConfigFile
+			process.exit(1)
+		}
 	})
 
 // Debug command - checks hardware and OS compatibility
@@ -246,16 +276,18 @@ program
 // Handle process termination signals
 process.on("SIGINT", async () => {
 	if (cli) {
-		await cli.dispose()
+		await cli.dispose("SIGINT")
+	} else {
+		process.exit(130)
 	}
-	process.exit(0)
 })
 
 process.on("SIGTERM", async () => {
 	if (cli) {
-		await cli.dispose()
+		await cli.dispose("SIGTERM")
+	} else {
+		process.exit(143)
 	}
-	process.exit(0)
 })
 
 // Parse command line arguments

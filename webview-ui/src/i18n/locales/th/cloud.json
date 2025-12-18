@@ -5,7 +5,7 @@
 	"testApiAuthentication": "ทดสอบการยืนยันตัวตน API",
 	"signIn": "เชื่อมต่อกับ Agentica Cloud",
 	"connect": "เชื่อมต่อเดี๋ยวนี้",
-	"cloudBenefitsTitle": "เชื่อมต่อกับ Agentica Cloud",
+
 	"cloudBenefitWalkaway": "ติดตามและควบคุมงานจากทุกที่ด้วย Kilo remote Control",
 	"cloudBenefitSharing": "แชร์งานกับผู้อื่น",
 	"cloudBenefitHistory": "เข้าถึงประวัติงานของคุณ",
@@ -32,3 +32,4 @@
 		"taskList": "ดูงานทั้งหมดในที่เดียว ลองใช้การจัดการงานบนคลาวด์"
 	}
 }
+

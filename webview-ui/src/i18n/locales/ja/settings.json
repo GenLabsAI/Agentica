@@ -22,6 +22,8 @@
 	},
 	"sections": {
 		"providers": "プロバイダー",
+		"modes": "モード",
+		"mcp": "MCPサーバー",
 		"autoApprove": "自動承認",
 		"browser": "コンピューターアクセス",
 		"checkpoints": "チェックポイント",
@@ -37,6 +39,26 @@
 		"about": "Agenticaについて",
 		"autoPurge": "自動クリーンアップ",
 		"ghost": "Ghost"
+	},
+	"about": {
+		"bugReport": {
+			"label": "バグを見つけましたか？",
+			"link": "GitHubで報告"
+		},
+		"featureRequest": {
+			"label": "アイデアがありますか？",
+			"link": "共有してください"
+		},
+		"securityIssue": {
+			"label": "脆弱性を発見しましたか？",
+			"link": "開示プロセスに従ってください"
+		},
+		"contact": {
+			"label": "お問い合わせが必要ですか？メールを送信"
+		},
+		"community": "ヒントが欲しいですか、または他のKilo Codeユーザーと交流したいですか？<redditLink>reddit.com/r/kilocode</redditLink>または<discordLink>kilo.ai/discord</discordLink>に参加してください",
+		"contactAndCommunity": "お問い合わせとコミュニティ",
+		"manageSettings": "設定を管理"
 	},
 	"slashCommands": {
 		"description": "スラッシュコマンドを管理して、カスタムワークフローやアクションを素早く実行します。<DocsLink>詳細はこちら</DocsLink>"
@@ -58,9 +80,17 @@
 		"vercelAiGatewayProvider": "Vercel AI Gateway",
 		"vercelAiGatewayApiKeyLabel": "APIキー",
 		"vercelAiGatewayApiKeyPlaceholder": "Vercel AI GatewayのAPIキーを入力してください",
+		"bedrockProvider": "Amazon Bedrock",
+		"bedrockRegionLabel": "AWS リージョン",
+		"bedrockRegionPlaceholder": "us-east-1",
+		"bedrockProfileLabel": "AWS プロファイル",
+		"bedrockProfilePlaceholder": "default",
+		"bedrockProfileDescription": "~/.aws/credentials の AWS プロファイル名（必須）。",
 		"openRouterProvider": "OpenRouter",
 		"openRouterApiKeyLabel": "OpenRouter APIキー",
 		"openRouterApiKeyPlaceholder": "OpenRouter APIキーを入力してください",
+		"openRouterProviderRoutingLabel": "OpenRouterプロバイダールーティング",
+		"openRouterProviderRoutingDescription": "OpenRouterは、埋め込みモデルに最適な利用可能なプロバイダーにリクエストをルーティングします。デフォルトでは、稼働時間を最大化するために、リクエストはトッププロバイダー間で負荷分散されます。ただし、このモデルに使用する特定のプロバイダーを選択することもできます。",
 		"mistralProvider": "Mistral",
 		"mistralApiKeyLabel": "APIキー:",
 		"mistralApiKeyPlaceholder": "Mistral APIキーを入力してください",
@@ -96,8 +126,12 @@
 		"modelPlaceholder": "モデル名を入力",
 		"selectModel": "モデルを選択",
 		"ollamaBaseUrlLabel": "Ollama ベースURL",
+		"vectorStoreProviderLabel": "ベクターストアプロバイダー",
 		"qdrantApiKeyLabel": "Qdrant APIキー",
 		"qdrantApiKeyPlaceholder": "Qdrant APIキーを入力（オプション）",
+		"lancedbVectorStoreDirectoryLabel": "LanceDBベクトルストアパス",
+		"lancedbVectorStoreDirectoryPlaceholder": "カスタムベクターストアパスを入力（オプション）",
+		"lancedbVectorStoreDirectoryDescription": "LanceDBベクトルデータベースを格納するパス。空の場合は、globalStorageUri/vector のデフォルトの場所が使用されます。",
 		"setupConfigLabel": "設定",
 		"ollamaUrlPlaceholder": "http://localhost:11434",
 		"openAiCompatibleBaseUrlPlaceholder": "https://api.example.com",
@@ -128,11 +162,14 @@
 			"geminiApiKeyRequired": "Gemini APIキーが必要です",
 			"mistralApiKeyRequired": "Mistral APIキーが必要です",
 			"vercelAiGatewayApiKeyRequired": "Vercel AI Gateway APIキーが必要です",
+			"bedrockRegionRequired": "AWS リージョンは必須です",
+			"bedrockProfileRequired": "AWS プロファイルは必須です",
 			"ollamaBaseUrlRequired": "OllamaのベースURLが必要です",
 			"baseUrlRequired": "ベースURLが必要です",
 			"modelDimensionMinValue": "モデルの次元は0より大きくなければなりません",
 			"openRouterApiKeyRequired": "OpenRouter APIキーが必要です"
 		},
+		"optional": "オプション",
 		"advancedConfigLabel": "詳細設定",
 		"searchMinScoreLabel": "検索スコアのしきい値",
 		"searchMinScoreDescription": "検索結果に必要な最小類似度スコア（0.0-1.0）。値を低くするとより多くの結果が返されますが、関連性が低くなる可能性があります。値を高くすると返される結果は少なくなりますが、より関連性が高くなります。",
@@ -173,6 +210,10 @@
 		"browser": {
 			"label": "ブラウザ",
 			"description": "承認なしで自動的にブラウザアクションを実行 — 注意：コンピューター使用をサポートするモデルを使用している場合のみ適用されます"
+		},
+		"delete": {
+			"label": "削除",
+			"description": "承認なしで自動的にファイルやディレクトリを削除"
 		},
 		"retry": {
 			"label": "再試行",
@@ -290,8 +331,12 @@
 		"anthropicUseAuthToken": "Anthropic APIキーをX-Api-Keyの代わりにAuthorizationヘッダーとして渡す",
 		"anthropic1MContextBetaLabel": "1Mコンテキストウィンドウを有効にする（ベータ版）",
 		"anthropic1MContextBetaDescription": "Claude Sonnet 4のコンテキストウィンドウを100万トークンに拡張します",
+		"anthropicUseAzureDeployment": "Azureデプロイメント名を使用",
+		"anthropicAzureDeploymentPlaceholder": "デプロイメント名を入力...",
 		"awsBedrock1MContextBetaLabel": "1Mコンテキストウィンドウを有効にする（ベータ版）",
 		"awsBedrock1MContextBetaDescription": "Claude Sonnet 4のコンテキストウィンドウを100万トークンに拡張します",
+		"basetenApiKey": "Baseten APIキー",
+		"getBasetenApiKey": "Baseten APIキーを取得",
 		"cerebrasApiKey": "Cerebras APIキー",
 		"getCerebrasApiKey": "Cerebras APIキーを取得",
 		"chutesApiKey": "Chutes APIキー",
@@ -341,6 +386,32 @@
 		"huggingFaceSelectProvider": "プロバイダーを選択...",
 		"huggingFaceSearchProviders": "プロバイダーを検索...",
 		"huggingFaceNoProvidersFound": "プロバイダーが見つかりません",
+		"sapAiCore": {
+			"serviceKey": "AI Coreサービスキー",
+			"serviceKeyJson": "サービスキーJSONを入力...",
+			"resourceGroup": "AI Coreリソースグループ",
+			"credentialsNote": "これらの認証情報はローカルに保存され、この拡張機能からのAPIリクエストにのみ使用されます。",
+			"learnMore": "SAP AI Core APIアクセスの詳細については、こちらをご覧ください。",
+			"orchestrationMode": "オーケストレーションモード",
+			"orchestrationEnabledDesc": "有効にすると、個別のデプロイメントを必要とせずに、利用可能なすべてのモデルにアクセスできます。",
+			"orchestrationDisabledDesc": "無効にすると、AI Coreサービスインスタンスにデプロイされた基盤モデルにのみアクセスできます。",
+			"modelDeploymentDesc": "利用可能なデプロイメントがあるモデルのみ選択できます。",
+			"deployment": "デプロイメント",
+			"loading": "読み込み中...",
+			"modelsCount": "({{count}}モデル)",
+			"deploymentsCount": "({{count}}デプロイメント)",
+			"selectModel": "モデルを選択...",
+			"selectDeployment": "デプロイメントを選択...",
+			"searchModels": "モデルを検索...",
+			"searchDeployments": "デプロイメントを検索...",
+			"noModelsFound": "モデルが見つかりません",
+			"noDeploymentFound": "デプロイメントが見つかりません",
+			"getStarted": "SAP AI Coreを始める",
+			"supportedProviders": "対応プロバイダー",
+			"supportedProvidersDesc1": "SAP AI Coreプロバイダーは現在、以下のLLMプロバイダーの基盤モデルのみをサポートしています：",
+			"supportedProvidersDesc2": "より多くのモデルにアクセスするには、オーケストレーションモードへの切り替えを検討してください。",
+			"supportedProvidersDesc3": "オーケストレーションモードの詳細"
+		},
 		"getGeminiApiKey": "Gemini APIキーを取得",
 		"openAiApiKey": "OpenAI APIキー",
 		"apiKey": "APIキー",
@@ -350,6 +421,14 @@
 		"getMistralApiKey": "Mistral / Codestral APIキーを取得",
 		"codestralBaseUrl": "Codestral ベースURL（オプション）",
 		"codestralBaseUrlDesc": "Codestralモデルの代替URLを設定します。",
+		"nanoGptApiKey": "Nano-GPT APIキー",
+		"getNanoGptApiKey": "Nano-GPT APIキーを取得",
+		"nanoGptModelList": "モデルリスト",
+		"nanoGptModelListOptions": {
+			"all": "すべてのモデル",
+			"personalized": "パーソナライズされたモデル",
+			"subscription": "サブスクリプションモデル"
+		},
 		"xaiApiKey": "xAI APIキー",
 		"getXaiApiKey": "xAI APIキーを取得",
 		"litellmApiKey": "LiteLLM APIキー",
@@ -363,6 +442,7 @@
 		"awsSessionToken": "AWSセッショントークン",
 		"awsRegion": "AWSリージョン",
 		"awsCrossRegion": "クロスリージョン推論を使用",
+		"awsGlobalInference": "グローバル推論を使用する（最適なAWSリージョンを自動選択）",
 		"awsBedrockVpc": {
 			"useCustomVpcEndpoint": "カスタムVPCエンドポイントを使用",
 			"vpcEndpointUrlPlaceholder": "VPCエンドポイントURLを入力（任意）",
@@ -485,7 +565,7 @@
 		},
 		"consecutiveMistakeLimit": {
 			"label": "エラーと繰り返しの制限",
-			"description": "「Agenticaが問題を抱えています」ダイアログを表示するまでの連続エラーまたは繰り返しアクションの数",
+
 			"unlimitedDescription": "無制限のリトライが有効です（自動進行）。ダイアログは表示されません。",
 			"warning": "⚠️ 0に設定すると無制限のリトライが可能になり、API使用量が大幅に増加する可能性があります"
 		},
@@ -495,7 +575,8 @@
 			"minimal": "最小 (最速)",
 			"high": "高",
 			"medium": "中",
-			"low": "低"
+			"low": "低",
+			"xhigh": "極高"
 		},
 		"verbosity": {
 			"label": "出力の冗長性",
@@ -533,6 +614,15 @@
 			"description": "このプロバイダーはQwenサービスからのOAuth認証を使用し、APIキーは必要ありません。",
 			"instructions": "認証ファイルを取得して指定されたパスに配置するには、公式ドキュメントに従ってください。",
 			"setupLink": "Qwen公式ドキュメント"
+		},
+		"profileName": "プロファイル名",
+		"profileType": "プロファイルタイプ",
+		"profileTypeChat": "チャット",
+		"profileTypeAutocomplete": "オートコンプリート",
+		"profileTypeDescription": "チャットプロファイルは会話に使用されます。オートコンプリートプロファイルは1つのみ許可されます。",
+		"autocompleteLabel": "(オートコンプリート)",
+		"autocomplete": {
+			"onlyOneAllowed": "オートコンプリートプロファイルは1つのみ許可されます。プロファイル「{{existingName}}」は既にオートコンプリート用に設定されています。まずそのタイプを変更するか、削除してください。"
 		}
 	},
 	"browser": {
@@ -704,6 +794,10 @@
 		"includeCurrentCost": {
 			"label": "現在のコストをコンテキストに含める",
 			"description": "有効にすると、現在のAPI使用コストがシステムプロンプトに含まれます。モデルがコストに関する懸念で動作を停止する場合は無効にしてください。"
+		},
+		"maxGitStatusFiles": {
+			"label": "Gitステータス最大ファイル数",
+			"description": "gitステータスコンテキストに含めるファイルエントリの最大数。無効にするには0に設定します。ブランチ情報とコミットは、> 0の場合に常に表示されます。"
 		}
 	},
 	"terminal": {
@@ -766,6 +860,14 @@
 	},
 	"advancedSettings": {
 		"title": "詳細設定"
+	},
+	"toolProtocol": {
+		"label": "ツールコールプロトコル",
+		"description": "Kilo Code が API と通信する方法を選択します。ネイティブはプロバイダーの関数呼び出し API を使用し、XML は XML 形式のツール定義を使用します。",
+		"default": "デフォルト",
+		"xml": "XML",
+		"native": "ネイティブ",
+		"currentDefault": "デフォルト: {{protocol}}"
 	},
 	"advanced": {
 		"diff": {
@@ -836,6 +938,8 @@
 			"description": "有効にすると、new_taskツールはtodosパラメータの提供が必須になります。これにより、すべての新しいタスクが明確な目的のリストで開始されることが保証されます。無効（デフォルト）の場合、下位互換性のためにtodosパラメータはオプションのままです。"
 		},
 		"IMAGE_GENERATION": {
+			"providerLabel": "プロバイダー",
+			"providerDescription": "画像生成に使用するプロバイダーを選択",
 			"name": "AI画像生成を有効にする",
 			"description": "有効にすると、Agenticaはテキストプロンプトから画像を生成できます。Agentica または OpenRouter API キーの設定が必要です。",
 			"apiProvider": "APIプロバイダー",
@@ -856,9 +960,7 @@
 		},
 		"MORPH_FAST_APPLY": {
 			"name": "Fast Applyを有効化",
-			"description": "有効にすると、Agenticaはコード変更に最適化された専用モデルを使用してFast Applyでファイルを編集できます。Kilo Gateway Provider、OpenRouter、またはMorph APIキーが必要です。",
-			"apiKey": "Morph APIキー（オプション）",
-			"placeholder": "Morph APIキーを入力してください（オプション）",
+
 			"modelLabel": "モデル選択",
 			"modelDescription": "ファイル編集に使用するFast Applyモデルを選択",
 			"models": {
@@ -870,7 +972,7 @@
 		},
 		"RUN_SLASH_COMMAND": {
 			"name": "モデル開始スラッシュコマンドを有効にする",
-			"description": "有効にすると、Agenticaがワークフローを実行するためにあなたのスラッシュコマンドを実行できます。"
+
 		}
 	},
 	"promptCaching": {
@@ -909,11 +1011,12 @@
 		"label": "モデル",
 		"searchPlaceholder": "検索",
 		"noMatchFound": "一致するものが見つかりません",
-		"useCustomModel": "カスタムを使用: {{modelId}}"
+		"useCustomModel": "カスタムを使用: {{modelId}}",
+		"simplifiedExplanation": "詳細なモデル設定は後で調整できます。"
 	},
 	"footer": {
-		"feedback": "質問やフィードバックがある場合は、<githubLink>github.com/Kilo-Org/kilocode</githubLink>で問題を開くか、<redditLink>reddit.com/r/kilocode</redditLink>や<discordLink>kilocode.ai/discord</discordLink>に参加してください",
-		"support": "財務に関するご質問は、<supportLink>https://kilocode.ai/support</supportLink>のカスタマーサポートまでお問い合わせください",
+		"feedback": "質問やフィードバックがある場合は、<githubLink>github.com/Kilo-Org/kilocode</githubLink>で問題を開くか、<redditLink>reddit.com/r/kilocode</redditLink>や<discordLink>kilo.ai/discord</discordLink>に参加してください",
+		"support": "財務に関するご質問は、<supportLink>https://kilo.ai/support</supportLink>のカスタマーサポートまでお問い合わせください",
 		"telemetry": {
 			"label": "匿名のエラーと使用状況レポートを許可",
 			"description": "匿名の使用データとエラーレポートを送信してAgenticaの改善にご協力ください。コード、プロンプト、個人情報が送信されることはありません。詳細については、プライバシーポリシーをご覧ください。"
@@ -944,7 +1047,9 @@
 		"providerNotAllowed": "プロバイダー「{{provider}}」は組織によって許可されていません",
 		"modelNotAllowed": "モデル「{{model}}」はプロバイダー「{{provider}}」に対して組織によって許可されていません",
 		"profileInvalid": "このプロファイルには、組織によって許可されていないプロバイダーまたはモデルが含まれています",
-		"qwenCodeOauthPath": "有効なOAuth認証情報のパスを提供する必要があります"
+		"qwenCodeOauthPath": "有効なOAuth認証情報のパスを提供する必要があります",
+		"sapAiCore": "有効なSAP AI Coreサービスキーを入力してください。",
+		"sapAiCoreDeploymentId": "モデル「{{model}}」に対して実行中のデプロイメントを選択してください。"
 	},
 	"placeholders": {
 		"apiKey": "API キーを入力...",
@@ -1031,3 +1136,4 @@
 		}
 	}
 }
+

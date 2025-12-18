@@ -26,7 +26,9 @@
 		"shareSuccessOrganization": "组织链接已复制到剪贴板",
 		"shareSuccessPublic": "公开链接已复制到剪贴板",
 		"openInCloud": "在 Roo Code Cloud 中打开任务",
-		"openInCloudIntro": "从任何地方继续监控或与 Roo 交互。扫描、点击或复制以打开。"
+		"openInCloudIntro": "从任何地方继续监控或与 Roo 交互。扫描、点击或复制以打开。",
+		"openApiHistory": "打开 API 历史",
+		"openUiHistory": "打开 UI 历史"
 	},
 	"history": {
 		"title": "历史"
@@ -91,24 +93,15 @@
 		"tooltip": "取消当前操作"
 	},
 	"scrollToBottom": "滚动到聊天底部",
-	"about": "通过 AI 辅助生成、重构和调试代码。查看我们的 <DocsLink>文档</DocsLink> 了解更多信息。",
-	"onboarding": "<strong>此工作区中的任务列表为空。</strong> 请在下方输入任务开始。 不确定如何开始？ 在 <DocsLink>文档</DocsLink> 中阅读更多关于 Agentica 可以为您做什么的信息。",
+
 	"rooTips": {
-		"boomerangTasks": {
-			"title": "任务编排",
-			"description": "将任务拆分为更小、更易于管理的部分。"
-		},
-		"stickyModels": {
-			"title": "粘性模式",
-			"description": "每个模式 都会记住 您上次使用的模型"
-		},
-		"tools": {
-			"title": "工具",
-			"description": "允许 AI 通过浏览网络、运行命令等方式解决问题。"
-		},
 		"customizableModes": {
-			"title": "自定义模式",
-			"description": "具有专属行为和指定模型的特定角色"
+			"title": "可自定义模式",
+			"description": "专注任务并交付成果的专业角色。"
+		},
+		"modelAgnostic": {
+			"title": "自带模型",
+			"description": "使用您自己的提供商密钥，甚至可以在本地运行推理 — 无加价，无锁定，无限制"
 		}
 	},
 	"selectMode": "选择交互模式",
@@ -149,7 +142,18 @@
 		"failed": "API请求失败",
 		"streaming": "API请求...",
 		"cancelled": "API请求已取消",
-		"streamingFailed": "API流式传输失败"
+		"streamingFailed": "API流式传输失败",
+		"errorTitle": "API 错误 {{code}}",
+		"errorMessage": {
+			"docs": "文档",
+			"400": "提供商无法按此方式处理请求。请停止任务并尝试不同方法。",
+			"401": "无法向提供商进行身份验证。请检查您的 API 密钥配置。",
+			"402": "您的账户余额/积分似乎已用尽。请前往提供商处充值以继续。",
+			"403": "无权限。您的 API 密钥有效，但提供商拒绝完成此请求。",
+			"429": "请求过于频繁。提供商已对您的请求进行速率限制。请在下一次 API 调用前稍候。",
+			"500": "提供商服务器错误。提供商端出现问题，您的请求无问题。",
+			"unknown": "未知 API 错误。请联系 Roo Code 支持。"
+		}
 	},
 	"checkpoint": {
 		"regular": "检查点",
@@ -186,9 +190,7 @@
 		"wantsToInsert": "需要在此文件中插入内容",
 		"wantsToInsertWithLineNumber": "需要在第 {{lineNumber}} 行插入内容",
 		"wantsToInsertAtEnd": "需要在文件末尾添加内容",
-		"wantsToReadAndXMore": "Agentica 想读取此文件以及另外 {{count}} 个文件",
-		"wantsToReadMultiple": "Agentica 想要读取多个文件",
-		"wantsToApplyBatchChanges": "Agentica 想要对多个文件应用更改",
+
 		"wantsToGenerateImage": "需要生成图片",
 		"wantsToGenerateImageOutsideWorkspace": "需要在工作区外生成图片",
 		"wantsToGenerateImageProtected": "需要在受保护位置生成图片",
@@ -307,22 +309,21 @@
 			"goToSettingsButton": "前往设置"
 		},
 		"release": {
-			"heading": "扩展新功能：",
-			"openRouterEmbeddings": "支持 OpenRouter 嵌入模型",
-			"chutesDynamic": "Chutes 现在动态加载最新模型",
-			"queuedMessagesFix": "修复队列消息丢失问题"
+			"heading": "最新功能：",
+			"contextRewind": "改进的上下文压缩现在允许您在回到存档点时恢复完整的之前上下文",
+			"rooProvider": "Roo Code Cloud 提供商现在保留推理内容，并默认使用原生工具以获得更好的性能"
 		},
 		"cloudAgents": {
 			"heading": "云端新功能：",
-			"prFixer": "推出 <bold>PR Fixer</bold> 云端 Agent 以补充 PR 审查员。",
-			"prFixerDescription": "Roo Code 的 PR Fixer 直接在 GitHub 上为你的 PR 应用高质量更改。通过 PR 评论调用，它会读取整个评论历史以理解上下文、协议和权衡 - 然后实施正确的修复。",
-			"tryPrFixerButton": "试用 PR Fixer"
+			"specialized": "推出 <bold>Explainer</bold>、<bold>Planner</bold> 和 <bold>Coder</bold> - 三个专业云代理来增强你的工作流程。",
+			"description": "代理在云端协同工作，可从网页或通过 Slack 触发。",
+			"tryButton": "试用云代理"
 		},
 		"careers": "此外，<careersLink>我们正在招聘！</careersLink>",
-		"socialLinks": "在 <xLink>X</xLink>、<discordLink>Discord</discordLink> 或 <redditLink>r/RooCode</redditLink> 上关注我们 🚀"
+		"socialLinks": "在 <xLink>X</xLink>、<discordLink>Discord</discordLink> 或 <redditLink>r/KiloCode</redditLink> 上关注我们 🚀"
 	},
 	"browser": {
-		"rooWantsToUse": "Agentica想使用浏览器",
+
 		"consoleLogs": "控制台日志",
 		"noNewLogs": "(没有新日志)",
 		"screenshot": "浏览器截图",
@@ -338,8 +339,10 @@
 			"launch": "访问 {{url}}",
 			"click": "点击 ({{coordinate}})",
 			"type": "输入 \"{{text}}\"",
+			"press": "按 {{key}}",
 			"scrollDown": "向下滚动",
 			"scrollUp": "向上滚动",
+			"hover": "悬停 ({{coordinate}})",
 			"close": "关闭浏览器"
 		}
 	},
@@ -438,7 +441,7 @@
 		"clickToEdit": "点击编辑消息"
 	},
 	"slashCommand": {
-		"wantsToRun": "Agentica 想要运行斜杠命令",
-		"didRun": "Agentica 运行了斜杠命令"
+
 	}
 }
+

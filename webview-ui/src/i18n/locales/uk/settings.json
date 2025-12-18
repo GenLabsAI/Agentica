@@ -22,6 +22,8 @@
 	},
 	"sections": {
 		"providers": "Провайдери",
+		"modes": "Режими",
+		"mcp": "MCP сервери",
 		"autoApprove": "Автоматичне затвердження",
 		"browser": "Браузер",
 		"checkpoints": "Контрольні точки",
@@ -37,6 +39,30 @@
 		"about": "Про Agentica",
 		"autoPurge": "Авто-очищення",
 		"ghost": "Ghost"
+	},
+	"about": {
+		"contactSupport": "Зв'язатися зі службою підтримки",
+		"contactSupportDesc": "Потребуєш допомоги? Зв'яжися з нашою службою підтримки клієнтів для отримання персоналізованої допомоги.",
+		"joinCommunity": "Приєднатися до спільноти",
+		"joinCommunityDesc": "Зв'яжись з іншими користувачами Kilo Code, поділися порадами і отримай допомогу від спільноти.",
+		"contactAndCommunity": "Контакти та спільнота",
+		"manageSettings": "Керувати налаштуваннями",
+		"bugReport": {
+			"label": "Знайшов помилку?",
+			"link": "Повідом на GitHub"
+		},
+		"featureRequest": {
+			"label": "Є ідея?",
+			"link": "Поділися з нами"
+		},
+		"securityIssue": {
+			"label": "Виявив вразливість?",
+			"link": "Дотримуйся нашого процесу розкриття"
+		},
+		"contact": {
+			"label": "Потрібно поговорити з нами? Напиши"
+		},
+		"community": "Хочеш отримати поради або просто поспілкуватися з іншими користувачами Roo Code? Приєднуйся до <redditLink>reddit.com/r/kilocode</redditLink> або <discordLink>kilo.ai/discord</discordLink>"
 	},
 	"slashCommands": {
 		"description": "Керуйте своїми slash командами для швидкого виконання власних робочих процесів та дій. <DocsLink>Дізнатися більше</DocsLink>"
@@ -63,6 +89,12 @@
 		"selectProfilePlaceholder": "Виберіть постачальника",
 		"openaiProvider": "OpenAI",
 		"ollamaProvider": "Ollama",
+		"bedrockProvider": "Amazon Bedrock",
+		"bedrockRegionLabel": "Регіон AWS",
+		"bedrockRegionPlaceholder": "us-east-1",
+		"bedrockProfileLabel": "Профіль AWS",
+		"bedrockProfilePlaceholder": "default",
+		"bedrockProfileDescription": "Назва профілю AWS з ~/.aws/credentials (обов'язково).",
 		"geminiProvider": "Gemini",
 		"geminiApiKeyLabel": "Ключ API:",
 		"geminiApiKeyPlaceholder": "Введіть ваш ключ API Gemini",
@@ -72,9 +104,25 @@
 		"vercelAiGatewayProvider": "Vercel AI Gateway",
 		"vercelAiGatewayApiKeyLabel": "Ключ API",
 		"vercelAiGatewayApiKeyPlaceholder": "Введіть ваш ключ API Vercel AI Gateway",
+		"bedrockConfigTitle": "Конфігурація Amazon Bedrock",
+		"bedrockConfigDesc": "Налаштуйте Amazon Bedrock для використання моделей вбудовувань AWS",
+		"bedrockEmbeddingModel": "Модель вбудовувань Bedrock",
+		"bedrockEmbeddingModelDesc": "Виберіть модель вбудовувань Amazon Bedrock для використання",
+		"bedrockEmbeddingModelPlaceholder": "Виберіть модель вбудовувань",
+		"bedrockAccessKeyId": "ID ключа доступу AWS",
+		"bedrockAccessKeyIdDesc": "Ваш ID ключа доступу AWS для Amazon Bedrock",
+		"bedrockAccessKeyIdPlaceholder": "Введіть ваш ID ключа доступу AWS",
+		"bedrockSecretAccessKey": "Секретний ключ доступу AWS",
+		"bedrockSecretAccessKeyDesc": "Ваш секретний ключ доступу AWS для Amazon Bedrock",
+		"bedrockSecretAccessKeyPlaceholder": "Введіть ваш секретний ключ доступу AWS",
+		"bedrockSessionToken": "Токен сесії AWS",
+		"bedrockSessionTokenDesc": "Необов'язковий токен сесії AWS для тимчасових облікових даних",
+		"bedrockSessionTokenPlaceholder": "Введіть ваш токен сесії AWS (необов'язково)",
 		"openRouterProvider": "OpenRouter",
 		"openRouterApiKeyLabel": "Ключ API OpenRouter",
 		"openRouterApiKeyPlaceholder": "Введіть ваш ключ API OpenRouter",
+		"openRouterProviderRoutingLabel": "Маршрутизація провайдера OpenRouter",
+		"openRouterProviderRoutingDescription": "OpenRouter направляє запити до найкращих доступних провайдерів для вашої моделі вбудовувань. За замовчуванням запити розподіляються між провідними провайдерами для максимального часу безвідмовної роботи. Однак ви можете вибрати конкретного провайдера для використання цієї моделі.",
 		"openaiCompatibleProvider": "Сумісний з OpenAI",
 		"openAiKeyLabel": "Ключ API OpenAI",
 		"openAiKeyPlaceholder": "Введіть ваш ключ API OpenAI",
@@ -97,10 +145,14 @@
 		"selectModelPlaceholder": "Виберіть модель",
 		"ollamaUrlLabel": "URL Ollama:",
 		"ollamaBaseUrlLabel": "Базовий URL Ollama",
+		"vectorStoreProviderLabel": "Постачальник сховища векторів",
 		"qdrantUrlLabel": "URL Qdrant",
 		"qdrantKeyLabel": "Ключ Qdrant:",
 		"qdrantApiKeyLabel": "Ключ API Qdrant",
 		"qdrantApiKeyPlaceholder": "Введіть ваш ключ API Qdrant (необов'язково)",
+		"lancedbVectorStoreDirectoryLabel": "Шлях до LanceDB Vector Store",
+		"lancedbVectorStoreDirectoryPlaceholder": "Введіть власний шлях до сховища векторів (необов'язково)",
+		"lancedbVectorStoreDirectoryDescription": "Шлях для зберігання бази даних LanceDB Vector. Якщо порожньо, використовується стандартне розташування globalStorageUri/vector.",
 		"setupConfigLabel": "Налаштування",
 		"advancedConfigLabel": "Розширена конфігурація",
 		"searchMinScoreLabel": "Поріг оцінки пошуку",
@@ -150,8 +202,11 @@
 			"baseUrlRequired": "Базовий URL є обов'язковим",
 			"modelDimensionMinValue": "Розмірність моделі повинна бути більше 0",
 			"vercelAiGatewayApiKeyRequired": "Ключ API Vercel AI Gateway є обов'язковим",
-			"openRouterApiKeyRequired": "Ключ API OpenRouter є обов'язковим"
+			"openRouterApiKeyRequired": "Ключ API OpenRouter є обов'язковим",
+			"bedrockRegionRequired": "Регіон AWS є обов'язковим",
+			"bedrockProfileRequired": "Профіль AWS є обов'язковий"
 		},
+		"optional": "необов'язково",
 		"cancelling": "Скасування...",
 		"cancelIndexingButton": "Скасувати індексацію"
 	},
@@ -159,6 +214,10 @@
 		"description": "Дозволити Agentica автоматично виконувати операції без необхідності затвердження. Вмикайте ці налаштування, лише якщо ви повністю довіряєте ШІ та розумієте пов'язані з цим ризики безпеки.",
 		"toggleShortcut": "Ви можете налаштувати гарячу клавішу для цього налаштування <SettingsLink>у настройках вашого IDE</SettingsLink>.",
 		"enabled": "Автоматичне затвердження увімкнено",
+		"delete": {
+			"label": "Видалити",
+			"description": "Автоматично видаляти файли та каталоги без необхідності затвердження"
+		},
 		"readOnly": {
 			"label": "Читати",
 			"description": "Якщо ввімкнено, Agentica автоматично переглядатиме вміст каталогу та читатиме файли, не вимагаючи від вас натискання кнопки «Схвалити».",
@@ -303,6 +362,10 @@
 		"anthropic1MContextBetaDescription": "Розширити контекстне вікно до 1 мільйона токенів для Claude Sonnet 4",
 		"awsBedrock1MContextBetaLabel": "Увімкнути контекстне вікно 1M (Beta)",
 		"awsBedrock1MContextBetaDescription": "Розширити контекстне вікно до 1 мільйона токенів для Claude Sonnet 4",
+		"anthropicUseAzureDeployment": "Використовувати ім'я розгортання Azure",
+		"anthropicAzureDeploymentPlaceholder": "Введіть ім'я розгортання...",
+		"basetenApiKey": "Ключ API Baseten",
+		"getBasetenApiKey": "Отримати ключ API Baseten",
 		"cerebrasApiKey": "Ключ API Cerebras",
 		"getCerebrasApiKey": "Отримати ключ API Cerebras",
 		"chutesApiKey": "Ключ API Chutes",
@@ -326,9 +389,6 @@
 		"minimaxBaseUrl": "Точка входу MiniMax",
 		"zaiEntrypoint": "Точка входу Z AI",
 		"zaiEntrypointDescription": "Будь ласка, виберіть відповідну точку входу API залежно від вашого місцезнаходження. Якщо ви в Китаї, виберіть open.bigmodel.cn. Інакше виберіть api.z.ai.",
-		"minimaxApiKey": "Ключ API MiniMax",
-		"getMiniMaxApiKey": "Отримати ключ API MiniMax",
-		"minimaxBaseUrl": "Точка входу MiniMax",
 		"geminiApiKey": "Ключ API Gemini",
 		"geminiUrlContext": "Включати URL у контекст",
 		"geminiUrlContextDescription": "Коли увімкнено, URL будуть включені в контекст при надсиланні запитів до Gemini",
@@ -355,6 +415,32 @@
 		"huggingFaceSelectProvider": "Виберіть постачальника...",
 		"huggingFaceSearchProviders": "Пошук постачальників...",
 		"huggingFaceNoProvidersFound": "Постачальників не знайдено",
+		"sapAiCore": {
+			"serviceKey": "Ключ сервісу AI Core",
+			"serviceKeyJson": "Введіть JSON ключа сервісу...",
+			"resourceGroup": "Група ресурсів AI Core",
+			"credentialsNote": "Ці облікові дані зберігаються локально і використовуються лише для виконання API-запитів з цього розширення.",
+			"learnMore": "Ви можете знайти більше інформації про доступ до SAP AI Core API тут.",
+			"orchestrationMode": "Режим оркестрації",
+			"orchestrationEnabledDesc": "Коли увімкнено, надає доступ до всіх доступних моделей без необхідності окремих розгортань.",
+			"orchestrationDisabledDesc": "Коли вимкнено, надає доступ лише до розгорнутих базових моделей у вашому екземплярі сервісу AI Core.",
+			"modelDeploymentDesc": "Ви можете вибирати лише моделі з доступними розгортаннями.",
+			"deployment": "Розгортання",
+			"loading": "Завантаження...",
+			"modelsCount": "({{count}} моделей)",
+			"deploymentsCount": "({{count}} розгортань)",
+			"selectModel": "Виберіть модель...",
+			"selectDeployment": "Виберіть розгортання...",
+			"searchModels": "Пошук моделей...",
+			"searchDeployments": "Пошук розгортань...",
+			"noModelsFound": "Моделі не знайдено",
+			"noDeploymentFound": "Розгортання не знайдено",
+			"getStarted": "Почати роботу з SAP AI Core",
+			"supportedProviders": "Підтримувані провайдери",
+			"supportedProvidersDesc1": "Провайдер SAP AI Core наразі підтримує лише базові моделі для наступних провайдерів LLM:",
+			"supportedProvidersDesc2": "Розгляньте можливість перемикання на режим оркестрації для доступу до більшої кількості моделей.",
+			"supportedProvidersDesc3": "Дізнатися більше про режим оркестрації"
+		},
 		"awsApiKey": "Ключ API Amazon Bedrock",
 		"apiKey": "Ключ API",
 		"openAiBaseUrl": "Базовий URL",
@@ -375,6 +461,7 @@
 		"awsSessionToken": "Токен сесії AWS",
 		"awsRegion": "Регіон AWS",
 		"awsCrossRegion": "Використовувати міжрегіональний висновок",
+		"awsGlobalInference": "Використовувати глобальний висновок (автоматичний вибір оптимального регіону AWS)",
 		"awsBedrockVpc": {
 			"useCustomVpcEndpoint": "Використовувати власний кінцевий пункт VPC",
 			"vpcEndpointUrlPlaceholder": "Введіть URL кінцевого пункту VPC (необов'язково)",
@@ -452,6 +539,14 @@
 		"getZaiApiKey": "Отримати ключ API Z.AI",
 		"sambaNovaApiKey": "Ключ API SambaNova",
 		"getSambaNovaApiKey": "Отримати ключ API SambaNova",
+		"nanoGptApiKey": "Ключ API Nano-GPT",
+		"getNanoGptApiKey": "Отримати ключ API Nano-GPT",
+		"nanoGptModelList": "Список моделей",
+		"nanoGptModelListOptions": {
+			"all": "Усі моделі",
+			"personalized": "Персоналізовані моделі",
+			"subscription": "Підписні моделі"
+		},
 		"customModel": {
 			"capabilities": "Налаштуйте можливості та ціни для вашої власної моделі, сумісної з OpenAI. Будьте обережні при вказуванні можливостей моделі, оскільки вони можуть вплинути на продуктивність Agentica.",
 			"maxTokens": {
@@ -514,7 +609,8 @@
 			"minimal": "Мінімальний (найшвидший)",
 			"high": "Високий",
 			"medium": "Середній",
-			"low": "Низький"
+			"low": "Низький",
+			"xhigh": "Екстра високий"
 		},
 		"verbosity": {
 			"label": "Рівень деталізації виводу",
@@ -563,6 +659,15 @@
 			"description": "Цей провайдер використовує OAuth-аутентифікацію від сервісу Qwen і не потребує API-ключів.",
 			"instructions": "Будь ласка, дотримуйтесь офіційної документації для отримання файлу авторизації та розміщення його за вказаним шляхом.",
 			"setupLink": "Офіційна документація Qwen"
+		},
+		"profileName": "Назва профілю",
+		"profileType": "Тип профілю",
+		"profileTypeChat": "Чат",
+		"profileTypeAutocomplete": "Автодоповнення",
+		"profileTypeDescription": "Профілі чату використовуються для розмов. Дозволено лише один профіль автодоповнення.",
+		"autocompleteLabel": "(Автодоповнення)",
+		"autocomplete": {
+			"onlyOneAllowed": "Дозволено лише один профіль автодоповнення. Профіль \"{{existingName}}\" вже налаштовано для автодоповнення. Будь ласка, спочатку зміни його тип або видали його."
 		}
 	},
 	"contextWindow": {
@@ -777,6 +882,15 @@
 		"includeCurrentCost": {
 			"label": "Включати поточну вартість у контекст",
 			"description": "Якщо ввімкнено, поточна вартість використання API буде включена в системну підказку. Вимкніть це, якщо моделі припиняють роботу через занепокоєння вартістю."
+		},
+		"gitStatusIncludeUntracked": {
+			"label": "Включати невідстежені файли в git status",
+			"description": "Коли увімкнено, невідстежені файли будуть включені в інформацію про статус git у контексті"
+		},
+		"gitStatusIncludeUntrackedDesc": "Показувати невідстежені файли в контексті git status для кращого розуміння стану репозиторію",
+		"maxGitStatusFiles": {
+			"label": "Макс. файлів статусу Git",
+			"description": "Максимальна кількість записів файлів для включення в контекст статусу git. Встановіть 0 для вимкнення. Інформація про гілку завжди показується, коли > 0."
 		}
 	},
 	"terminal": {
@@ -839,6 +953,20 @@
 	},
 	"advancedSettings": {
 		"title": "Розширені налаштування"
+	},
+	"toolProtocol": {
+		"label": "Протокол виклику інструментів",
+		"description": "Виберіть, як Kilo Code спілкується з API. Native використовує API виклику функцій провайдера, тоді як XML використовує визначення інструментів у форматі XML.",
+		"toolProtocolAuto": "Автоматично",
+		"toolProtocolAutoDesc": "Дозволити Kilo Code автоматично вибирати найкращий протокол для кожної моделі",
+		"toolProtocolFunctionCall": "Нативний",
+		"toolProtocolFunctionCallDesc": "Використовувати вбудований API виклику функцій провайдера",
+		"toolProtocolToolUse": "XML",
+		"toolProtocolToolUseDesc": "Використовувати визначення інструментів у форматі XML",
+		"default": "За замовчуванням",
+		"xml": "XML",
+		"native": "Нативний",
+		"currentDefault": "За замовчуванням: {{protocol}}"
 	},
 	"advanced": {
 		"diff": {
@@ -912,6 +1040,8 @@
 			"name": "Увімкнути генерацію зображень ШІ",
 			"description": "Коли увімкнено, Agentica може генерувати зображення з текстових запитів. Потребує Agentica або OpenRouter API ключ.",
 			"apiProvider": "Провайдер API",
+			"providerLabel": "Провайдер",
+			"providerDescription": "Вибери провайдера для генерації зображень.",
 			"openRouterApiKeyLabel": "OpenRouter API Key",
 			"openRouterApiKeyPlaceholder": "Введіть свій OpenRouter API ключ",
 			"kiloCodeApiKeyLabel": "Agentica API ключ",
@@ -929,9 +1059,7 @@
 		},
 		"MORPH_FAST_APPLY": {
 			"name": "Увімкнути Fast Apply",
-			"description": "Коли увімкнено, Agentica може редагувати файли за допомогою Fast Apply зі спеціалізованими моделями, оптимізованими для модифікацій коду. Потребує Kilo Gateway Provider, OpenRouter або ключа API Morph.",
-			"apiKey": "Ключ API Morph (необов'язково)",
-			"placeholder": "Введіть ваш ключ API Morph (необов'язково)",
+
 			"modelLabel": "Вибір моделі",
 			"modelDescription": "Виберіть, яку модель швидкого застосування використовувати для редагування файлів",
 			"models": {
@@ -944,6 +1072,18 @@
 		"INLINE_ASSIST": {
 			"name": "Autocomplete",
 			"description": "Увімкни функції Autocomplete для швидких пропозицій коду та покращень безпосередньо у твоєму редакторі. Включає Швидке Завдання (Cmd+I) для цільових змін та Autocomplete для контекстуальних покращень."
+		},
+		"MULTIPLE_NATIVE_TOOL_CALLS": {
+			"name": "Паралельні виклики інструментів",
+			"description": "Коли увімкнено, нативний протокол може виконувати кілька інструментів у одному повідомленні асистента."
+		},
+		"experimentalParallelToolCalls": "Експериментальні паралельні виклики інструментів",
+		"experimentalParallelToolCallsDesc": "Дозволяє моделі викликати кілька інструментів одночасно для покращення ефективності",
+		"experimentalParallelToolCallsInfo": "Ця функція може покращити швидкість виконання завдань, але може бути нестабільною з деякими моделями",
+		"experimentalParallelToolCallsWarning": "Використовуйте з обережністю: може призвести до неочікуваної поведінки",
+		"SPEECH_TO_TEXT": {
+			"name": "Мовлення в текст (STT)",
+			"description": "Коли увімкнено, Kilo Code може транскрибувати ваш голос у текст за допомогою моделі Whisper від OpenAI. Натисніть кнопку мікрофона в чаті, щоб почати запис. Потребує встановленого FFmpeg та налаштованого провайдера OpenAI API."
 		}
 	},
 	"promptCaching": {
@@ -984,11 +1124,12 @@
 		"label": "Модель",
 		"searchPlaceholder": "Пошук",
 		"noMatchFound": "Збігів не знайдено",
-		"useCustomModel": "Використовувати власну: {{modelId}}"
+		"useCustomModel": "Використовувати власну: {{modelId}}",
+		"simplifiedExplanation": "Ви можете налаштувати детальні параметри моделі пізніше."
 	},
 	"footer": {
-		"feedback": "Якщо у тебе є питання або відгуки, не соромся відкрити issue на <githubLink>github.com/Kilo-Org/kilocode</githubLink> або приєднатися до <redditLink>reddit.com/r/kilocode</redditLink> або <discordLink>kilocode.ai/discord</discordLink>.",
-		"support": "З фінансових питань звертайся до служби підтримки клієнтів за адресою <supportLink>https://kilocode.ai/support</supportLink>",
+		"feedback": "Якщо у тебе є питання або відгуки, не соромся відкрити issue на <githubLink>github.com/Kilo-Org/kilocode</githubLink> або приєднатися до <redditLink>reddit.com/r/kilocode</redditLink> або <discordLink>kilo.ai/discord</discordLink>.",
+		"support": "З фінансових питань звертайся до служби підтримки клієнтів за адресою <supportLink>https://kilo.ai/support</supportLink>",
 		"telemetry": {
 			"label": "Дозволити звітування про помилки та використання",
 			"description": "Допоможи покращити Agentica, надсилаючи дані про використання та звіти про помилки. Жоден код, підказки або особиста інформація ніколи не надсилаються. Дивись нашу політику конфіденційності для отримання додаткової інформації."
@@ -1019,7 +1160,9 @@
 		"providerNotAllowed": "Провайдер '{{provider}}' не дозволений твоєю організацією",
 		"modelNotAllowed": "Модель '{{model}}' не дозволена для провайдера '{{provider}}' твоєю організацією",
 		"profileInvalid": "Цей профіль містить провайдера або модель, які не дозволені твоєю організацією",
-		"qwenCodeOauthPath": "Ви повинні надати дійсний шлях до облікових даних OAuth."
+		"qwenCodeOauthPath": "Ви повинні надати дійсний шлях до облікових даних OAuth.",
+		"sapAiCore": "Ви повинні надати дійсний ключ сервісу SAP AI Core.",
+		"sapAiCoreDeploymentId": "Ви повинні вибрати запущене розгортання для моделі '{{model}}'."
 	},
 	"placeholders": {
 		"apiKey": "Введи ключ API...",
@@ -1074,3 +1217,4 @@
 		}
 	}
 }
+

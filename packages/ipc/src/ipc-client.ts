@@ -9,6 +9,7 @@ import {
 	type IpcMessage,
 	IpcOrigin,
 	IpcMessageType,
+	TaskCommandName,
 	ipcMessageSchema,
 } from "@roo-code/types"
 
@@ -57,14 +58,16 @@ export class IpcClient extends EventEmitter<IpcClientEvents> {
 
 	private onMessage(data: unknown) {
 		if (typeof data !== "object") {
-			this._log("[client#onMessage] invalid data", data)
+			this.log(`[client#onMessage] invalid data -> ${JSON.stringify(data)}`)
 			return
 		}
 
 		const result = ipcMessageSchema.safeParse(data)
 
 		if (!result.success) {
-			this.log("[client#onMessage] invalid payload", result.error, data)
+			this.log(
+				`[client#onMessage] invalid payload -> ${JSON.stringify(result.error.issues)} -> ${JSON.stringify(data)}`,
+			)
 			return
 		}
 
@@ -98,6 +101,13 @@ export class IpcClient extends EventEmitter<IpcClientEvents> {
 		this.sendMessage(message)
 	}
 
+	public sendTaskMessage(text?: string, images?: string[]) {
+		this.sendCommand({
+			commandName: TaskCommandName.SendMessage,
+			data: { text, images },
+		})
+	}
+
 	public sendMessage(message: IpcMessage) {
 		ipc.of[this._id]?.emit("message", message)
 	}
@@ -105,9 +115,10 @@ export class IpcClient extends EventEmitter<IpcClientEvents> {
 	public disconnect() {
 		try {
 			ipc.disconnect(this._id)
-			// @TODO: Should we set _disconnect here?
 		} catch (error) {
-			this.log("[client#disconnect] error disconnecting", error)
+			this.log(
+				`[client#disconnect] error disconnecting -> ${error instanceof Error ? error.message : String(error)}`,
+			)
 		}
 	}
 

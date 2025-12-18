@@ -98,17 +98,18 @@
 	},
 	"ghost": {
 		"statusBar": {
-			"enabled": "$(sparkle) Agentica Autocomplete",
-			"disabled": "$(circle-slash) Agentica Autocomplete",
-			"warning": "$(warning) Agentica Autocomplete",
+
 			"tooltip": {
 				"basic": "Agentica Autocomplete",
 				"disabled": "Agentica Autocomplete (deaktiviert)",
 				"tokenError": "Ein gültiger Token muss gesetzt werden, um Autocomplete zu verwenden",
-				"lastCompletion": "Letzter Vorschlag:",
 				"sessionTotal": "Sitzungsgesamtkosten:",
 				"provider": "Anbieter:",
-				"model": "Modell:"
+				"model": "Modell:",
+				"profile": "Profil: ",
+				"defaultProfile": "Standard",
+				"completionSummary": "{{count}} Vervollständigungen zwischen {{startTime}} und {{endTime}} durchgeführt, für Gesamtkosten von {{cost}}.",
+				"providerInfo": "Autovervollständigungen bereitgestellt von {{model}} über {{provider}}."
 			},
 			"cost": {
 				"zero": "$0.00",
@@ -169,5 +170,29 @@
 		"checkpointsUnavailable": "Kann neue Änderungen nicht anzeigen, Checkpoints sind nicht verfügbar.",
 		"noChanges": "Kann neue Änderungen nicht anzeigen, keine Änderungen gefunden.",
 		"error": "Kann neue Änderungen nicht anzeigen, ein Fehler ist aufgetreten."
+	},
+	"agentManager": {
+		"errors": {
+			"cliOutdated": "Deine Kilocode CLI-Version ist veraltet und unterstützt den Agent Manager nicht. Bitte aktualisiere auf die neueste Version.",
+			"cliNotFound": "Kilocode CLI nicht gefunden. Bitte installiere es, um den Agent Manager zu nutzen.",
+			"sessionFailed": "Agent-Sitzung konnte nicht gestartet werden",
+			"sessionFailedWithMessage": "Agent-Sitzung konnte nicht gestartet werden: {{message}}"
+		},
+		"actions": {
+			"updateInstructions": "Update-Anleitung",
+			"installInstructions": "Installationsanleitung",
+			"getHelp": "Hilfe erhalten",
+			"runInTerminal": "Im Terminal ausführen",
+			"loginCli": "Run kilocode auth",
+			"updateGlobal": "Global Aktualisieren",
+			"updateLocal": "Lokal Aktualisieren",
+			"installGlobal": "Global Installieren",
+			"installLocal": "Lokal Installieren"
+		},
+		"terminal": {
+			"installMessage": "Führe npm install aus, um die Kilocode CLI zu installieren. Sobald die Installation abgeschlossen ist, kannst du dieses Terminal schließen und versuchen, den Agent Manager erneut zu starten.",
+			"authReminder": "If this is your first install, run `kilocode auth` to sign in before starting the Agent Manager."
+		}
 	}
 }
+

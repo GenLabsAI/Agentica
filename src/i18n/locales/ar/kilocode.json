@@ -102,17 +102,18 @@
 	},
 	"ghost": {
 		"statusBar": {
-			"enabled": "$(sparkle) Agentica Autocomplete",
-			"disabled": "$(circle-slash) Agentica Autocomplete",
-			"warning": "$(warning) Agentica Autocomplete",
+
 			"tooltip": {
 				"basic": "Agentica Autocomplete",
 				"disabled": "Agentica Autocomplete (معطل)",
 				"tokenError": "يجب تعيين رمز صالح لاستخدام الإكمال التلقائي",
-				"lastCompletion": "آخر اقتراح:",
 				"sessionTotal": "إجمالي تكلفة الجلسة:",
 				"provider": "المزود:",
-				"model": "النموذج:"
+				"model": "النموذج:",
+				"profile": "الملف الشخصي: ",
+				"defaultProfile": "افتراضي",
+				"completionSummary": "تم إجراء {{count}} إكمال بين {{startTime}} و {{endTime}}، بتكلفة إجمالية {{cost}}.",
+				"providerInfo": "يتم توفير الإكمال التلقائي بواسطة {{model}} عبر {{provider}}."
 			},
 			"cost": {
 				"zero": "$0.00",
@@ -173,5 +174,29 @@
 		"checkpointsUnavailable": "لا يمكن عرض التغييرات الجديدة، نقاط الحفظ غير متاحة.",
 		"noChanges": "لا يمكن عرض التغييرات الجديدة، لم يتم العثور على أي تغييرات.",
 		"error": "لا يمكن عرض التغييرات الجديدة، حدث خطأ."
+	},
+	"agentManager": {
+		"errors": {
+			"cliOutdated": "إصدار Kilocode CLI لديك قديم ولا يدعم مدير الوكلاء. يرجى التحديث إلى أحدث إصدار.",
+			"cliNotFound": "لم يتم العثور على Kilocode CLI. يرجى تثبيته لاستخدام مدير الوكلاء.",
+			"sessionFailed": "فشل بدء جلسة الوكيل",
+			"sessionFailedWithMessage": "فشل بدء جلسة الوكيل: {{message}}"
+		},
+		"actions": {
+			"updateInstructions": "تعليمات التحديث",
+			"installInstructions": "تعليمات التثبيت",
+			"getHelp": "الحصول على المساعدة",
+			"runInTerminal": "تشغيل في الطرفية",
+			"loginCli": "Run kilocode auth",
+			"updateGlobal": "تحديث عام",
+			"updateLocal": "تحديث محلي",
+			"installGlobal": "تثبيت عام",
+			"installLocal": "تثبيت محلي"
+		},
+		"terminal": {
+			"installMessage": "تشغيل npm install لتثبيت Kilocode CLI. بمجرد الانتهاء، يمكنك إغلاق هذه الطرفية ومحاولة بدء Agent Manager مرة أخرى.",
+			"authReminder": "If this is your first install, run `kilocode auth` to sign in before starting the Agent Manager."
+		}
 	}
 }
+

@@ -16,7 +16,7 @@
 			"incentive": "Try Roo out for free"
 		}
 	},
-	"chooseProvider": "To do its magic, Agentica needs an API key.",
+
 	"startRouter": "We recommend using an LLM Router:",
 	"startCustom": "Or you can bring your provider API key:",
 	"telemetry": {
@@ -25,3 +25,4 @@
 	},
 	"importSettings": "Import Settings"
 }
+

@@ -98,17 +98,18 @@
 	},
 	"ghost": {
 		"statusBar": {
-			"enabled": "$(sparkle) Agentica Autocomplete",
-			"disabled": "$(circle-slash) Agentica Autocomplete",
-			"warning": "$(warning) Agentica Autocomplete",
+
 			"tooltip": {
 				"basic": "Agentica Autocomplete",
 				"disabled": "Agentica Autocomplete (đã tắt)",
 				"tokenError": "Phải đặt token hợp lệ để sử dụng Autocomplete",
-				"lastCompletion": "Gợi ý cuối cùng:",
 				"sessionTotal": "Tổng chi phí phiên:",
 				"provider": "Nhà cung cấp:",
-				"model": "Mô hình:"
+				"model": "Mô hình:",
+				"profile": "Hồ sơ: ",
+				"defaultProfile": "Mặc định",
+				"completionSummary": "Đã thực hiện {{count}} lần hoàn thành từ {{startTime}} đến {{endTime}}, với tổng chi phí {{cost}}.",
+				"providerInfo": "Tự động hoàn thành được cung cấp bởi {{model}} thông qua {{provider}}."
 			},
 			"cost": {
 				"zero": "$0.00",
@@ -169,5 +170,29 @@
 		"checkpointsUnavailable": "Không thể hiển thị các thay đổi mới, điểm kiểm tra không khả dụng.",
 		"noChanges": "Không thể hiển thị các thay đổi mới, không tìm thấy thay đổi nào.",
 		"error": "Không thể hiển thị các thay đổi mới, đã xảy ra lỗi."
+	},
+	"agentManager": {
+		"errors": {
+			"cliOutdated": "Phiên bản Kilocode CLI của bạn đã cũ và không hỗ trợ Agent Manager. Vui lòng cập nhật lên phiên bản mới nhất.",
+			"cliNotFound": "Không tìm thấy Kilocode CLI. Vui lòng cài đặt để sử dụng Agent Manager.",
+			"sessionFailed": "Không thể khởi động phiên agent",
+			"sessionFailedWithMessage": "Không thể khởi động phiên agent: {{message}}"
+		},
+		"actions": {
+			"updateInstructions": "Hướng Dẫn Cập Nhật",
+			"installInstructions": "Hướng Dẫn Cài Đặt",
+			"getHelp": "Nhận Trợ Giúp",
+			"runInTerminal": "Chạy trong Terminal",
+			"loginCli": "Run kilocode auth",
+			"updateGlobal": "Cập Nhật Toàn Cục",
+			"updateLocal": "Cập Nhật Cục Bộ",
+			"installGlobal": "Cài Đặt Toàn Cục",
+			"installLocal": "Cài Đặt Cục Bộ"
+		},
+		"terminal": {
+			"installMessage": "Đang chạy npm install để cài đặt Kilocode CLI. Sau khi hoàn tất, bạn có thể đóng terminal này và thử khởi động lại Agent Manager.",
+			"authReminder": "If this is your first install, run `kilocode auth` to sign in before starting the Agent Manager."
+		}
 	}
 }
+

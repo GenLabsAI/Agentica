@@ -1,7 +1,7 @@
 // kilocode_change: file added
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { codebaseSearchTool } from "../codebaseSearchTool"
+import { codebaseSearchTool } from "../CodebaseSearchTool"
 import { formatResponse } from "../../prompts/responses"
 import { Task } from "../../task/Task"
 import { CodeIndexManager } from "../../../services/code-index/manager"
@@ -18,6 +18,7 @@ describe("codebaseSearchTool", () => {
 	let handleError: ReturnType<typeof vi.fn>
 	let pushToolResult: ReturnType<typeof vi.fn>
 	let removeClosingTag: (tag: string, text?: string) => string
+	let toolProtocol: "xml" | "native"
 
 	beforeEach(() => {
 		vi.clearAllMocks()
@@ -37,6 +38,7 @@ describe("codebaseSearchTool", () => {
 		handleError = vi.fn()
 		pushToolResult = vi.fn()
 		removeClosingTag = vi.fn((_, text) => text || "")
+		toolProtocol = "xml"
 	})
 
 	it("returns a friendly message when indexing is still in progress", async () => {
@@ -62,7 +64,13 @@ describe("codebaseSearchTool", () => {
 			partial: false,
 		}
 
-		await codebaseSearchTool(mockTask as Task, block, askApproval, handleError, pushToolResult, removeClosingTag)
+		await codebaseSearchTool.handle(mockTask as Task, block, {
+			askApproval,
+			handleError,
+			pushToolResult,
+			removeClosingTag,
+			toolProtocol,
+		})
 
 		expect(managerMock.searchIndex).not.toHaveBeenCalled()
 		expect(pushToolResult).toHaveBeenCalledTimes(1)

@@ -10,7 +10,6 @@ import {
 	// kilocode_change start
 	// geminiModels,
 	geminiCliModels,
-	syntheticModels,
 	// kilocode_change end
 	mistralModels,
 	openAiNativeModels,
@@ -26,6 +25,7 @@ import {
 	featherlessModels,
 	minimaxModels,
 	agenticaModels,
+	basetenModels,
 } from "@roo-code/types"
 
 export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, ModelInfo>>> = {
@@ -40,7 +40,6 @@ export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, Mod
 	// kilocode_change start
 	// gemini: geminiModels,
 	"gemini-cli": geminiCliModels,
-	synthetic: syntheticModels,
 	// kilocode_change end
 	mistral: mistralModels,
 	"openai-native": openAiNativeModels,
@@ -55,6 +54,7 @@ export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, Mod
 	roo: rooModels,
 	featherless: featherlessModels,
 	minimax: minimaxModels,
+	baseten: basetenModels,
 }
 
 export const PROVIDERS = [
@@ -69,6 +69,7 @@ export const PROVIDERS = [
 	{ value: "inception", label: "Inception" },
 	{ value: "gemini-cli", label: "Gemini CLI" },
 	{ value: "ovhcloud", label: "OVHcloud AI Endpoints" },
+	{ value: "sap-ai-core", label: "SAP AI Core" },
 	// kilocode_change end
 	{ value: "deepseek", label: "DeepSeek" },
 	{ value: "moonshot", label: "Moonshot" },
@@ -78,6 +79,7 @@ export const PROVIDERS = [
 	{ value: "vertex", label: "GCP Vertex AI" },
 	{ value: "bedrock", label: "Amazon Bedrock" },
 	{ value: "glama", label: "Glama" },
+	{ value: "nano-gpt", label: "Nano-GPT" }, //kilocode_change
 	{ value: "vscode-lm", label: "VS Code LM API" },
 	{ value: "mistral", label: "Mistral" },
 	{ value: "lmstudio", label: "LM Studio" },
@@ -89,7 +91,7 @@ export const PROVIDERS = [
 	{ value: "chutes", label: "Chutes AI" },
 	{ value: "litellm", label: "LiteLLM" },
 	{ value: "sambanova", label: "SambaNova" },
-	{ value: "zai", label: "Z AI" },
+	{ value: "zai", label: "Z.ai" },
 	{ value: "fireworks", label: "Fireworks AI" },
 	{ value: "featherless", label: "Featherless AI" },
 	// kilocode_change start
@@ -97,6 +99,7 @@ export const PROVIDERS = [
 	// kilocode_change end
 	{ value: "vercel-ai-gateway", label: "Vercel AI Gateway" },
 	{ value: "minimax", label: "MiniMax" },
+	{ value: "baseten", label: "Baseten" },
 ].sort((a, b) => a.label.localeCompare(b.label))
 
 PROVIDERS.unshift({ value: "kilocode", label: "Kilo Gateway" }) // kilocode_change

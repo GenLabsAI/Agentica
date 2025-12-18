@@ -26,7 +26,9 @@
 		"shareSuccessOrganization": "Enlace de organización copiado al portapapeles",
 		"shareSuccessPublic": "Enlace público copiado al portapapeles",
 		"openInCloud": "Abrir tarea en Roo Code Cloud",
-		"openInCloudIntro": "Continúa monitoreando o interactuando con Roo desde cualquier lugar. Escanea, haz clic o copia para abrir."
+		"openInCloudIntro": "Continúa monitoreando o interactuando con Roo desde cualquier lugar. Escanea, haz clic o copia para abrir.",
+		"openApiHistory": "Abrir historial de API",
+		"openUiHistory": "Abrir historial de UI"
 	},
 	"history": {
 		"title": "Historial"
@@ -91,24 +93,15 @@
 		"tooltip": "Cancelar la operación actual"
 	},
 	"scrollToBottom": "Desplazarse al final del chat",
-	"about": "Genera, refactoriza y depura código con asistencia de IA. Consulta nuestra <DocsLink>documentación</DocsLink> para obtener más información.",
-	"onboarding": "<strong>Tu lista de tareas en este espacio de trabajo está vacía.</strong> Comienza escribiendo una tarea abajo. ¿No estás seguro cómo empezar? Lee más sobre lo que Agentica puede hacer por ti en <DocsLink>la documentación</DocsLink>.",
+
 	"rooTips": {
-		"boomerangTasks": {
-			"title": "Orquestación de Tareas",
-			"description": "Divide las tareas en partes más pequeñas y manejables."
-		},
-		"stickyModels": {
-			"title": "Modos persistentes",
-			"description": "Cada modo recuerda tu último modelo utilizado"
-		},
-		"tools": {
-			"title": "Herramientas",
-			"description": "Permite que la IA resuelva problemas navegando por la web, ejecutando comandos y mucho más."
-		},
 		"customizableModes": {
 			"title": "Modos personalizables",
-			"description": "Personalidades especializadas con sus propios comportamientos y modelos asignados"
+			"description": "Personajes especializados que se mantienen en la tarea y cumplen."
+		},
+		"modelAgnostic": {
+			"title": "Trae tu propio modelo",
+			"description": "Usa tu propia clave de proveedor o incluso ejecuta inferencia local — sin sobrecostes, sin ataduras, sin restricciones"
 		}
 	},
 	"selectMode": "Seleccionar modo de interacción",
@@ -149,7 +142,18 @@
 		"failed": "Solicitud API falló",
 		"streaming": "Solicitud API...",
 		"cancelled": "Solicitud API cancelada",
-		"streamingFailed": "Transmisión API falló"
+		"streamingFailed": "Transmisión API falló",
+		"errorTitle": "Error API {{code}}",
+		"errorMessage": {
+			"docs": "Documentación",
+			"400": "El proveedor no pudo procesar la solicitud tal como se hizo. Detén la tarea e intenta un enfoque diferente.",
+			"401": "No se pudo autenticar con el proveedor. Por favor verifica tu configuración de clave API.",
+			"402": "Parece que se te han acabado los fondos/créditos en tu cuenta. Ve a tu proveedor y agrega más para continuar.",
+			"403": "No autorizado. Tu clave API es válida, pero el proveedor se negó a completar esta solicitud.",
+			"429": "Demasiadas solicitudes. Te estás viendo limitado por el proveedor. Por favor espera un poco antes de tu próxima llamada API.",
+			"500": "Error del servidor del proveedor. Algo está mal en el lado del proveedor, no hay nada mal con tu solicitud.",
+			"unknown": "Error API desconocido. Por favor contacta al soporte de Roo Code."
+		}
 	},
 	"checkpoint": {
 		"regular": "Punto de control",
@@ -174,25 +178,7 @@
 		"wantsToFetch": "Agentica quiere obtener instrucciones detalladas para ayudar con la tarea actual"
 	},
 	"fileOperations": {
-		"wantsToRead": "Agentica quiere leer este archivo",
-		"wantsToReadOutsideWorkspace": "Agentica quiere leer este archivo fuera del espacio de trabajo",
-		"didRead": "Agentica leyó este archivo",
-		"wantsToEdit": "Agentica quiere editar este archivo",
-		"wantsToEditOutsideWorkspace": "Agentica quiere editar este archivo fuera del espacio de trabajo",
-		"wantsToEditProtected": "Agentica quiere editar un archivo de configuración protegido",
-		"wantsToCreate": "Agentica quiere crear un nuevo archivo",
-		"wantsToSearchReplace": "Agentica quiere realizar búsqueda y reemplazo en este archivo",
-		"didSearchReplace": "Agentica realizó búsqueda y reemplazo en este archivo",
-		"wantsToInsert": "Agentica quiere insertar contenido en este archivo",
-		"wantsToInsertWithLineNumber": "Agentica quiere insertar contenido en este archivo en la línea {{lineNumber}}",
-		"wantsToInsertAtEnd": "Agentica quiere añadir contenido al final de este archivo",
-		"wantsToReadAndXMore": "Agentica quiere leer este archivo y {{count}} más",
-		"wantsToReadMultiple": "Agentica quiere leer varios archivos",
-		"wantsToApplyBatchChanges": "Agentica quiere aplicar cambios a múltiples archivos",
-		"wantsToGenerateImage": "Agentica quiere generar una imagen",
-		"wantsToGenerateImageOutsideWorkspace": "Agentica quiere generar una imagen fuera del espacio de trabajo",
-		"wantsToGenerateImageProtected": "Agentica quiere generar una imagen en una ubicación protegida",
-		"didGenerateImage": "Agentica generó una imagen"
+
 	},
 	"directoryOperations": {
 		"wantsToViewTopLevel": "Agentica quiere ver los archivos de nivel superior en este directorio",
@@ -306,22 +292,21 @@
 			"goToSettingsButton": "Ir a Configuración"
 		},
 		"release": {
-			"heading": "Novedades en la Extensión:",
-			"openRouterEmbeddings": "Soporte para modelos de embeddings de OpenRouter",
-			"chutesDynamic": "Chutes ahora carga los modelos más recientes dinámicamente",
-			"queuedMessagesFix": "Correcciones para mensajes en cola que se perdían"
+			"heading": "Novedades en esta versión:",
+			"contextRewind": "La condensación mejorada del contexto ahora te permite restaurar el contexto anterior completo cuando retrocedes a un punto de control",
+			"rooProvider": "El proveedor de Roo Code Cloud ahora preserva el contenido del razonamiento y usa herramientas nativas de forma predeterminada para mejor rendimiento"
 		},
 		"cloudAgents": {
 			"heading": "Novedades en la Nube:",
-			"prFixer": "Presentamos el agente en la nube <bold>PR Fixer</bold> para complementar el PR Reviewer.",
-			"prFixerDescription": "El PR Fixer de Roo Code aplica cambios de alta calidad a tus PRs, directamente desde GitHub. Invócalo mediante un comentario en el PR y leerá todo el historial de comentarios para entender el contexto, los acuerdos y las compensaciones — luego implementará la solución correcta.",
-			"tryPrFixerButton": "Probar PR Fixer"
+			"specialized": "Presentamos <bold>Explainer</bold>, <bold>Planner</bold> y <bold>Coder</bold> - tres agentes en la nube especializados para mejorar tus flujos de trabajo.",
+			"description": "Los agentes trabajan juntos en la nube y se pueden activar desde la web o mediante Slack.",
+			"tryButton": "Prueba los Agentes en la Nube"
 		},
 		"careers": "Además, <careersLink>¡estamos contratando!</careersLink>",
-		"socialLinks": "Únete a nosotros en <xLink>X</xLink>, <discordLink>Discord</discordLink>, o <redditLink>r/RooCode</redditLink> 🚀"
+		"socialLinks": "Únete a nosotros en <xLink>X</xLink>, <discordLink>Discord</discordLink>, o <redditLink>r/KiloCode</redditLink> 🚀"
 	},
 	"browser": {
-		"rooWantsToUse": "Agentica quiere usar el navegador",
+
 		"consoleLogs": "Registros de la consola",
 		"noNewLogs": "(No hay nuevos registros)",
 		"screenshot": "Captura de pantalla del navegador",
@@ -333,12 +318,14 @@
 		},
 		"sessionStarted": "Sesión de navegador iniciada",
 		"actions": {
-			"title": "Acción de navegación: ",
+			"title": "Acción del navegador: ",
 			"launch": "Iniciar navegador en {{url}}",
 			"click": "Clic ({{coordinate}})",
 			"type": "Escribir \"{{text}}\"",
+			"press": "Pulsar {{key}}",
 			"scrollDown": "Desplazar hacia abajo",
 			"scrollUp": "Desplazar hacia arriba",
+			"hover": "Flotar ({{coordinate}})",
 			"close": "Cerrar navegador"
 		}
 	},
@@ -437,7 +424,7 @@
 		"clickToEdit": "Haz clic para editar el mensaje"
 	},
 	"slashCommand": {
-		"wantsToRun": "Agentica quiere ejecutar un comando slash",
-		"didRun": "Agentica ejecutó un comando slash"
+
 	}
 }
+

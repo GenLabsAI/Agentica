@@ -26,7 +26,9 @@
 		"expand": "توسيع المهمة",
 		"collapse": "طي المهمة",
 		"openInCloud": "افتح في السحابة",
-		"openInCloudIntro": "راقب وأدر هذه المهمة عن بُعد"
+		"openInCloudIntro": "راقب وأدر هذه المهمة عن بُعد",
+		"openApiHistory": "افتح سجل API",
+		"openUiHistory": "افتح سجل الواجهة"
 	},
 	"history": {
 		"title": "السجل"
@@ -53,9 +55,9 @@
 		"tooltip": "احفظ تغييرات الملف"
 	},
 	"tokenProgress": {
-		"availableSpace": "Available space: {{amount}} tokens",
-		"tokensUsed": "Tokens used: {{used}} of {{total}}",
-		"reservedForResponse": "Reserved for model response: {{amount}} tokens"
+		"availableSpace": "المساحة المتاحة: {{amount}} توكن",
+		"tokensUsed": "التوكينات المستخدمة: {{used}} من {{total}}",
+		"reservedForResponse": "محجوز للاستجابة: {{amount}} توكن"
 	},
 	"reject": {
 		"title": "رفض",
@@ -102,7 +104,8 @@
 		"placeholder": "عدّل رسالتك..."
 	},
 	"scrollToBottom": "انزل لنهاية المحادثة",
-	"about": "أنشئ، أعِد هيكلة، واصلِح الأكواد بمساعدة الذكاء. اطّلع على <DocsLink>التوثيق</DocsLink> لتعرف أكثر.",
+	"about": "أنشئ، أعِد هيكلة، واصلِح الأكواد بمساعدة الذكاء الاصطناعي. اطّلع على <DocsLink>التوثيق</DocsLink> لتعرف أكثر.",
+	"docs": "راجع <DocsLink>التوثيق</DocsLink> للبدء",
 	"onboarding": "قائمة المهام فاضية في هالمساحة.",
 	"rooTips": {
 		"boomerangTasks": {
@@ -120,6 +123,10 @@
 		"customizableModes": {
 			"title": "أنماط قابلة للتخصيص",
 			"description": "شخصيات متخصصة لها سلوكها ونماذجها الخاصة"
+		},
+		"modelAgnostic": {
+			"title": "استخدم نموذجك الخاص، بدون رسوم أو قيود",
+			"description": "استخدم مفتاح موفّرك الخاص أو حتى شغّل الاستنتاج محلياً — Kilo Code ما يفرض رسوم عليه"
 		}
 	},
 	"selectMode": "اختر نمط التفاعل",
@@ -155,7 +162,18 @@
 		"failed": "فشل طلب API",
 		"streaming": "جاري طلب API...",
 		"cancelled": "تم إلغاء طلب API",
-		"streamingFailed": "فشل بث API"
+		"streamingFailed": "فشل بث API",
+		"errorTitle": "خطأ API {{code}}",
+		"errorMessage": {
+			"docs": "التوثيق",
+			"400": "الموفر ما قدر يعالج الطلب كما هو. أوقف المهمة وحاول مقاربة ثانية.",
+			"401": "فشلت المصادقة مع الموفر. تحقق من إعدادات مفتاح API.",
+			"402": "يبدو أنك استنفدت الرصيد/الأرصدة في حسابك. روح للموفر وأضف أكثر للمتابعة.",
+			"403": "غير مصرّح. مفتاح API صحيح، لكن الموفر رفض إتمام الطلب.",
+			"429": "طلبات كثيرة. الموفر حدد معدل طلباتك. انتظر شوي قبل طلب API الجاي.",
+			"500": "خطأ في خادم الموفر. فيه مشكلة عند الموفر، ما فيه شي غلط في طلبك.",
+			"unknown": "خطأ API غير معروف. تواصل مع دعم Kilo Code."
+		}
 	},
 	"checkpoint": {
 		"initial": "نقطة حفظ أولية",
@@ -187,25 +205,7 @@
 		"wantsToFetch": "Agentica يريد جلب تعليمات تفصيلية للمهمة الحالية"
 	},
 	"fileOperations": {
-		"wantsToRead": "Agentica يريد قراءة هذا الملف:",
-		"wantsToReadMultiple": "Agentica يريد قراءة عدة ملفات:",
-		"wantsToReadAndXMore": "Agentica يريد قراءة هذا الملف و{{count}} غيره:",
-		"wantsToReadOutsideWorkspace": "Agentica يريد قراءة ملف خارج مساحة العمل:",
-		"didRead": "Agentica قرأ هذا الملف:",
-		"wantsToEdit": "Agentica يريد تعديل هذا الملف:",
-		"wantsToEditOutsideWorkspace": "Agentica يريد تعديل ملف خارج مساحة العمل:",
-		"wantsToEditProtected": "Agentica يريد تعديل ملف إعدادات محمي:",
-		"wantsToApplyBatchChanges": "Agentica يريد تطبيق تغييرات على عدة ملفات:",
-		"wantsToGenerateImage": "Agentica يريد إنشاء صورة:",
-		"wantsToGenerateImageOutsideWorkspace": "Agentica يريد إنشاء صورة خارج مساحة العمل:",
-		"wantsToGenerateImageProtected": "Agentica يريد إنشاء صورة في موقع محمي:",
-		"didGenerateImage": "Agentica أنشأ صورة:",
-		"wantsToCreate": "Agentica يريد إنشاء ملف جديد:",
-		"wantsToSearchReplace": "Agentica يريد البحث والاستبدال في هذا الملف:",
-		"didSearchReplace": "Agentica أجرى بحثًا واستبدالًا في هذا الملف:",
-		"wantsToInsert": "Agentica يريد إدراج محتوى في هذا الملف:",
-		"wantsToInsertWithLineNumber": "Agentica يريد إدراج محتوى في هذا الملف عند السطر {{lineNumber}}:",
-		"wantsToInsertAtEnd": "Agentica يريد إضافة محتوى في نهاية هذا الملف:"
+
 	},
 	"directoryOperations": {
 		"wantsToViewTopLevel": "Agentica يريد عرض الملفات العلوية في هذا المجلد:",
@@ -323,13 +323,20 @@
 			"heading": "الجديد في الإضافة:",
 			"openRouterEmbeddings": "دعم نماذج التضمين من OpenRouter",
 			"chutesDynamic": "Chutes الآن يحمّل أحدث النماذج ديناميكياً",
-			"queuedMessagesFix": "إصلاحات لمشكلة فقدان الرسائل في الطابور"
+			"queuedMessagesFix": "إصلاحات لمشكلة فقدان الرسائل في الطابور",
+			"browserUse": "Browser Use 2.0 يطوّر تجربة التصفح في الدردشة بجلسات دائمة وتغذية راجعة أوضح ولوحة متصفح مخصصة ووصف أوضح للإجراءات",
+			"cloudPaid": "موفر Roo Code Cloud الآن يقدّم نماذج مدفوعة: اشترِ رصيداً واستخدمه للوكلاء السحابيين والاستنتاج",
+			"contextRewind": "تحسين تلخيص السياق يخليك تسترجع السياق الكامل السابق عند الرجوع لنقطة حفظ",
+			"rooProvider": "موفر Roo Code Cloud الآن يحفظ محتوى التفكير ويستخدم الأدوات الأصلية افتراضياً للأداء الأفضل"
 		},
 		"cloudAgents": {
 			"heading": "الجديد في السحابة:",
 			"prFixer": "نقدّم وكيل <bold>PR Fixer</bold> السحابي لاستكمال PR Reviewer.",
 			"prFixerDescription": "PR Fixer يطبّق تغييرات عالية الجودة على طلبات السحب مباشرة من GitHub. فعّله عبر تعليق في PR وسيقرأ كامل سجل التعليقات لفهم السياق والاتفاقات والمقايضات - ثم ينفّذ الإصلاح المناسب.",
-			"tryPrFixerButton": "جرّب PR Fixer"
+			"tryPrFixerButton": "جرّب PR Fixer",
+			"specialized": "نقدّم <bold>الشارح</bold> و<bold>المخطط</bold> و<bold>المبرمج</bold> - ثلاثة وكلاء سحابيين متخصصين لتطوير سير عملك.",
+			"description": "الوكلاء يعملون معاً في السحابة ويمكن تشغيلهم من الويب أو عبر Slack.",
+			"tryButton": "جرّب الوكلاء السحابيين"
 		},
 		"careers": "أيضاً، <careersLink>نحن نوظّف!</careersLink>",
 		"description": "Agentica {{version}} يجلب ميزات وتحسينات كبيرة بناءً على ملاحظاتكم.",
@@ -352,8 +359,16 @@
 		"autoSelectCountdown": "سيتم الاختيار تلقائياً خلال {{count}}ث",
 		"countdownDisplay": "{{count}}ث"
 	},
+	"browserAnnouncement": "تحديث Browser Use 2.0 يُحسِّن تجربة التصفح في الدردشة بجلسات دائمة، تغذية راجعة أوضح، لوحة متصفح مخصصة، ووصف أوضح للإجراءات",
+	"browserAnnouncementDesc": "الآن يمكنك الحفاظ على جلسات المتصفح بين الطلبات، تتبع أفعال المتصفح بشكل أفضل، والحصول على تجربة تصفح أكثر سلاسة",
+	"browserSession": "جلسة المتصفح",
+	"browserActionPress": "ضغط المفتاح",
+	"browserActionPressDesc": "ضغط مفتاح معين في لوحة المفاتيح",
+	"browserActionHover": "التمرير فوق",
+	"browserActionHoverDesc": "تحريك الماوس فوق عنصر",
+	"rooCloudAnnouncement": "موفر Roo Code Cloud الآن يقدم نماذج مدفوعة: اشترِ رصيداً واستخدمه للوكلاء السحابيين والاستنتاج",
 	"browser": {
-		"rooWantsToUse": "Agentica يريد استخدام المتصفح:",
+
 		"consoleLogs": "سجلات الكونسول",
 		"noNewLogs": "(لا توجد سجلات جديدة)",
 		"screenshot": "لقطة شاشة للمتصفح",
@@ -369,8 +384,10 @@
 			"launch": "فتح المتصفح على {{url}}",
 			"click": "نقرة ({{coordinate}})",
 			"type": "كتابة \"{{text}}\"",
+			"press": "ضغط {{key}}",
 			"scrollDown": "تمرير لأسفل",
 			"scrollUp": "تمرير لأعلى",
+			"hover": "تمرير ({{coordinate}})",
 			"close": "إغلاق المتصفح"
 		}
 	},
@@ -460,5 +477,13 @@
 	"feedback": {
 		"youSaid": "قلت"
 	},
-	"generateCommitMessage": "إنشاء رسالة الالتزام"
+	"generateCommitMessage": "إنشاء رسالة الالتزام",
+	"todo": {
+		"partial": "{{completed}} من {{total}} مهام مكتملة",
+		"complete": "{{total}} مهام مكتملة",
+		"updated": "تم تحديث قائمة المهام",
+		"completed": "مكتملة",
+		"started": "بدأت"
+	}
 }
+

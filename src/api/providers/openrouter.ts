@@ -7,12 +7,13 @@ import {
 	OPENROUTER_DEFAULT_PROVIDER_NAME,
 	OPEN_ROUTER_PROMPT_CACHING_MODELS,
 	DEEP_SEEK_DEFAULT_TEMPERATURE,
-	getActiveToolUseStyle,
 } from "@roo-code/types"
 
 import type { ApiHandlerOptions, ModelRecord } from "../../shared/api"
 
 import { convertToOpenAiMessages } from "../transform/openai-format"
+import { resolveToolProtocol } from "../../utils/resolveToolProtocol"
+import { TOOL_PROTOCOL } from "@roo-code/types"
 import { ApiStreamChunk } from "../transform/stream"
 import { convertToR1Format } from "../transform/r1-format"
 import { addCacheBreakpoints as addAnthropicCacheBreakpoints } from "../transform/caching/anthropic"
@@ -25,12 +26,7 @@ import { getModelEndpoints } from "./fetchers/modelEndpointCache"
 
 import { DEFAULT_HEADERS } from "./constants"
 import { BaseProvider } from "./base-provider"
-import type {
-	ApiHandlerCreateMessageMetadata, // kilocode_change
-	SingleCompletionHandler,
-} from "../index"
 import { verifyFinishReason } from "./kilocode/verifyFinishReason"
-import { addNativeToolCallsToParams, processNativeToolCallsFromDelta } from "./kilocode/nativeToolCallHelpers"
 
 // kilocode_change start
 type OpenRouterProviderParams = {
@@ -44,37 +40,11 @@ type OpenRouterProviderParams = {
 
 import { safeJsonParse } from "../../shared/safeJsonParse"
 import { isAnyRecognizedKiloCodeError } from "../../shared/kilocode/errorUtils"
-import { ReasoningDetail } from "../transform/kilocode/reasoning-details"
 // kilocode_change end
 
+import type { ApiHandlerCreateMessageMetadata, SingleCompletionHandler } from "../index"
 import { handleOpenAIError } from "./utils/openai-error-handler"
-
-// Image generation types
-interface ImageGenerationResponse {
-	choices?: Array<{
-		message?: {
-			content?: string
-			images?: Array<{
-				type?: string
-				image_url?: {
-					url?: string
-				}
-			}>
-		}
-	}>
-	error?: {
-		message?: string
-		type?: string
-		code?: string
-	}
-}
-
-export interface ImageGenerationResult {
-	success: boolean
-	imageData?: string
-	imageFormat?: string
-	error?: string
-}
+import { generateImageWithProvider, ImageGenerationResult } from "./utils/image-generation"
 
 // Add custom interface for OpenRouter params.
 type OpenRouterChatCompletionParams = OpenAI.Chat.ChatCompletionCreateParams & {
@@ -117,6 +87,7 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 		return "OpenRouter" as const
 	}
 	// kilocode_change end
+	private currentReasoningDetails: any[] = []
 
 	constructor(options: ApiHandlerOptions) {
 		super()
@@ -126,6 +97,32 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 		const apiKey = this.options.openRouterApiKey ?? "not-provided"
 
 		this.client = new OpenAI({ baseURL, apiKey, defaultHeaders: DEFAULT_HEADERS })
+
+		// Load models asynchronously to populate cache before getModel() is called
+		this.loadDynamicModels().catch((error) => {
+			console.error("[OpenRouterHandler] Failed to load dynamic models:", error)
+		})
+	}
+
+	private async loadDynamicModels(): Promise<void> {
+		try {
+			const [models, endpoints] = await Promise.all([
+				getModels({ provider: "openrouter" }),
+				getModelEndpoints({
+					router: "openrouter",
+					modelId: this.options.openRouterModelId,
+					endpoint: this.options.openRouterSpecificProvider,
+				}),
+			])
+
+			this.models = models
+			this.endpoints = endpoints
+		} catch (error) {
+			console.error("[OpenRouterHandler] Error loading dynamic models:", {
+				error: error instanceof Error ? error.message : String(error),
+				stack: error instanceof Error ? error.stack : undefined,
+			})
+		}
 	}
 
 	// kilocode_change start
@@ -170,20 +167,27 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 	}
 	// kilocode_change end
 
+	getReasoningDetails(): any[] | undefined {
+		return this.currentReasoningDetails.length > 0 ? this.currentReasoningDetails : undefined
+	}
+
 	override async *createMessage(
 		systemPrompt: string,
 		messages: Anthropic.Messages.MessageParam[],
-		metadata?: ApiHandlerCreateMessageMetadata, // kilocode_change
+		metadata?: ApiHandlerCreateMessageMetadata,
 	): AsyncGenerator<ApiStreamChunk> {
 		const model = await this.fetchModel()
 
 		let { id: modelId, maxTokens, temperature, topP, reasoning } = model
 
-		// OpenRouter sends reasoning tokens by default for Gemini 2.5 Pro
-		// Preview even if you don't request them. This is not the default for
+		// Reset reasoning_details accumulator for this request
+		this.currentReasoningDetails = []
+
+		// OpenRouter sends reasoning tokens by default for Gemini 2.5 Pro models
+		// even if you don't request them. This is not the default for
 		// other providers (including Gemini), so we need to explicitly disable
-		// i We should generalize this using the logic in `getModelParams`, but
-		// this is easier for now.
+		// them unless the user has explicitly configured reasoning.
+		// Note: Gemini 3 models use reasoning_details format and should not be excluded.
 		if (
 			(modelId === "google/gemini-2.5-pro-preview" || modelId === "google/gemini-2.5-pro") &&
 			typeof reasoning === "undefined"
@@ -202,11 +206,54 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			openAiMessages = convertToR1Format([{ role: "user", content: systemPrompt }, ...messages])
 		}
 
-		// kilocode_change start
-		if (modelId.startsWith("google/gemini")) {
-			addGeminiCacheBreakpoints(systemPrompt, openAiMessages)
-		} else if (modelId.startsWith("anthropic/claude") || OPEN_ROUTER_PROMPT_CACHING_MODELS.has(modelId)) {
-			addAnthropicCacheBreakpoints(systemPrompt, openAiMessages)
+		// Process reasoning_details when switching models to Gemini for native tool call compatibility
+		const toolProtocol = resolveToolProtocol(this.options, model.info)
+		const isNativeProtocol = toolProtocol === TOOL_PROTOCOL.NATIVE
+		const isGemini = modelId.startsWith("google/gemini")
+
+		// For Gemini with native protocol: inject fake reasoning.encrypted blocks for tool calls
+		// This is required when switching from other models to Gemini to satisfy API validation
+		if (isNativeProtocol && isGemini) {
+			openAiMessages = openAiMessages.map((msg) => {
+				if (msg.role === "assistant") {
+					const toolCalls = (msg as any).tool_calls as any[] | undefined
+					const existingDetails = (msg as any).reasoning_details as any[] | undefined
+
+					// Only inject if there are tool calls and no existing encrypted reasoning
+					if (toolCalls && toolCalls.length > 0) {
+						const hasEncrypted = existingDetails?.some((d) => d.type === "reasoning.encrypted") ?? false
+
+						if (!hasEncrypted) {
+							const fakeEncrypted = toolCalls.map((tc, idx) => ({
+								id: tc.id,
+								type: "reasoning.encrypted",
+								data: "skip_thought_signature_validator",
+								format: "google-gemini-v1",
+								index: (existingDetails?.length ?? 0) + idx,
+							}))
+
+							return {
+								...msg,
+								reasoning_details: [...(existingDetails ?? []), ...fakeEncrypted],
+							}
+						}
+					}
+				}
+				return msg
+			})
+		}
+
+		// https://openrouter.ai/docs/features/prompt-caching
+		// TODO: Add a `promptCacheStratey` field to `ModelInfo`.
+		if (
+			modelId.startsWith("anthropic/claude") /* kilocode_change */ ||
+			OPEN_ROUTER_PROMPT_CACHING_MODELS.has(modelId)
+		) {
+			if (modelId.startsWith("google")) {
+				addGeminiCacheBreakpoints(systemPrompt, openAiMessages)
+			} else {
+				addAnthropicCacheBreakpoints(systemPrompt, openAiMessages)
+			}
 		}
 		// kilocode_change end
 
@@ -222,13 +269,18 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			stream: true,
 			stream_options: { include_usage: true },
 			...this.getProviderParams(), // kilocode_change: original expression was moved into function
+			parallel_tool_calls: false, // Ensure only one tool call at a time
 			...(transforms && { transforms }),
 			...(reasoning && { reasoning }),
+			...(metadata?.tools && { tools: this.convertToolsForOpenAI(metadata.tools) }),
+			...(metadata?.tool_choice && { tool_choice: metadata.tool_choice }),
+			verbosity: model.verbosity, // kilocode_change
 		}
 
-		// kilocode_change start: Add native tool call support when toolStyle is "json"
-		addNativeToolCallsToParams(completionParams, this.options, metadata)
-		// kilocode_change end
+		// Add Anthropic beta header for fine-grained tool streaming when using Anthropic models
+		const requestOptions = modelId.startsWith("anthropic/")
+			? { headers: { "x-anthropic-beta": "fine-grained-tool-streaming-2025-05-14" } }
+			: undefined
 
 		let stream
 		try {
@@ -247,63 +299,144 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 
 		let lastUsage: CompletionUsage | undefined = undefined
 		let inferenceProvider: string | undefined // kilocode_change
+		const toolCallAccumulator = new Map<number, { id: string; name: string; arguments: string }>()
+		// Accumulator for reasoning_details: accumulate text by type-index key
+		const reasoningDetailsAccumulator = new Map<
+			string,
+			{
+				type: string
+				text?: string
+				summary?: string
+				data?: string
+				id?: string | null
+				format?: string
+				signature?: string
+				index: number
+			}
+		>()
 
-		try {
-			for await (const chunk of stream) {
-				// OpenRouter returns an error object instead of the OpenAI SDK throwing an error.
-				if ("error" in chunk) {
-					const error = chunk.error as { message?: string; code?: number }
-					console.error(`OpenRouter API Error: ${error?.code} - ${error?.message}`)
-					throw new Error(`OpenRouter API Error ${error?.code}: ${error?.message}`)
+		for await (const chunk of stream) {
+			// OpenRouter returns an error object instead of the OpenAI SDK throwing an error.
+			if ("error" in chunk) {
+				const error = chunk.error as { message?: string; code?: number }
+				console.error(`OpenRouter API Error: ${error?.code} - ${error?.message}`)
+				throw new Error(`OpenRouter API Error ${error?.code}: ${error?.message}`)
+			}
+
+			// kilocode_change start
+			if ("provider" in chunk && typeof chunk.provider === "string") {
+				inferenceProvider = chunk.provider
+			}
+			// kilocode_change end
+
+			verifyFinishReason(chunk.choices[0]) // kilocode_change
+			const delta = chunk.choices[0]?.delta
+			const finishReason = chunk.choices[0]?.finish_reason
+
+			if (delta) {
+				// Handle reasoning_details array format (used by Gemini 3, Claude, OpenAI o-series, etc.)
+				// See: https://openrouter.ai/docs/use-cases/reasoning-tokens#preserving-reasoning-blocks
+				// Priority: Check for reasoning_details first, as it's the newer format
+				const deltaWithReasoning = delta as typeof delta & {
+					reasoning_details?: Array<{
+						type: string
+						text?: string
+						summary?: string
+						data?: string
+						id?: string | null
+						format?: string
+						signature?: string
+						index?: number
+					}>
 				}
 
-				// kilocode_change start
-				if ("provider" in chunk && typeof chunk.provider === "string") {
-					inferenceProvider = chunk.provider
-				}
-				// kilocode_change end
+				if (deltaWithReasoning.reasoning_details && Array.isArray(deltaWithReasoning.reasoning_details)) {
+					for (const detail of deltaWithReasoning.reasoning_details) {
+						const index = detail.index ?? 0
+						const key = `${detail.type}-${index}`
+						const existing = reasoningDetailsAccumulator.get(key)
 
-				verifyFinishReason(chunk.choices[0]) // kilocode_change
-				const delta = chunk.choices[0]?.delta
+						if (existing) {
+							// Accumulate text/summary/data for existing reasoning detail
+							if (detail.text !== undefined) {
+								existing.text = (existing.text || "") + detail.text
+							}
+							if (detail.summary !== undefined) {
+								existing.summary = (existing.summary || "") + detail.summary
+							}
+							if (detail.data !== undefined) {
+								existing.data = (existing.data || "") + detail.data
+							}
+							// Update other fields if provided
+							if (detail.id !== undefined) existing.id = detail.id
+							if (detail.format !== undefined) existing.format = detail.format
+							if (detail.signature !== undefined) existing.signature = detail.signature
+						} else {
+							// Start new reasoning detail accumulation
+							reasoningDetailsAccumulator.set(key, {
+								type: detail.type,
+								text: detail.text,
+								summary: detail.summary,
+								data: detail.data,
+								id: detail.id,
+								format: detail.format,
+								signature: detail.signature,
+								index,
+							})
+						}
 
-				if (
-					delta /* kilocode_change */ &&
-					"reasoning" in delta &&
-					delta.reasoning &&
-					typeof delta.reasoning === "string"
-				) {
+						// Yield text for display (still fragmented for live streaming)
+						let reasoningText: string | undefined
+						if (detail.type === "reasoning.text" && typeof detail.text === "string") {
+							reasoningText = detail.text
+						} else if (detail.type === "reasoning.summary" && typeof detail.summary === "string") {
+							reasoningText = detail.summary
+						}
+						// Note: reasoning.encrypted types are intentionally skipped as they contain redacted content
+
+						if (reasoningText) {
+							yield { type: "reasoning", text: reasoningText }
+						}
+					}
+				} else if ("reasoning" in delta && delta.reasoning && typeof delta.reasoning === "string") {
+					// Handle legacy reasoning format - only if reasoning_details is not present
+					// See: https://openrouter.ai/docs/use-cases/reasoning-tokens
 					yield { type: "reasoning", text: delta.reasoning }
 				}
 
 				// kilocode_change start
-
-				// OpenRouter passes reasoning details that we can pass back unmodified in api requests to preserve reasoning traces for model
-				// See: https://openrouter.ai/docs/use-cases/reasoning-tokens#preserving-reasoning-blocks
-				if (delta && "reasoning_details" in delta && delta.reasoning_details) {
-					yield {
-						type: "reasoning_details",
-						reasoning_details: delta.reasoning_details as ReasoningDetail,
-					}
-				}
 				if (delta && "reasoning_content" in delta && typeof delta.reasoning_content === "string") {
 					yield { type: "reasoning", text: delta.reasoning_content }
 				}
-
-				// Handle native tool calls when toolStyle is "json"
-				yield* processNativeToolCallsFromDelta(delta, getActiveToolUseStyle(this.options))
 				// kilocode_change end
 
-				if (delta?.content) {
-					yield { type: "text", text: delta.content }
+				// Check for tool calls in delta
+				// Emit raw tool call chunks - NativeToolCallParser handles state management
+				if ("tool_calls" in delta && Array.isArray(delta.tool_calls)) {
+					for (const toolCall of delta.tool_calls) {
+						yield {
+							type: "tool_call_partial",
+							index: toolCall.index,
+							id: toolCall.id,
+							name: toolCall.function?.name,
+							arguments: toolCall.function?.arguments,
+						}
+					}
 				}
 
-				if (chunk.usage) {
-					lastUsage = chunk.usage
+				if (delta.content) {
+					yield { type: "text", text: delta.content }
 				}
 			}
-		} catch (error) {
-			let errorMessage = makeOpenRouterErrorReadable(error)
-			throw new Error(errorMessage)
+
+			if (chunk.usage) {
+				lastUsage = chunk.usage
+			}
+		}
+
+		// After streaming completes, store the accumulated reasoning_details
+		if (reasoningDetailsAccumulator.size > 0) {
+			this.currentReasoningDetails = Array.from(reasoningDetailsAccumulator.values())
 		}
 
 		if (lastUsage) {
@@ -360,7 +493,13 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 	}
 
 	async completePrompt(prompt: string) {
-		let { id: modelId, maxTokens, temperature, reasoning } = await this.fetchModel()
+		let {
+			id: modelId,
+			maxTokens,
+			temperature,
+			reasoning,
+			verbosity, // kilocode_change
+		} = await this.fetchModel()
 
 		const completionParams: OpenRouterChatCompletionParams = {
 			model: modelId,
@@ -370,7 +509,13 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			stream: false,
 			...this.getProviderParams(), // kilocode_change: original expression was moved into function
 			...(reasoning && { reasoning }),
+			verbosity, // kilocode_change
 		}
+
+		// Add Anthropic beta header for fine-grained tool streaming when using Anthropic models
+		const requestOptions = modelId.startsWith("anthropic/")
+			? { headers: { "x-anthropic-beta": "fine-grained-tool-streaming-2025-05-14" } }
+			: undefined
 
 		let response
 		try {
@@ -392,7 +537,8 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 	}
 
 	/**
-	 * Generate an image using OpenRouter's image generation API
+	 * Generate an image using OpenRouter's image generation API (chat completions with modalities)
+	 * Note: OpenRouter only supports the chat completions approach, not the /images/generations endpoint
 	 * @param prompt The text prompt for image generation
 	 * @param model The model to use for generation
 	 * @param apiKey The OpenRouter API key (must be explicitly provided)
@@ -413,108 +559,17 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			}
 		}
 
-		try {
-			const response = await fetch(
-				`${this.options.openRouterBaseUrl || "https://openrouter.ai/api/v1/"}chat/completions`, // kilocode_change: support baseUrl
-				{
-					method: "POST",
-					headers: {
-						// kilocode_change start
-						...DEFAULT_HEADERS,
-						...this.getCustomRequestHeaders(taskId),
-						// kilocode_change end
-						Authorization: `Bearer ${apiKey}`,
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						model,
-						messages: [
-							{
-								role: "user",
-								content: inputImage
-									? [
-											{
-												type: "text",
-												text: prompt,
-											},
-											{
-												type: "image_url",
-												image_url: {
-													url: inputImage,
-												},
-											},
-										]
-									: prompt,
-							},
-						],
-						modalities: ["image", "text"],
-					}),
-				},
-			)
+		const baseURL = this.options.openRouterBaseUrl || "https://openrouter.ai/api/v1"
 
-			if (!response.ok) {
-				const errorText = await response.text()
-				let errorMessage = `Failed to generate image: ${response.status} ${response.statusText}`
-				try {
-					const errorJson = JSON.parse(errorText)
-					if (errorJson.error?.message) {
-						errorMessage = `Failed to generate image: ${errorJson.error.message}`
-					}
-				} catch {
-					// Use default error message
-				}
-				return {
-					success: false,
-					error: errorMessage,
-				}
-			}
-
-			const result: ImageGenerationResponse = await response.json()
-
-			if (result.error) {
-				return {
-					success: false,
-					error: `Failed to generate image: ${result.error.message}`,
-				}
-			}
-
-			// Extract the generated image from the response
-			const images = result.choices?.[0]?.message?.images
-			if (!images || images.length === 0) {
-				return {
-					success: false,
-					error: "No image was generated in the response",
-				}
-			}
-
-			const imageData = images[0]?.image_url?.url
-			if (!imageData) {
-				return {
-					success: false,
-					error: "Invalid image data in response",
-				}
-			}
-
-			// Extract base64 data from data URL
-			const base64Match = imageData.match(/^data:image\/(png|jpeg|jpg);base64,(.+)$/)
-			if (!base64Match) {
-				return {
-					success: false,
-					error: "Invalid image format received",
-				}
-			}
-
-			return {
-				success: true,
-				imageData: imageData,
-				imageFormat: base64Match[1],
-			}
-		} catch (error) {
-			return {
-				success: false,
-				error: error instanceof Error ? error.message : "Unknown error occurred",
-			}
-		}
+		// OpenRouter only supports chat completions approach for image generation
+		return generateImageWithProvider({
+			baseURL,
+			authToken: apiKey,
+			model,
+			prompt,
+			inputImage,
+			headers: { ...DEFAULT_HEADERS, ...this.getCustomRequestHeaders(taskId) }, // kilocode_change
+		})
 	}
 }
 

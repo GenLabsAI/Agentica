@@ -1,4 +1,4 @@
-// npx vitest core/webview/__tests__/ClineProvider.spec.ts
+// pnpm --filter roo-cline test core/webview/__tests__/ClineProvider.spec.ts
 
 import Anthropic from "@anthropic-ai/sdk"
 import * as vscode from "vscode"
@@ -22,6 +22,7 @@ import { Task, TaskOptions } from "../../task/Task"
 import { safeWriteJson } from "../../../utils/safeWriteJson"
 
 import { ClineProvider } from "../ClineProvider"
+import { MessageManager } from "../../message-manager"
 
 // Mock setup must come before imports.
 vi.mock("../../prompts/sections/custom-instructions")
@@ -219,25 +220,21 @@ vi.mock("../../../integrations/workspace/WorkspaceTracker", () => {
 })
 
 vi.mock("../../task/Task", () => ({
-	Task: vi
-		.fn()
-		.mockImplementation(
-			(_provider, _apiConfiguration, _customInstructions, _diffEnabled, _fuzzyMatchThreshold, _task, taskId) => ({
-				api: undefined,
-				abortTask: vi.fn(),
-				handleWebviewAskResponse: vi.fn(),
-				clineMessages: [],
-				apiConversationHistory: [],
-				overwriteClineMessages: vi.fn(),
-				overwriteApiConversationHistory: vi.fn(),
-				getTaskNumber: vi.fn().mockReturnValue(0),
-				setTaskNumber: vi.fn(),
-				setParentTask: vi.fn(),
-				setRootTask: vi.fn(),
-				taskId: taskId || "test-task-id",
-				emit: vi.fn(),
-			}),
-		),
+	Task: vi.fn().mockImplementation((options: any) => ({
+		api: undefined,
+		abortTask: vi.fn(),
+		handleWebviewAskResponse: vi.fn(),
+		clineMessages: [],
+		apiConversationHistory: [],
+		overwriteClineMessages: vi.fn(),
+		overwriteApiConversationHistory: vi.fn(),
+		getTaskNumber: vi.fn().mockReturnValue(0),
+		setTaskNumber: vi.fn(),
+		setParentTask: vi.fn(),
+		setRootTask: vi.fn(),
+		taskId: options?.historyItem?.id || "test-task-id",
+		emit: vi.fn(),
+	})),
 }))
 
 vi.mock("../../../integrations/misc/extract-text", () => ({
@@ -347,11 +344,48 @@ vi.mock("@roo-code/cloud", () => ({
 	getRooCodeApiUrl: vi.fn().mockReturnValue("https://app.roocode.com"),
 }))
 
+vi.mock("../../../shared/kilocode/cli-sessions/core/SessionManager", () => ({
+	SessionManager: {
+		init: vi.fn().mockReturnValue({
+			startTimer: vi.fn(),
+			setPath: vi.fn(),
+			setWorkspaceDirectory: vi.fn(),
+			destroy: vi.fn().mockResolvedValue(undefined),
+		}),
+	},
+}))
+
 afterAll(() => {
 	vi.restoreAllMocks()
 })
 
 describe("ClineProvider", () => {
+	beforeAll(() => {
+		vi.mocked(Task).mockImplementation((options: any) => {
+			const task: any = {
+				api: undefined,
+				abortTask: vi.fn(),
+				handleWebviewAskResponse: vi.fn(),
+				clineMessages: [],
+				apiConversationHistory: [],
+				overwriteClineMessages: vi.fn(),
+				overwriteApiConversationHistory: vi.fn(),
+				getTaskNumber: vi.fn().mockReturnValue(0),
+				setTaskNumber: vi.fn(),
+				setParentTask: vi.fn(),
+				setRootTask: vi.fn(),
+				taskId: options?.historyItem?.id || "test-task-id",
+				emit: vi.fn(),
+			}
+
+			Object.defineProperty(task, "messageManager", {
+				get: () => new MessageManager(task),
+			})
+
+			return task
+		})
+	})
+
 	let defaultTaskOptions: TaskOptions
 
 	let provider: ClineProvider
@@ -504,7 +538,7 @@ describe("ClineProvider", () => {
 		// Verify Content Security Policy contains the necessary PostHog domains
 		expect(mockWebviewView.webview.html).toContain(
 			// kilocode_change: added localhost:3000
-			"connect-src vscode-webview://test-csp-source https://* http://localhost:3000 https://openrouter.ai https://api.requesty.ai https://us.i.posthog.com https://us-assets.i.posthog.com",
+			"connect-src vscode-webview://test-csp-source https://* http://localhost:3000 https://api.requesty.ai https://us.i.posthog.com https://us-assets.i.posthog.com",
 		)
 
 		// Extract the script-src directive section and verify required security elements
@@ -521,6 +555,7 @@ describe("ClineProvider", () => {
 
 		const mockState: ExtensionState = {
 			version: "1.0.0",
+			isBrowserSessionActive: false,
 			clineMessages: [],
 			taskHistoryFullLength: 0, // kilocode_change
 			taskHistoryVersion: 0, // kilocode_change
@@ -639,14 +674,12 @@ describe("ClineProvider", () => {
 			await provider.resolveWebviewView(mockWebviewView)
 		})
 
-		test("calls clearTask when there is no parent task", async () => {
+		test("calls clearTask (delegation handled via metadata)", async () => {
 			// Setup a single task without parent
 			const mockCline = new Task(defaultTaskOptions)
-			// No need to set parentTask - it's undefined by default
 
 			// Mock the provider methods
 			const clearTaskSpy = vi.spyOn(provider, "clearTask").mockResolvedValue(undefined)
-			const finishSubTaskSpy = vi.spyOn(provider, "finishSubTask").mockResolvedValue(undefined)
 			const postStateToWebviewSpy = vi.spyOn(provider, "postStateToWebview").mockResolvedValue(undefined)
 
 			// Add task to stack
@@ -658,25 +691,22 @@ describe("ClineProvider", () => {
 			// Trigger clearTask message
 			await messageHandler({ type: "clearTask" })
 
-			// Verify clearTask was called (not finishSubTask)
+			// Verify clearTask was called
 			expect(clearTaskSpy).toHaveBeenCalled()
-			expect(finishSubTaskSpy).not.toHaveBeenCalled()
 			expect(postStateToWebviewSpy).toHaveBeenCalled()
 		})
 
-		test("calls finishSubTask when there is a parent task", async () => {
+		test("calls clearTask even with parent task (delegation via metadata)", async () => {
 			// Setup parent and child tasks
 			const parentTask = new Task(defaultTaskOptions)
 			const childTask = new Task(defaultTaskOptions)
 
-			// Set up parent-child relationship by setting the parentTask property
-			// The mock allows us to set properties directly
+			// Set up parent-child relationship
 			;(childTask as any).parentTask = parentTask
 			;(childTask as any).rootTask = parentTask
 
 			// Mock the provider methods
 			const clearTaskSpy = vi.spyOn(provider, "clearTask").mockResolvedValue(undefined)
-			const finishSubTaskSpy = vi.spyOn(provider, "finishSubTask").mockResolvedValue(undefined)
 			const postStateToWebviewSpy = vi.spyOn(provider, "postStateToWebview").mockResolvedValue(undefined)
 
 			// Add both tasks to stack (parent first, then child)
@@ -689,9 +719,8 @@ describe("ClineProvider", () => {
 			// Trigger clearTask message
 			await messageHandler({ type: "clearTask" })
 
-			// Verify finishSubTask was called (not clearTask)
-			expect(finishSubTaskSpy).toHaveBeenCalledWith(expect.stringContaining("canceled"))
-			expect(clearTaskSpy).not.toHaveBeenCalled()
+			// Verify clearTask was called (delegation happens via metadata, not finishSubTask)
+			expect(clearTaskSpy).toHaveBeenCalled()
 			expect(postStateToWebviewSpy).toHaveBeenCalled()
 		})
 
@@ -700,7 +729,6 @@ describe("ClineProvider", () => {
 
 			// Mock the provider methods
 			const clearTaskSpy = vi.spyOn(provider, "clearTask").mockResolvedValue(undefined)
-			const finishSubTaskSpy = vi.spyOn(provider, "finishSubTask").mockResolvedValue(undefined)
 			const postStateToWebviewSpy = vi.spyOn(provider, "postStateToWebview").mockResolvedValue(undefined)
 
 			// Get the message handler
@@ -711,21 +739,17 @@ describe("ClineProvider", () => {
 
 			// When there's no current task, clearTask is still called (it handles the no-task case internally)
 			expect(clearTaskSpy).toHaveBeenCalled()
-			expect(finishSubTaskSpy).not.toHaveBeenCalled()
-			// State should still be posted
 			expect(postStateToWebviewSpy).toHaveBeenCalled()
 		})
 
-		test("correctly identifies subtask scenario for issue #4602", async () => {
-			// This test specifically validates the fix for issue #4602
-			// where canceling during API retry was incorrectly treating a single task as a subtask
+		test("correctly identifies task scenario for issue #4602", async () => {
+			// This test validates the fix for issue #4602
+			// where canceling during API retry correctly uses clearTask
 
 			const mockCline = new Task(defaultTaskOptions)
-			// No parent task by default - no need to explicitly set
 
 			// Mock the provider methods
 			const clearTaskSpy = vi.spyOn(provider, "clearTask").mockResolvedValue(undefined)
-			const finishSubTaskSpy = vi.spyOn(provider, "finishSubTask").mockResolvedValue(undefined)
 
 			// Add only one task to stack
 			await provider.addClineToStack(mockCline)
@@ -739,9 +763,8 @@ describe("ClineProvider", () => {
 			// Trigger clearTask message (simulating cancel during API retry)
 			await messageHandler({ type: "clearTask" })
 
-			// The fix ensures clearTask is called, not finishSubTask
+			// clearTask should be called (delegation handled via metadata)
 			expect(clearTaskSpy).toHaveBeenCalled()
-			expect(finishSubTaskSpy).not.toHaveBeenCalled()
 		})
 	})
 
@@ -811,7 +834,7 @@ describe("ClineProvider", () => {
 		await provider.resolveWebviewView(mockWebviewView)
 		const messageHandler = (mockWebviewView.webview.onDidReceiveMessage as any).mock.calls[0][0]
 
-		await messageHandler({ type: "writeDelayMs", value: 2000 })
+		await messageHandler({ type: "updateSettings", updatedSettings: { writeDelayMs: 2000 } })
 
 		expect(updateGlobalStateSpy).toHaveBeenCalledWith("writeDelayMs", 2000)
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("writeDelayMs", 2000)
@@ -825,24 +848,24 @@ describe("ClineProvider", () => {
 		const messageHandler = (mockWebviewView.webview.onDidReceiveMessage as any).mock.calls[0][0]
 
 		// Simulate setting sound to enabled
-		await messageHandler({ type: "soundEnabled", bool: true })
+		await messageHandler({ type: "updateSettings", updatedSettings: { soundEnabled: true } })
 		expect(updateGlobalStateSpy).toHaveBeenCalledWith("soundEnabled", true)
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("soundEnabled", true)
 		expect(mockPostMessage).toHaveBeenCalled()
 
 		// Simulate setting sound to disabled
-		await messageHandler({ type: "soundEnabled", bool: false })
+		await messageHandler({ type: "updateSettings", updatedSettings: { soundEnabled: false } })
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("soundEnabled", false)
 		expect(mockPostMessage).toHaveBeenCalled()
 
 		// Simulate setting tts to enabled
-		await messageHandler({ type: "ttsEnabled", bool: true })
+		await messageHandler({ type: "updateSettings", updatedSettings: { ttsEnabled: true } })
 		expect(setTtsEnabled).toHaveBeenCalledWith(true)
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("ttsEnabled", true)
 		expect(mockPostMessage).toHaveBeenCalled()
 
 		// Simulate setting tts to disabled
-		await messageHandler({ type: "ttsEnabled", bool: false })
+		await messageHandler({ type: "updateSettings", updatedSettings: { ttsEnabled: false } })
 		expect(setTtsEnabled).toHaveBeenCalledWith(false)
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("ttsEnabled", false)
 		expect(mockPostMessage).toHaveBeenCalled()
@@ -881,7 +904,7 @@ describe("ClineProvider", () => {
 	test("handles autoCondenseContext message", async () => {
 		await provider.resolveWebviewView(mockWebviewView)
 		const messageHandler = (mockWebviewView.webview.onDidReceiveMessage as any).mock.calls[0][0]
-		await messageHandler({ type: "autoCondenseContext", bool: false })
+		await messageHandler({ type: "updateSettings", updatedSettings: { autoCondenseContext: false } })
 		expect(updateGlobalStateSpy).toHaveBeenCalledWith("autoCondenseContext", false)
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("autoCondenseContext", false)
 		expect(mockPostMessage).toHaveBeenCalled()
@@ -901,7 +924,7 @@ describe("ClineProvider", () => {
 		await provider.resolveWebviewView(mockWebviewView)
 		const messageHandler = (mockWebviewView.webview.onDidReceiveMessage as any).mock.calls[0][0]
 
-		await messageHandler({ type: "autoCondenseContextPercent", value: 75 })
+		await messageHandler({ type: "updateSettings", updatedSettings: { autoCondenseContextPercent: 75 } })
 
 		expect(updateGlobalStateSpy).toHaveBeenCalledWith("autoCondenseContextPercent", 75)
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("autoCondenseContextPercent", 75)
@@ -1009,7 +1032,7 @@ describe("ClineProvider", () => {
 		const messageHandler = (mockWebviewView.webview.onDidReceiveMessage as any).mock.calls[0][0]
 
 		// Test browserToolEnabled
-		await messageHandler({ type: "browserToolEnabled", bool: true })
+		await messageHandler({ type: "updateSettings", updatedSettings: { browserToolEnabled: true } })
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("browserToolEnabled", true)
 		expect(mockPostMessage).toHaveBeenCalled()
 
@@ -1027,13 +1050,13 @@ describe("ClineProvider", () => {
 		expect((await provider.getState()).showRooIgnoredFiles).toBe(false)
 
 		// Test showRooIgnoredFiles with true
-		await messageHandler({ type: "showRooIgnoredFiles", bool: true })
+		await messageHandler({ type: "updateSettings", updatedSettings: { showRooIgnoredFiles: true } })
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("showRooIgnoredFiles", true)
 		expect(mockPostMessage).toHaveBeenCalled()
 		expect((await provider.getState()).showRooIgnoredFiles).toBe(true)
 
 		// Test showRooIgnoredFiles with false
-		await messageHandler({ type: "showRooIgnoredFiles", bool: false })
+		await messageHandler({ type: "updateSettings", updatedSettings: { showRooIgnoredFiles: false } })
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("showRooIgnoredFiles", false)
 		expect(mockPostMessage).toHaveBeenCalled()
 		expect((await provider.getState()).showRooIgnoredFiles).toBe(false)
@@ -1044,13 +1067,13 @@ describe("ClineProvider", () => {
 		const messageHandler = (mockWebviewView.webview.onDidReceiveMessage as any).mock.calls[0][0]
 
 		// Test alwaysApproveResubmit
-		await messageHandler({ type: "alwaysApproveResubmit", bool: true })
+		await messageHandler({ type: "updateSettings", updatedSettings: { alwaysApproveResubmit: true } })
 		expect(updateGlobalStateSpy).toHaveBeenCalledWith("alwaysApproveResubmit", true)
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("alwaysApproveResubmit", true)
 		expect(mockPostMessage).toHaveBeenCalled()
 
 		// Test requestDelaySeconds
-		await messageHandler({ type: "requestDelaySeconds", value: 10 })
+		await messageHandler({ type: "updateSettings", updatedSettings: { requestDelaySeconds: 10 } })
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("requestDelaySeconds", 10)
 		expect(mockPostMessage).toHaveBeenCalled()
 	})
@@ -1117,7 +1140,7 @@ describe("ClineProvider", () => {
 		await provider.resolveWebviewView(mockWebviewView)
 		const messageHandler = (mockWebviewView.webview.onDidReceiveMessage as any).mock.calls[0][0]
 
-		await messageHandler({ type: "maxWorkspaceFiles", value: 300 })
+		await messageHandler({ type: "updateSettings", updatedSettings: { maxWorkspaceFiles: 300 } })
 
 		expect(updateGlobalStateSpy).toHaveBeenCalledWith("maxWorkspaceFiles", 300)
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("maxWorkspaceFiles", 300)
@@ -2733,6 +2756,7 @@ describe("ClineProvider - Router Models", () => {
 				// kilocode_change start
 				geminiApiKey: "gemini-key",
 				googleGeminiBaseUrl: "https://gemini.example.com",
+				nanoGptApiKey: "nano-gpt-key",
 				ovhCloudAiEndpointsApiKey: "ovhcloud-key",
 				inceptionLabsApiKey: "inception-key",
 				inceptionLabsBaseUrl: "https://api.inceptionlabs.ai/v1/",
@@ -2802,16 +2826,19 @@ describe("ClineProvider - Router Models", () => {
 				gemini: mockModels, // kilocode_change
 				requesty: mockModels,
 				glama: mockModels,
+				synthetic: mockModels, // kilocode_change
 				unbound: mockModels,
 				roo: mockModels,
 				chutes: mockModels,
 				litellm: mockModels,
 				kilocode: mockModels,
+				"nano-gpt": mockModels, // kilocode_change
 				ollama: mockModels, // kilocode_change
 				lmstudio: {},
 				"vercel-ai-gateway": mockModels,
 				ovhcloud: mockModels, // kilocode_change
 				inception: mockModels, // kilocode_change
+				"sap-ai-core": {}, // kilocode_change
 				huggingface: {},
 				"io-intelligence": {},
 			},
@@ -2835,9 +2862,11 @@ describe("ClineProvider - Router Models", () => {
 				chutesApiKey: "chutes-key",
 				geminiApiKey: "gemini-key",
 				googleGeminiBaseUrl: "https://gemini.example.com",
+				nanoGptApiKey: "nano-gpt-key", // kilocode_change
 				ovhCloudAiEndpointsApiKey: "ovhcloud-key",
 				inceptionLabsApiKey: "inception-key",
 				inceptionLabsBaseUrl: "https://api.inceptionlabs.ai/v1/",
+				syntheticApiKey: "synthetic-key",
 				// kilocode_change end
 			},
 		} as any)
@@ -2858,8 +2887,10 @@ describe("ClineProvider - Router Models", () => {
 			.mockRejectedValueOnce(new Error("Ollama API error")) // kilocode_change
 			.mockResolvedValueOnce(mockModels) // vercel-ai-gateway success
 			.mockResolvedValueOnce(mockModels) // deepinfra success
+			.mockResolvedValueOnce(mockModels) // nano-gpt success // kilocode_change
 			.mockResolvedValueOnce(mockModels) // kilocode_change: ovhcloud
 			.mockResolvedValueOnce(mockModels) // kilocode_change: inception success
+			.mockResolvedValueOnce(mockModels) // kilocode_change: synthetic success
 			.mockResolvedValueOnce(mockModels) // roo success
 			.mockRejectedValueOnce(new Error("Chutes API error")) // chutes fail
 			.mockRejectedValueOnce(new Error("LiteLLM connection failed")) // litellm fail
@@ -2882,9 +2913,12 @@ describe("ClineProvider - Router Models", () => {
 				lmstudio: {},
 				litellm: {},
 				kilocode: {},
+				"nano-gpt": mockModels, // kilocode_change
 				"vercel-ai-gateway": mockModels,
 				ovhcloud: mockModels, // kilocode_change
 				inception: mockModels, // kilocode_change
+				synthetic: mockModels, // kilocode_change
+				"sap-ai-core": {}, // kilocode_change
 				huggingface: {},
 				"io-intelligence": {},
 			},
@@ -2998,6 +3032,7 @@ describe("ClineProvider - Router Models", () => {
 				// kilocode_change start
 				ovhCloudAiEndpointsApiKey: "ovhcloud-key",
 				chutesApiKey: "chutes-key",
+				nanoGptApiKey: "nano-gpt-key",
 				// kilocode_change end
 				// No litellm config
 			},
@@ -3032,11 +3067,14 @@ describe("ClineProvider - Router Models", () => {
 				chutes: mockModels,
 				litellm: {},
 				kilocode: mockModels,
+				"nano-gpt": mockModels, // kilocode_change
 				ollama: mockModels, // kilocode_change
 				lmstudio: {},
 				"vercel-ai-gateway": mockModels,
 				ovhcloud: mockModels, // kilocode_change
 				inception: mockModels, // kilocode_change
+				synthetic: mockModels, // kilocode_change
+				"sap-ai-core": {}, // kilocode_change
 				huggingface: {},
 				"io-intelligence": {},
 			},

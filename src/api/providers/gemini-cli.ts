@@ -183,7 +183,7 @@ export class GeminiCliHandler extends BaseProvider implements SingleCompletionHa
 			return this.projectId
 		}
 
-		const initialProjectId = process.env.GOOGLE_CLOUD_PROJECT ?? "default"
+		const initialProjectId = process.env.GOOGLE_CLOUD_PROJECT ?? "" // kilocode_change
 
 		// Prepare client metadata
 		const clientMetadata = {
@@ -281,7 +281,7 @@ export class GeminiCliHandler extends BaseProvider implements SingleCompletionHa
 		const { id: model, info, reasoning: thinkingConfig, maxTokens } = this.getModel()
 
 		// Convert messages to Gemini format
-		const contents = messages.map(convertAnthropicMessageToGemini)
+		const contents = messages.map((message) => convertAnthropicMessageToGemini(message))
 
 		// Prepare request body for Code Assist API - matching Cline's structure
 		const requestBody: any = {

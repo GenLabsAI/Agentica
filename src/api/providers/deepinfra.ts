@@ -1,11 +1,7 @@
 import { Anthropic } from "@anthropic-ai/sdk"
 import OpenAI from "openai"
 
-import {
-	deepInfraDefaultModelId,
-	deepInfraDefaultModelInfo,
-	getActiveToolUseStyle, // kilocode_change
-} from "@roo-code/types"
+import { deepInfraDefaultModelId, deepInfraDefaultModelInfo } from "@roo-code/types"
 
 import type { ApiHandlerOptions } from "../../shared/api"
 import { calculateApiCostOpenAI } from "../../shared/cost"
@@ -17,7 +13,7 @@ import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from ".
 import { RouterProvider } from "./router-provider"
 import { getModelParams } from "../transform/model-params"
 import { getModels } from "./fetchers/modelCache"
-import { addNativeToolCallsToParams, processNativeToolCallsFromDelta } from "./kilocode/nativeToolCallHelpers"
+import { addNativeToolCallsToParams, ToolCallAccumulator } from "./kilocode/nativeToolCallHelpers"
 
 export class DeepInfraHandler extends RouterProvider implements SingleCompletionHandler {
 	constructor(options: ApiHandlerOptions) {
@@ -70,6 +66,11 @@ export class DeepInfraHandler extends RouterProvider implements SingleCompletion
 			prompt_cache_key = _metadata.taskId
 		}
 
+		// Check if model supports native tools and tools are provided with native protocol
+		const supportsNativeTools = info.supportsNativeTools ?? false
+		const useNativeTools =
+			supportsNativeTools && _metadata?.tools && _metadata.tools.length > 0 && _metadata?.toolProtocol !== "xml"
+
 		const requestOptions: OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming = {
 			model: modelId,
 			messages: [{ role: "system", content: systemPrompt }, ...convertToOpenAiMessages(messages)],
@@ -77,6 +78,9 @@ export class DeepInfraHandler extends RouterProvider implements SingleCompletion
 			stream_options: { include_usage: true },
 			reasoning_effort,
 			prompt_cache_key,
+			...(useNativeTools && { tools: this.convertToolsForOpenAI(_metadata.tools) }),
+			...(useNativeTools && _metadata.tool_choice && { tool_choice: _metadata.tool_choice }),
+			...(useNativeTools && { parallel_tool_calls: _metadata?.parallelToolCalls ?? false }),
 		} as OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming
 
 		if (this.supportsTemperature(modelId)) {
@@ -87,17 +91,14 @@ export class DeepInfraHandler extends RouterProvider implements SingleCompletion
 			;(requestOptions as any).max_completion_tokens = this.options.modelMaxTokens || info.maxTokens
 		}
 
-		const { data: stream } = await this.client.chat.completions
-			.create(
-				addNativeToolCallsToParams(requestOptions, this.options, _metadata), // kilocode_change
-			)
-			.withResponse()
+		const { data: stream } = await this.client.chat.completions.create(requestOptions).withResponse()
 
 		let lastUsage: OpenAI.CompletionUsage | undefined
+		const toolCallAccumulator = new ToolCallAccumulator() // kilocode_change
 		for await (const chunk of stream) {
 			const delta = chunk.choices[0]?.delta
 
-			yield* processNativeToolCallsFromDelta(delta, getActiveToolUseStyle(this.options)) // kilocode_change
+			yield* toolCallAccumulator.processChunk(chunk) // kilocode_change
 
 			if (delta?.content) {
 				yield { type: "text", text: delta.content }
@@ -105,6 +106,19 @@ export class DeepInfraHandler extends RouterProvider implements SingleCompletion
 
 			if (delta && "reasoning_content" in delta && delta.reasoning_content) {
 				yield { type: "reasoning", text: (delta.reasoning_content as string | undefined) || "" }
+			}
+
+			// Handle tool calls in stream - emit partial chunks for NativeToolCallParser
+			if (delta?.tool_calls) {
+				for (const toolCall of delta.tool_calls) {
+					yield {
+						type: "tool_call_partial",
+						index: toolCall.index,
+						id: toolCall.id,
+						name: toolCall.function?.name,
+						arguments: toolCall.function?.arguments,
+					}
+				}
 			}
 
 			if (chunk.usage) {

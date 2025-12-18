@@ -19,7 +19,7 @@ Kilo Code is an open-source AI agent extension for Visual Studio Code. It helps 
 
 Kilo Code uses large language models (LLMs) to understand your requests and translate them into actions. It can:
 
-- Read and write files in your project.
+- Read, write, and delete files in your project.
 - Execute commands in your VS Code terminal.
 - Perform web browsing (if enabled).
 - Use external tools via the Model Context Protocol (MCP).
@@ -175,7 +175,7 @@ Yes, you can create your own MCP servers to add custom functionality to Kilo Cod
 - Check your internet connection.
 - Check the status of your chosen API provider.
 - Try restarting VS Code.
-- If the problem persists, report the issue on [GitHub](https://github.com/Kilo-Org/kilocode/issues) or [Discord](https://kilocode.ai/discord).
+- If the problem persists, report the issue on [GitHub](https://github.com/Kilo-Org/kilocode/issues) or [Discord](https://kilo.ai/discord).
 
 ### I'm seeing an error message. What does it mean?
 

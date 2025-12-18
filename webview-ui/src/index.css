@@ -126,6 +126,7 @@
 	--color-vscode-titleBar-inactiveForeground: var(--vscode-titleBar-inactiveForeground);
 
 	--color-vscode-charts-green: var(--vscode-charts-green);
+	--color-vscode-charts-red: var(--vscode-charts-red);
 	--color-vscode-charts-yellow: var(--vscode-charts-yellow);
 
 	--color-vscode-inputValidation-infoForeground: var(--vscode-inputValidation-infoForeground);
@@ -213,6 +214,18 @@
 		@apply underline;
 	}
 }
+
+/* kilocode_change start: Cursor blink animation for voice recording */
+@keyframes blink {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+}
+/* kilocode_change end */
 
 /* Form Element Focus States */
 
@@ -395,14 +408,18 @@ vscode-dropdown::part(listbox) {
 }
 
 .mention-context-highlight {
-	background-color: color-mix(in srgb, var(--vscode-badge-foreground) 30%, transparent);
-	border-radius: 3px;
+	background-color: color-mix(in srgb, var(--vscode-badge-foreground) 15%, transparent);
+	border-radius: 6px;
+	padding: 1px 4px;
+	font-family: var(--font-mono);
 }
 
 .mention-context-highlight-with-shadow {
-	background-color: color-mix(in srgb, var(--vscode-badge-foreground) 30%, transparent);
+	background-color: color-mix(in srgb, var(--vscode-badge-foreground) 15%, transparent);
 	border-radius: 3px;
+	padding: 1px 4px;
 	box-shadow: 0 0 0 0.5px color-mix(in srgb, var(--vscode-badge-foreground) 30%, transparent);
+	font-family: var(--font-mono);
 }
 
 /**
@@ -500,3 +517,36 @@ input[cmdk-input]:focus {
 	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 	transition-duration: 150ms;
 }
+
+/* DiffView code font: use VS Code editor font and enable ligatures */
+.diff-view,
+.diff-view pre,
+.diff-view code,
+.diff-view .hljs {
+	font-family:
+		var(--vscode-editor-font-family), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+		"Courier New", monospace;
+	font-variant-ligatures: contextual;
+	font-feature-settings:
+		"calt" 1,
+		"liga" 1;
+}
+
+/* DiffView background tints via CSS classes instead of inline styles */
+.diff-content-inserted {
+	background-color: color-mix(in srgb, var(--vscode-diffEditor-insertedTextBackground) 70%, transparent);
+}
+.diff-content-removed {
+	background-color: color-mix(in srgb, var(--vscode-diffEditor-removedTextBackground) 70%, transparent);
+}
+.diff-content-context {
+	background-color: color-mix(in srgb, var(--vscode-editorGroup-border) 100%, transparent);
+}
+
+/* kilocode_change start - STT preview text styling */
+.stt-preview-text {
+	color: var(--vscode-descriptionForeground);
+	font-style: italic;
+	opacity: 0.7;
+}
+/* kilocode_change end - STT preview text styling */

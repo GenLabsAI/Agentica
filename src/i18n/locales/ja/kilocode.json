@@ -98,17 +98,18 @@
 	},
 	"ghost": {
 		"statusBar": {
-			"enabled": "$(sparkle) Agentica Autocomplete",
-			"disabled": "$(circle-slash) Agentica Autocomplete",
-			"warning": "$(warning) Agentica Autocomplete",
+
 			"tooltip": {
 				"basic": "Agentica Autocomplete",
 				"disabled": "Agentica Autocomplete（無効）",
 				"tokenError": "Autocompleteを使用するには有効なトークンを設定する必要があります",
-				"lastCompletion": "最後の提案:",
 				"sessionTotal": "セッション合計コスト:",
 				"provider": "プロバイダー:",
-				"model": "モデル:"
+				"model": "モデル:",
+				"profile": "プロファイル: ",
+				"defaultProfile": "デフォルト",
+				"completionSummary": "{{startTime}}から{{endTime}}の間に{{count}}回の補完を実行し、合計コストは{{cost}}です。",
+				"providerInfo": "オートコンプリートは{{provider}}経由で{{model}}によって提供されています。"
 			},
 			"cost": {
 				"zero": "$0.00",
@@ -169,5 +170,29 @@
 		"checkpointsUnavailable": "新しい変更を表示できません。チェックポイントが利用できません。",
 		"noChanges": "新しい変更を表示できません。変更が見つかりませんでした。",
 		"error": "新しい変更を表示できません。エラーが発生しました。"
+	},
+	"agentManager": {
+		"errors": {
+			"cliOutdated": "Kilocode CLIのバージョンが古く、Agent Managerをサポートしていません。最新バージョンに更新してください。",
+			"cliNotFound": "Kilocode CLIが見つかりません。Agent Managerを使用するにはインストールしてください。",
+			"sessionFailed": "エージェントセッションの開始に失敗しました",
+			"sessionFailedWithMessage": "エージェントセッションの開始に失敗しました: {{message}}"
+		},
+		"actions": {
+			"updateInstructions": "更新手順",
+			"installInstructions": "インストール手順",
+			"getHelp": "ヘルプを表示",
+			"runInTerminal": "ターミナルで実行",
+			"loginCli": "Run kilocode auth",
+			"updateGlobal": "グローバル更新",
+			"updateLocal": "ローカル更新",
+			"installGlobal": "グローバルインストール",
+			"installLocal": "ローカルインストール"
+		},
+		"terminal": {
+			"installMessage": "Kilocode CLIをインストールするためにnpm installを実行しています。完了したら、このターミナルを閉じてAgent Managerを再度起動してみてください。",
+			"authReminder": "If this is your first install, run `kilocode auth` to sign in before starting the Agent Manager."
+		}
 	}
 }
+

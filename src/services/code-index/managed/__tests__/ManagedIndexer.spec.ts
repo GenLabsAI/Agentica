@@ -2,20 +2,29 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import * as vscode from "vscode"
 import { ManagedIndexer } from "../ManagedIndexer"
-import { ContextProxy } from "../../../../core/config/ContextProxy"
 import { GitWatcher, GitWatcherEvent, GitWatcherFile } from "../../../../shared/GitWatcher"
-import { OrganizationService } from "../../../kilocode/OrganizationService"
 import * as gitUtils from "../git-utils"
 import * as kiloConfigFile from "../../../../utils/kilo-config-file"
 import * as git from "../../../../utils/git"
 import * as apiClient from "../api-client"
-import { logger } from "../../../../utils/logging"
 
 // Mock vscode
 vi.mock("vscode", () => ({
 	workspace: {
 		workspaceFolders: [],
 		onDidChangeWorkspaceFolders: vi.fn(),
+	},
+	window: {
+		createTextEditorDecorationType: vi.fn(() => ({
+			dispose: vi.fn(),
+		})),
+		showInformationMessage: vi.fn(),
+		showErrorMessage: vi.fn(),
+		showWarningMessage: vi.fn(),
+	},
+	commands: {
+		executeCommand: vi.fn().mockResolvedValue(undefined),
+		registerCommand: vi.fn(),
 	},
 	Uri: {
 		file: (path: string) => ({ fsPath: path }),
@@ -24,7 +33,6 @@ vi.mock("vscode", () => ({
 
 // Mock dependencies
 vi.mock("../../../../shared/GitWatcher")
-vi.mock("../../../kilocode/OrganizationService")
 vi.mock("../git-utils")
 vi.mock("../../../../utils/kilo-config-file")
 vi.mock("../../../../utils/git")
@@ -40,7 +48,15 @@ vi.mock("../../../../utils/logging", () => ({
 vi.mock("fs", () => ({
 	promises: {
 		readFile: vi.fn(),
+		stat: vi.fn(),
 	},
+}))
+vi.mock("../../../../core/ignore/RooIgnoreController", () => ({
+	RooIgnoreController: vi.fn().mockImplementation(() => ({
+		initialize: vi.fn().mockResolvedValue(undefined),
+		validateAccess: vi.fn().mockReturnValue(true),
+		dispose: vi.fn(),
+	})),
 }))
 
 describe("ManagedIndexer", () => {
@@ -60,6 +76,9 @@ describe("ManagedIndexer", () => {
 			getValue: vi.fn((key: string) => {
 				if (key === "kilocodeOrganizationId") return "test-org-id"
 				if (key === "kilocodeTesterWarningsDisabledUntil") return null
+				return null
+			}),
+			getGlobalState: vi.fn((key: string) => {
 				return null
 			}),
 			onManagedIndexerConfigChange: vi.fn(() => ({
@@ -88,25 +107,24 @@ describe("ManagedIndexer", () => {
 			files: {},
 		} as any)
 
-		// Mock OrganizationService
-		vi.mocked(OrganizationService.fetchOrganization).mockResolvedValue({
-			id: "test-org-id",
-			name: "Test Org",
-		} as any)
-		vi.mocked(OrganizationService.isCodeIndexingEnabled).mockReturnValue(true)
+		vi.mocked(apiClient.isEnabled).mockResolvedValue(true)
 
-		// Mock GitWatcher
+		// Mock GitWatcher - store instances for later verification
+		const mockWatcherInstances: any[] = []
 		vi.mocked(GitWatcher).mockImplementation(() => {
 			const mockWatcher = {
 				config: { cwd: "/test/workspace" },
-				onEvent: vi.fn(),
+				onEvent: vi.fn().mockReturnValue(undefined),
 				start: vi.fn().mockResolvedValue(undefined),
 				dispose: vi.fn(),
 			}
+			mockWatcherInstances.push(mockWatcher)
 			return mockWatcher as any
 		})
 
 		indexer = new ManagedIndexer(mockContextProxy)
+		// Store mock instances on indexer for test access
+		;(indexer as any).mockWatcherInstances = mockWatcherInstances
 	})
 
 	afterEach(() => {
@@ -170,73 +188,6 @@ describe("ManagedIndexer", () => {
 		})
 	})
 
-	describe("fetchOrganization", () => {
-		it("should fetch organization when token and org ID are present", async () => {
-			const org = await indexer.fetchOrganization()
-
-			expect(OrganizationService.fetchOrganization).toHaveBeenCalledWith("test-token", "test-org-id", undefined)
-			expect(org).toEqual({
-				id: "test-org-id",
-				name: "Test Org",
-			})
-		})
-
-		it("should return null when token is missing", async () => {
-			mockContextProxy.getSecret.mockReturnValue(null)
-
-			const org = await indexer.fetchOrganization()
-
-			expect(OrganizationService.fetchOrganization).not.toHaveBeenCalled()
-			expect(org).toBeNull()
-		})
-
-		it("should return null when org ID is missing", async () => {
-			mockContextProxy.getValue.mockImplementation((key: string) => {
-				if (key === "kilocodeOrganizationId") return null
-				if (key === "kilocodeTesterWarningsDisabledUntil") return null
-				return null
-			})
-
-			const org = await indexer.fetchOrganization()
-
-			expect(OrganizationService.fetchOrganization).not.toHaveBeenCalled()
-			expect(org).toBeNull()
-		})
-
-		it("should store organization in instance", async () => {
-			await indexer.fetchOrganization()
-
-			expect(indexer.organization).toEqual({
-				id: "test-org-id",
-				name: "Test Org",
-			})
-		})
-	})
-
-	describe("isEnabled", () => {
-		it("should return true when organization exists and feature is enabled", async () => {
-			const enabled = await indexer.isEnabled()
-
-			expect(enabled).toBe(true)
-		})
-
-		it("should return false when organization does not exist", async () => {
-			vi.mocked(OrganizationService.fetchOrganization).mockResolvedValue(null)
-
-			const enabled = await indexer.isEnabled()
-
-			expect(enabled).toBe(false)
-		})
-
-		it("should return false when code indexing is not enabled", async () => {
-			vi.mocked(OrganizationService.isCodeIndexingEnabled).mockReturnValue(false)
-
-			const enabled = await indexer.isEnabled()
-
-			expect(enabled).toBe(false)
-		})
-	})
-
 	describe("start", () => {
 		beforeEach(() => {
 			vi.mocked(vscode.workspace).workspaceFolders = [mockWorkspaceFolder]
@@ -252,7 +203,7 @@ describe("ManagedIndexer", () => {
 		})
 
 		it("should not start when feature is not enabled", async () => {
-			vi.mocked(OrganizationService.isCodeIndexingEnabled).mockReturnValue(false)
+			vi.mocked(apiClient.isEnabled).mockReturnValue(Promise.resolve(false))
 
 			await indexer.start()
 
@@ -262,18 +213,6 @@ describe("ManagedIndexer", () => {
 
 		it("should not start when token is missing", async () => {
 			mockContextProxy.getSecret.mockReturnValue(null)
-
-			await indexer.start()
-
-			expect(indexer.isActive).toBe(false)
-			expect(indexer.workspaceFolderState).toEqual([])
-		})
-
-		it("should not start when organization ID is missing", async () => {
-			mockContextProxy.getValue.mockImplementation((key: string) => {
-				if (key === "kilocodeOrganizationId") return null
-				return null
-			})
 
 			await indexer.start()
 
@@ -319,7 +258,7 @@ describe("ManagedIndexer", () => {
 
 			const mockWatcher = indexer.workspaceFolderState[0].watcher
 			expect(mockWatcher).toBeDefined()
-			expect(mockWatcher!.onEvent).toHaveBeenCalled()
+			expect(mockWatcher!.onEvent).toHaveBeenCalledWith(expect.any(Function))
 		})
 
 		it("should start each watcher", async () => {
@@ -543,6 +482,8 @@ describe("ManagedIndexer", () => {
 			it("should fetch new manifest and process files", async () => {
 				const fs = await import("fs")
 				vi.mocked(fs.promises.readFile).mockResolvedValue(Buffer.from("file content"))
+				vi.mocked(fs.promises.stat).mockResolvedValue({ size: 1000 } as any)
+				vi.mocked(apiClient.upsertFile).mockResolvedValue(undefined)
 
 				const newManifest = {
 					files: {},
@@ -579,12 +520,14 @@ describe("ManagedIndexer", () => {
 				expect(state.gitBranch).toBe("feature/test")
 
 				// Wait for async file processing
-				await new Promise((resolve) => setTimeout(resolve, 10))
+				await new Promise((resolve) => setTimeout(resolve, 50))
 
 				expect(apiClient.upsertFile).toHaveBeenCalled()
 			})
 
 			it("should handle file deletions", async () => {
+				vi.mocked(apiClient.deleteFiles).mockResolvedValue(undefined)
+
 				const mockFiles = async function* (): AsyncIterable<GitWatcherFile> {
 					yield { type: "file-deleted", filePath: "deleted.ts" }
 				}
@@ -601,7 +544,129 @@ describe("ManagedIndexer", () => {
 
 				await indexer.onEvent(event)
 
-				// Should not throw, deletion handling is TODO
+				// Wait for async processing
+				await new Promise((resolve) => setTimeout(resolve, 50))
+
+				expect(apiClient.deleteFiles).toHaveBeenCalledWith(
+					expect.objectContaining({
+						organizationId: "test-org-id",
+						projectId: "test-project-id",
+						gitBranch: "feature/test",
+						filePaths: ["deleted.ts"],
+					}),
+					expect.any(Object), // AbortSignal
+				)
+				expect(state.isIndexing).toBe(false)
+			})
+
+			it("should delete files that are in manifest but not in git", async () => {
+				const fs = await import("fs")
+				vi.mocked(fs.promises.readFile).mockResolvedValue(Buffer.from("file content"))
+				vi.mocked(fs.promises.stat).mockResolvedValue({ size: 1000 } as any)
+				vi.mocked(apiClient.upsertFile).mockResolvedValue(undefined)
+				vi.mocked(apiClient.deleteFiles).mockResolvedValue(undefined)
+
+				// Manifest has files that are no longer in git
+				const manifestWithOldFiles = {
+					files: {
+						oldHash1: "old-file1.ts",
+						oldHash2: "old-file2.ts",
+						currentHash: "current-file.ts",
+					},
+				}
+				vi.mocked(apiClient.getServerManifest).mockResolvedValue(manifestWithOldFiles as any)
+
+				// Git only has current-file.ts
+				const mockFiles = async function* (): AsyncIterable<GitWatcherFile> {
+					yield { type: "file", filePath: "current-file.ts", fileHash: "newHash" }
+				}
+
+				const event: GitWatcherEvent = {
+					type: "branch-changed",
+					previousBranch: "main",
+					newBranch: "feature/test",
+					branch: "feature/test",
+					isBaseBranch: false,
+					watcher: mockWatcher,
+					files: mockFiles(),
+				}
+
+				await indexer.onEvent(event)
+
+				// Wait for async processing
+				await new Promise((resolve) => setTimeout(resolve, 50))
+
+				// Should delete the files that are in manifest but not in git
+				expect(apiClient.deleteFiles).toHaveBeenCalledWith(
+					expect.objectContaining({
+						filePaths: expect.arrayContaining(["old-file1.ts", "old-file2.ts"]),
+					}),
+					expect.any(Object),
+				)
+			})
+
+			it("should not call deleteFiles when no files need deletion", async () => {
+				const fs = await import("fs")
+				vi.mocked(fs.promises.readFile).mockResolvedValue(Buffer.from("file content"))
+				vi.mocked(fs.promises.stat).mockResolvedValue({ size: 1000 } as any)
+				vi.mocked(apiClient.upsertFile).mockResolvedValue(undefined)
+				vi.mocked(apiClient.deleteFiles).mockResolvedValue(undefined)
+
+				const manifestWithCurrentFiles = {
+					files: {
+						hash1: "file1.ts",
+					},
+				}
+				vi.mocked(apiClient.getServerManifest).mockResolvedValue(manifestWithCurrentFiles as any)
+
+				const mockFiles = async function* (): AsyncIterable<GitWatcherFile> {
+					yield { type: "file", filePath: "file1.ts", fileHash: "hash1" }
+				}
+
+				const event: GitWatcherEvent = {
+					type: "branch-changed",
+					previousBranch: "main",
+					newBranch: "feature/test",
+					branch: "feature/test",
+					isBaseBranch: false,
+					watcher: mockWatcher,
+					files: mockFiles(),
+				}
+
+				await indexer.onEvent(event)
+
+				// Wait for async processing
+				await new Promise((resolve) => setTimeout(resolve, 50))
+
+				// Should not call deleteFiles when all manifest files are still in git
+				expect(apiClient.deleteFiles).not.toHaveBeenCalled()
+			})
+
+			it("should handle deleteFiles errors gracefully", async () => {
+				vi.mocked(apiClient.deleteFiles).mockRejectedValue(new Error("Delete failed"))
+
+				const mockFiles = async function* (): AsyncIterable<GitWatcherFile> {
+					yield { type: "file-deleted", filePath: "deleted.ts" }
+				}
+
+				const event: GitWatcherEvent = {
+					type: "branch-changed",
+					previousBranch: "main",
+					newBranch: "feature/test",
+					branch: "feature/test",
+					isBaseBranch: false,
+					watcher: mockWatcher,
+					files: mockFiles(),
+				}
+
+				await indexer.onEvent(event)
+
+				// Wait for async processing
+				await new Promise((resolve) => setTimeout(resolve, 50))
+
+				// Should set error state
+				expect(state.error).toBeDefined()
+				expect(state.error?.message).toContain("Failed to delete files")
 				expect(state.isIndexing).toBe(false)
 			})
 
@@ -660,6 +725,8 @@ describe("ManagedIndexer", () => {
 			it("should process files from commit", async () => {
 				const fs = await import("fs")
 				vi.mocked(fs.promises.readFile).mockResolvedValue(Buffer.from("file content"))
+				vi.mocked(fs.promises.stat).mockResolvedValue({ size: 1000 } as any)
+				vi.mocked(apiClient.upsertFile).mockResolvedValue(undefined)
 
 				state.manifest = { files: {} }
 
@@ -679,7 +746,7 @@ describe("ManagedIndexer", () => {
 
 				await indexer.onEvent(event)
 
-				await new Promise((resolve) => setTimeout(resolve, 10))
+				await new Promise((resolve) => setTimeout(resolve, 50))
 
 				expect(apiClient.upsertFile).toHaveBeenCalledWith(
 					expect.objectContaining({
@@ -785,6 +852,8 @@ describe("ManagedIndexer", () => {
 
 			const fs = await import("fs")
 			vi.mocked(fs.promises.readFile).mockResolvedValue(Buffer.from("file content"))
+			vi.mocked(fs.promises.stat).mockResolvedValue({ size: 1000 } as any)
+			vi.mocked(apiClient.upsertFile).mockResolvedValue(undefined)
 
 			const mockFiles = async function* (): AsyncIterable<GitWatcherFile> {
 				yield { type: "file", filePath: "test.ts", fileHash: "abc123" }
@@ -803,7 +872,7 @@ describe("ManagedIndexer", () => {
 			await indexer.onEvent(event)
 
 			// Wait for async processing
-			await new Promise((resolve) => setTimeout(resolve, 10))
+			await new Promise((resolve) => setTimeout(resolve, 50))
 
 			// Verify upsertFile was called with signal as second argument
 			expect(apiClient.upsertFile).toHaveBeenCalledWith(
@@ -824,6 +893,7 @@ describe("ManagedIndexer", () => {
 
 			const fs = await import("fs")
 			vi.mocked(fs.promises.readFile).mockResolvedValue(Buffer.from("file content"))
+			vi.mocked(fs.promises.stat).mockResolvedValue({ size: 1000 } as any)
 
 			// Make upsertFile throw an AbortError
 			const abortError = new Error("AbortError")
@@ -848,7 +918,7 @@ describe("ManagedIndexer", () => {
 			await expect(indexer.onEvent(event)).resolves.not.toThrow()
 
 			// Wait for async processing
-			await new Promise((resolve) => setTimeout(resolve, 10))
+			await new Promise((resolve) => setTimeout(resolve, 50))
 
 			// Should not set error state for abort errors
 			expect(state.error).toBeUndefined()

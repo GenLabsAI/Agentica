@@ -5,7 +5,7 @@
 vi.mock("../../../../services/code-index/managed/ManagedIndexer", () => ({
 	ManagedIndexer: {
 		getInstance: vi.fn().mockReturnValue({
-			isEnabled: vi.fn().mockResolvedValue(false),
+			isEnabled: vi.fn().mockReturnValue(false),
 			organization: null,
 		}),
 	},
@@ -145,7 +145,7 @@ vi.mock("../../../utils/shell", () => ({
 }))
 
 // Mock the isFastApplyAvailable function
-vi.mock("../../../tools/editFileTool", () => ({
+vi.mock("../../../tools/kilocode/editFileTool", () => ({
 	isFastApplyAvailable: vi.fn(),
 	getFastApplyModelType: vi.fn(),
 }))
@@ -187,13 +187,13 @@ describe("SYSTEM_PROMPT", () => {
 	beforeEach(async () => {
 		vi.clearAllMocks()
 		// Reset the mock to return false by default
-		const { isFastApplyAvailable } = await import("../../../tools/editFileTool")
+		const { isFastApplyAvailable } = await import("../../../tools/kilocode/editFileTool")
 		vi.mocked(isFastApplyAvailable).mockReturnValue(false)
 	})
 
 	it("should exclude traditional editing tools and include Fast Apply instructions when morphFastApply is enabled", async () => {
 		// Mock isFastApplyAvailable to return true for this test
-		const { isFastApplyAvailable } = await import("../../../tools/editFileTool")
+		const { isFastApplyAvailable } = await import("../../../tools/kilocode/editFileTool")
 		vi.mocked(isFastApplyAvailable).mockReturnValue(true)
 
 		const experimentsWithMorph = {
@@ -225,7 +225,6 @@ describe("SYSTEM_PROMPT", () => {
 		// Should NOT include traditional editing tools
 		expect(prompt).not.toContain("## apply_diff")
 		expect(prompt).not.toContain("## write_to_file")
-		expect(prompt).not.toContain("## insert_content")
 
 		// Should contain Fast Apply-specific instructions
 		expect(prompt).toContain("FastApply is enabled")
@@ -262,7 +261,6 @@ describe("SYSTEM_PROMPT", () => {
 		// Should include traditional editing tools
 		expect(prompt).toContain("## apply_diff")
 		expect(prompt).toContain("## write_to_file")
-		expect(prompt).toContain("## insert_content")
 
 		// Should NOT contain Fast Apply-specific instructions
 		expect(prompt).not.toContain("FastApply is enabled")
@@ -273,7 +271,7 @@ describe("SYSTEM_PROMPT", () => {
 
 	it("should use Fast Apply editing instructions in rules section when morphFastApply is enabled", async () => {
 		// Mock isFastApplyAvailable to return true for this test
-		const { isFastApplyAvailable } = await import("../../../tools/editFileTool")
+		const { isFastApplyAvailable } = await import("../../../tools/kilocode/editFileTool")
 		vi.mocked(isFastApplyAvailable).mockReturnValue(true)
 
 		const experimentsWithMorph = {

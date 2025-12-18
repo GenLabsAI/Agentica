@@ -1,3 +1,5 @@
+import type { ModeConfig } from "./messages.js"
+
 export interface WelcomeMessageOptions {
 	// Clear viewport before showing the message
 	clearScreen?: boolean
@@ -27,13 +29,18 @@ export interface CLIOptions {
 	mode?: string
 	workspace?: string
 	ci?: boolean
+	yolo?: boolean
 	json?: boolean
+	jsonInteractive?: boolean
 	prompt?: string
 	timeout?: number
+	customModes?: ModeConfig[]
 	parallel?: boolean
 	worktreeBranch?: string | undefined
 	continue?: boolean
 	provider?: string
 	model?: string
+	session?: string
+	fork?: string
 	noSplash?: boolean
 }

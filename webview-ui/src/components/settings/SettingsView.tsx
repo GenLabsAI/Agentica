@@ -21,19 +21,27 @@ import {
 	AlertTriangle,
 	Globe,
 	Info,
-	Server, // kilocode_change
 	Bot, // kilocode_change
 	MessageSquare,
 	Monitor,
 	LucideIcon,
 	// SquareSlash, // kilocode_change
 	// Glasses, // kilocode_change
+	Plug,
+	Server,
+	Users2,
 } from "lucide-react"
 
 // kilocode_change
 import { ensureBodyPointerEventsRestored } from "@/utils/fixPointerEvents"
-
-import type { ProviderSettings, ExperimentId, TelemetrySetting } from "@roo-code/types"
+import {
+	type ProviderSettings,
+	type ExperimentId,
+	type TelemetrySetting,
+	type ProfileType, // kilocode_change - autocomplete profile type system
+	DEFAULT_CHECKPOINT_TIMEOUT_SECONDS,
+	ImageGenerationProvider,
+} from "@roo-code/types"
 
 import { vscode } from "@src/utils/vscode"
 import { cn } from "@src/lib/utils"
@@ -78,6 +86,8 @@ import deepEqual from "fast-deep-equal" // kilocode_change
 import { GhostServiceSettingsView } from "../kilocode/settings/GhostServiceSettings" // kilocode_change
 import { SlashCommandsSettings } from "./SlashCommandsSettings"
 import { UISettings } from "./UISettings"
+import ModesView from "../modes/ModesView"
+// import McpView from "../mcp/McpView" // kilocode_change: own view
 
 export const settingsTabsContainer = "flex flex-1 overflow-hidden [&.narrow_.tab-label]:hidden"
 export const settingsTabList =
@@ -101,6 +111,8 @@ const sectionNames = [
 	"notifications",
 	"contextManagement",
 	"terminal",
+	"modes",
+	"mcp",
 	"prompts",
 	"ui",
 	"experimental",
@@ -114,19 +126,17 @@ type SectionName = (typeof sectionNames)[number] // kilocode_change
 type SettingsViewProps = {
 	onDone: () => void
 	targetSection?: string
+	editingProfile?: string // kilocode_change - profile to edit
 }
 
-const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, targetSection }, ref) => {
+// kilocode_change start - editingProfile
+const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>((props, ref) => {
+	const { onDone, targetSection, editingProfile } = props
+	// kilocode_change end - editingProfile
 	const { t } = useAppTranslation()
 
 	const extensionState = useExtensionState()
-	const {
-		currentApiConfigName,
-		listApiConfigMeta,
-		uriScheme,
-		kiloCodeWrapperProperties, // kilocode_change
-		settingsImportedAt,
-	} = extensionState
+	const { currentApiConfigName, listApiConfigMeta, uriScheme, settingsImportedAt } = extensionState
 
 	const [isDiscardDialogShow, setDiscardDialogShow] = useState(false)
 	const [isChangeDetected, setChangeDetected] = useState(false)
@@ -182,6 +192,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		experiments,
 		morphApiKey, // kilocode_change
 		fastApplyModel, // kilocode_change: Fast Apply model selection
+		fastApplyApiProvider, // kilocode_change: Fast Apply model api base url
 		fuzzyMatchThreshold,
 		maxOpenTabsContext,
 		maxWorkspaceFiles,
@@ -241,12 +252,14 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		includeDiagnosticMessages,
 		maxDiagnosticMessages,
 		includeTaskHistoryInEnhance,
+		imageGenerationProvider,
 		openRouterImageApiKey,
 		kiloCodeImageApiKey,
 		openRouterImageGenerationSelectedModel,
 		reasoningBlockCollapsed,
 		includeCurrentTime,
 		includeCurrentCost,
+		maxGitStatusFiles,
 	} = cachedState
 
 	const apiConfiguration = useMemo(() => cachedState.apiConfiguration ?? {}, [cachedState.apiConfiguration])
@@ -261,8 +274,26 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		setCachedState((prevCachedState) => ({ ...prevCachedState, ...extensionState }))
 		prevApiConfigName.current = currentApiConfigName
 		setChangeDetected(false)
-		setEditingApiConfigName(currentApiConfigName || "default") // kilocode_change: Sync editing profile when active profile changes
-	}, [currentApiConfigName, extensionState])
+		// kilocode_change start - Don't reset editingApiConfigName if we have an editingProfile prop (from auth return)
+		if (!editingProfile) {
+			setEditingApiConfigName(currentApiConfigName || "default")
+		}
+		// kilocode_change end
+	}, [currentApiConfigName, extensionState, editingProfile]) // kilocode_change
+
+	// kilocode_change start: Set editing profile when prop changes (from auth return)
+	useEffect(() => {
+		if (editingProfile) {
+			console.log("[SettingsView] Setting editing profile from prop:", editingProfile)
+			setEditingApiConfigName(editingProfile)
+			isLoadingProfileForEditing.current = true
+			vscode.postMessage({
+				type: "getProfileConfigurationForEditing",
+				text: editingProfile,
+			})
+		}
+	}, [editingProfile])
+	// kilocode_change end
 
 	// kilocode_change start
 	const isLoadingProfileForEditing = useRef(false)
@@ -423,12 +454,22 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		})
 	}, [])
 
+	const setImageGenerationProvider = useCallback((provider: ImageGenerationProvider) => {
+		setCachedState((prevState) => {
+			if (prevState.imageGenerationProvider !== provider) {
+				setChangeDetected(true)
+			}
+
+			return { ...prevState, imageGenerationProvider: provider }
+		})
+	}, [])
+
 	const setOpenRouterImageApiKey = useCallback((apiKey: string) => {
 		setCachedState((prevState) => {
-			// Only set change detected if value actually changed
 			if (prevState.openRouterImageApiKey !== apiKey) {
 				setChangeDetected(true)
 			}
+
 			return { ...prevState, openRouterImageApiKey: apiKey }
 		})
 	}, [])
@@ -442,10 +483,10 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 
 	const setImageGenerationSelectedModel = useCallback((model: string) => {
 		setCachedState((prevState) => {
-			// Only set change detected if value actually changed
 			if (prevState.openRouterImageGenerationSelectedModel !== model) {
 				setChangeDetected(true)
 			}
+
 			return { ...prevState, openRouterImageGenerationSelectedModel: model }
 		})
 	}, [])
@@ -468,97 +509,106 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 
 	const handleSubmit = () => {
 		if (isSettingValid) {
-			vscode.postMessage({ type: "language", text: language })
-			vscode.postMessage({ type: "alwaysAllowReadOnly", bool: alwaysAllowReadOnly })
 			vscode.postMessage({
-				type: "alwaysAllowReadOnlyOutsideWorkspace",
-				bool: alwaysAllowReadOnlyOutsideWorkspace,
+				type: "updateSettings",
+				updatedSettings: {
+					language,
+					alwaysAllowReadOnly: alwaysAllowReadOnly ?? undefined,
+					alwaysAllowReadOnlyOutsideWorkspace: alwaysAllowReadOnlyOutsideWorkspace ?? undefined,
+					alwaysAllowWrite: alwaysAllowWrite ?? undefined,
+					alwaysAllowWriteOutsideWorkspace: alwaysAllowWriteOutsideWorkspace ?? undefined,
+					alwaysAllowWriteProtected: alwaysAllowWriteProtected ?? undefined,
+					alwaysAllowExecute: alwaysAllowExecute ?? undefined,
+					alwaysAllowBrowser: alwaysAllowBrowser ?? undefined,
+					alwaysAllowMcp,
+					alwaysAllowModeSwitch,
+					allowedCommands: allowedCommands ?? [],
+					deniedCommands: deniedCommands ?? [],
+					// Note that we use `null` instead of `undefined` since `JSON.stringify`
+					// will omit `undefined` when serializing the object and passing it to the
+					// extension host. We may need to do the same for other nullable fields.
+					allowedMaxRequests: allowedMaxRequests ?? null,
+					allowedMaxCost: allowedMaxCost ?? null,
+					autoCondenseContext,
+					autoCondenseContextPercent,
+					browserToolEnabled: browserToolEnabled ?? true,
+					soundEnabled: soundEnabled ?? true,
+					soundVolume: soundVolume ?? 0.5,
+					ttsEnabled,
+					ttsSpeed,
+					diffEnabled: diffEnabled ?? true,
+					enableCheckpoints: enableCheckpoints ?? false,
+					checkpointTimeout: checkpointTimeout ?? DEFAULT_CHECKPOINT_TIMEOUT_SECONDS,
+					browserViewportSize: browserViewportSize ?? "900x600",
+					remoteBrowserHost: remoteBrowserEnabled ? remoteBrowserHost : undefined,
+					remoteBrowserEnabled: remoteBrowserEnabled ?? false,
+					fuzzyMatchThreshold: fuzzyMatchThreshold ?? 1.0,
+					writeDelayMs,
+					screenshotQuality: screenshotQuality ?? 75,
+					terminalOutputLineLimit: terminalOutputLineLimit ?? 500,
+					terminalOutputCharacterLimit: terminalOutputCharacterLimit ?? 50_000,
+					terminalShellIntegrationTimeout: terminalShellIntegrationTimeout ?? 30_000,
+					terminalShellIntegrationDisabled,
+					terminalCommandDelay,
+					terminalPowershellCounter,
+					terminalZshClearEolMark,
+					terminalZshOhMy,
+					terminalZshP10k,
+					terminalZdotdir,
+					terminalCompressProgressBar,
+					mcpEnabled,
+					alwaysApproveResubmit: alwaysApproveResubmit ?? false,
+					requestDelaySeconds: requestDelaySeconds ?? 5,
+					maxOpenTabsContext: Math.min(Math.max(0, maxOpenTabsContext ?? 20), 500),
+					maxWorkspaceFiles: Math.min(Math.max(0, maxWorkspaceFiles ?? 200), 500),
+					showRooIgnoredFiles: showRooIgnoredFiles ?? true,
+					maxReadFileLine: maxReadFileLine ?? -1,
+					maxImageFileSize: maxImageFileSize ?? 5,
+					maxTotalImageSize: maxTotalImageSize ?? 20,
+					maxConcurrentFileReads: cachedState.maxConcurrentFileReads ?? 5,
+					includeDiagnosticMessages:
+						includeDiagnosticMessages !== undefined ? includeDiagnosticMessages : true,
+					maxDiagnosticMessages: maxDiagnosticMessages ?? 50,
+					alwaysAllowSubtasks,
+					alwaysAllowUpdateTodoList,
+					alwaysAllowFollowupQuestions: alwaysAllowFollowupQuestions ?? false,
+					followupAutoApproveTimeoutMs,
+					condensingApiConfigId: condensingApiConfigId || "",
+					includeTaskHistoryInEnhance: includeTaskHistoryInEnhance ?? true,
+					reasoningBlockCollapsed: reasoningBlockCollapsed ?? true,
+					includeCurrentTime: includeCurrentTime ?? true,
+					includeCurrentCost: includeCurrentCost ?? true,
+					maxGitStatusFiles: maxGitStatusFiles ?? 0,
+					profileThresholds,
+					imageGenerationProvider,
+					openRouterImageApiKey,
+					openRouterImageGenerationSelectedModel,
+					experiments,
+					customSupportPrompts,
+				},
 			})
-			vscode.postMessage({ type: "alwaysAllowWrite", bool: alwaysAllowWrite })
-			vscode.postMessage({ type: "alwaysAllowWriteOutsideWorkspace", bool: alwaysAllowWriteOutsideWorkspace })
-			vscode.postMessage({ type: "alwaysAllowWriteProtected", bool: alwaysAllowWriteProtected })
-			vscode.postMessage({ type: "alwaysAllowExecute", bool: alwaysAllowExecute })
-			vscode.postMessage({ type: "alwaysAllowBrowser", bool: alwaysAllowBrowser })
-			vscode.postMessage({ type: "alwaysAllowMcp", bool: alwaysAllowMcp })
-			vscode.postMessage({ type: "allowedCommands", commands: allowedCommands ?? [] })
-			vscode.postMessage({ type: "deniedCommands", commands: deniedCommands ?? [] })
-			vscode.postMessage({ type: "allowedMaxRequests", value: allowedMaxRequests ?? undefined })
-			vscode.postMessage({ type: "allowedMaxCost", value: allowedMaxCost ?? undefined })
-			vscode.postMessage({ type: "autoCondenseContext", bool: autoCondenseContext })
-			vscode.postMessage({ type: "autoCondenseContextPercent", value: autoCondenseContextPercent })
-			vscode.postMessage({ type: "browserToolEnabled", bool: browserToolEnabled })
-			vscode.postMessage({ type: "soundEnabled", bool: soundEnabled })
 			vscode.postMessage({ type: "ttsEnabled", bool: ttsEnabled })
 			vscode.postMessage({ type: "ttsSpeed", value: ttsSpeed })
-			vscode.postMessage({ type: "soundVolume", value: soundVolume })
-			vscode.postMessage({ type: "diffEnabled", bool: diffEnabled })
-			vscode.postMessage({ type: "enableCheckpoints", bool: enableCheckpoints })
-			vscode.postMessage({ type: "checkpointTimeout", value: checkpointTimeout })
-			vscode.postMessage({ type: "browserViewportSize", text: browserViewportSize })
-			vscode.postMessage({ type: "remoteBrowserHost", text: remoteBrowserHost })
-			vscode.postMessage({ type: "remoteBrowserEnabled", bool: remoteBrowserEnabled })
-			vscode.postMessage({ type: "fuzzyMatchThreshold", value: fuzzyMatchThreshold ?? 1.0 })
-			vscode.postMessage({ type: "writeDelayMs", value: writeDelayMs })
-			vscode.postMessage({ type: "screenshotQuality", value: screenshotQuality ?? 75 })
-			vscode.postMessage({ type: "terminalOutputLineLimit", value: terminalOutputLineLimit ?? 500 })
-			vscode.postMessage({ type: "terminalOutputCharacterLimit", value: terminalOutputCharacterLimit ?? 50000 })
-			vscode.postMessage({ type: "terminalShellIntegrationTimeout", value: terminalShellIntegrationTimeout })
-			vscode.postMessage({ type: "terminalShellIntegrationDisabled", bool: terminalShellIntegrationDisabled })
-			vscode.postMessage({ type: "terminalCommandDelay", value: terminalCommandDelay })
-			vscode.postMessage({ type: "terminalPowershellCounter", bool: terminalPowershellCounter })
-			vscode.postMessage({ type: "terminalZshClearEolMark", bool: terminalZshClearEolMark })
-			vscode.postMessage({ type: "terminalZshOhMy", bool: terminalZshOhMy })
-			vscode.postMessage({ type: "terminalZshP10k", bool: terminalZshP10k })
-			vscode.postMessage({ type: "terminalZdotdir", bool: terminalZdotdir })
-			vscode.postMessage({ type: "terminalCompressProgressBar", bool: terminalCompressProgressBar })
 			vscode.postMessage({ type: "terminalCommandApiConfigId", text: terminalCommandApiConfigId || "" }) // kilocode_change
-			vscode.postMessage({ type: "mcpEnabled", bool: mcpEnabled })
-			vscode.postMessage({ type: "alwaysApproveResubmit", bool: alwaysApproveResubmit })
-			vscode.postMessage({ type: "requestDelaySeconds", value: requestDelaySeconds })
-			vscode.postMessage({ type: "maxOpenTabsContext", value: maxOpenTabsContext })
-			vscode.postMessage({ type: "maxWorkspaceFiles", value: maxWorkspaceFiles ?? 200 })
-			vscode.postMessage({ type: "showRooIgnoredFiles", bool: showRooIgnoredFiles })
 			vscode.postMessage({ type: "showAutoApproveMenu", bool: showAutoApproveMenu }) // kilocode_change
 			vscode.postMessage({ type: "yoloMode", bool: yoloMode }) // kilocode_change
-			vscode.postMessage({ type: "maxReadFileLine", value: maxReadFileLine ?? -1 })
-			vscode.postMessage({ type: "maxImageFileSize", value: maxImageFileSize ?? 5 })
-			vscode.postMessage({ type: "maxTotalImageSize", value: maxTotalImageSize ?? 20 })
-			vscode.postMessage({ type: "maxConcurrentFileReads", value: cachedState.maxConcurrentFileReads ?? 5 })
 			vscode.postMessage({ type: "allowVeryLargeReads", bool: allowVeryLargeReads }) // kilocode_change
-			vscode.postMessage({ type: "includeDiagnosticMessages", bool: includeDiagnosticMessages })
-			vscode.postMessage({ type: "maxDiagnosticMessages", value: maxDiagnosticMessages ?? 50 })
 			vscode.postMessage({ type: "currentApiConfigName", text: currentApiConfigName })
-			vscode.postMessage({ type: "updateExperimental", values: experiments })
-			vscode.postMessage({ type: "alwaysAllowModeSwitch", bool: alwaysAllowModeSwitch })
-			vscode.postMessage({ type: "alwaysAllowSubtasks", bool: alwaysAllowSubtasks })
 			vscode.postMessage({ type: "showTaskTimeline", bool: showTaskTimeline }) // kilocode_change
 			vscode.postMessage({ type: "sendMessageOnEnter", bool: sendMessageOnEnter }) // kilocode_change
 			vscode.postMessage({ type: "showTimestamps", bool: showTimestamps }) // kilocode_change
 			vscode.postMessage({ type: "hideCostBelowThreshold", value: hideCostBelowThreshold }) // kilocode_change
-			vscode.postMessage({ type: "alwaysAllowFollowupQuestions", bool: alwaysAllowFollowupQuestions })
-			vscode.postMessage({ type: "alwaysAllowUpdateTodoList", bool: alwaysAllowUpdateTodoList })
-			vscode.postMessage({ type: "followupAutoApproveTimeoutMs", value: followupAutoApproveTimeoutMs })
-			vscode.postMessage({ type: "condensingApiConfigId", text: condensingApiConfigId || "" })
 			vscode.postMessage({ type: "updateCondensingPrompt", text: customCondensingPrompt || "" })
 			vscode.postMessage({ type: "yoloGatekeeperApiConfigId", text: yoloGatekeeperApiConfigId || "" }) // kilocode_change: AI gatekeeper for YOLO mode
-			vscode.postMessage({ type: "updateSupportPrompt", values: customSupportPrompts || {} })
-			vscode.postMessage({ type: "includeTaskHistoryInEnhance", bool: includeTaskHistoryInEnhance ?? true })
 			vscode.postMessage({ type: "setReasoningBlockCollapsed", bool: reasoningBlockCollapsed ?? true })
-			vscode.postMessage({ type: "includeCurrentTime", bool: includeCurrentTime ?? true })
-			vscode.postMessage({ type: "includeCurrentCost", bool: includeCurrentCost ?? true })
 			vscode.postMessage({ type: "upsertApiConfiguration", text: editingApiConfigName, apiConfiguration }) // kilocode_change: Save to editing profile instead of current active profile
 			vscode.postMessage({ type: "telemetrySetting", text: telemetrySetting })
-			vscode.postMessage({ type: "profileThresholds", values: profileThresholds })
 			vscode.postMessage({ type: "systemNotificationsEnabled", bool: systemNotificationsEnabled }) // kilocode_change
 			vscode.postMessage({ type: "ghostServiceSettings", values: ghostServiceSettings }) // kilocode_change
 			vscode.postMessage({ type: "morphApiKey", text: morphApiKey }) // kilocode_change
 			vscode.postMessage({ type: "fastApplyModel", text: fastApplyModel }) // kilocode_change: Fast Apply model selection
-			vscode.postMessage({ type: "openRouterImageApiKey", text: openRouterImageApiKey })
+			vscode.postMessage({ type: "fastApplyApiProvider", text: fastApplyApiProvider }) // kilocode_change: Fast Apply model api base url
 			vscode.postMessage({ type: "kiloCodeImageApiKey", text: kiloCodeImageApiKey })
-			vscode.postMessage({
-				type: "openRouterImageGenerationSelectedModel",
-				text: openRouterImageGenerationSelectedModel,
-			})
 			// kilocode_change start - Auto-purge settings
 			vscode.postMessage({ type: "autoPurgeEnabled", bool: autoPurgeEnabled })
 			vscode.postMessage({ type: "autoPurgeDefaultRetentionDays", value: autoPurgeDefaultRetentionDays })
@@ -574,8 +624,10 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 				type: "autoPurgeIncompleteTaskRetentionDays",
 				value: autoPurgeIncompleteTaskRetentionDays,
 			})
-			// Update cachedState to match the current state to prevent isChangeDetected from being set back to true
-			// kilocode_change: When editing a different profile, don't overwrite apiConfiguration
+			// kilocode_change end - Auto-purge settings
+
+			// kilocode_change: After saving, sync cachedState to extensionState without clobbering
+			// the editing profile's apiConfiguration when editing a non-active profile.
 			if (editingApiConfigName !== currentApiConfigName) {
 				// Only sync non-apiConfiguration fields from extensionState
 				const { apiConfiguration: _, ...restOfExtensionState } = extensionState
@@ -584,7 +636,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 					...restOfExtensionState,
 				}))
 			} else {
-				// When editing the active profile, sync everything
+				// When editing the active profile, sync everything including apiConfiguration
 				setCachedState((prevState) => ({ ...prevState, ...extensionState }))
 			}
 			// kilocode_change end
@@ -685,13 +737,14 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 
 	const sections: { id: SectionName; icon: LucideIcon }[] = useMemo(
 		() => [
-			{ id: "providers", icon: Webhook },
+			{ id: "providers", icon: Plug },
+			{ id: "modes", icon: Users2 },
 			{ id: "autoApprove", icon: CheckCheck },
 			// { id: "slashCommands", icon: SquareSlash }, // kilocode_change: needs work to be re-introduced
 			{ id: "browser", icon: SquareMousePointer },
 			{ id: "checkpoints", icon: GitBranch },
 			{ id: "display", icon: Monitor }, // kilocode_change
-			...(kiloCodeWrapperProperties?.kiloCodeWrapped ? [] : [{ id: "ghost" as const, icon: Bot }]), // kilocode_change
+			{ id: "ghost" as const, icon: Bot }, // kilocode_change
 			{ id: "notifications", icon: Bell },
 			{ id: "contextManagement", icon: Database },
 			{ id: "terminal", icon: SquareTerminal },
@@ -702,7 +755,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 			{ id: "mcp", icon: Server },
 			{ id: "about", icon: Info },
 		],
-		[kiloCodeWrapperProperties?.kiloCodeWrapped], // kilocode_change
+		[], // kilocode_change
 	)
 	// Update target section logic to set active tab
 	useEffect(() => {
@@ -710,6 +763,32 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 			setActiveTab(targetSection as SectionName)
 		}
 	}, [targetSection]) // kilocode_change
+
+	// kilocode_change start - Listen for messages to restore editing profile after auth
+	useEffect(() => {
+		const handleMessage = (event: MessageEvent) => {
+			const message = event.data
+			if (
+				message.type === "action" &&
+				message.action === "settingsButtonClicked" &&
+				message.values?.editingProfile
+			) {
+				const profileToEdit = message.values.editingProfile as string
+				console.log("[SettingsView] Restoring editing profile:", profileToEdit)
+				setEditingApiConfigName(profileToEdit)
+				// Request the profile's configuration for editing
+				isLoadingProfileForEditing.current = true
+				vscode.postMessage({
+					type: "getProfileConfigurationForEditing",
+					text: profileToEdit,
+				})
+			}
+		}
+
+		window.addEventListener("message", handleMessage)
+		return () => window.removeEventListener("message", handleMessage)
+	}, [])
+	// kilocode_change end
 
 	// Function to scroll the active tab into view for vertical layout
 	const scrollToActiveTab = useCallback(() => {
@@ -760,7 +839,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 									: t("settings:header.nothingChangedTooltip")
 						}>
 						<Button
-							variant={isSettingValid ? "default" : "secondary"}
+							variant={isSettingValid ? "primary" : "secondary"}
 							className={!isSettingValid ? "!border-vscode-errorForeground" : ""}
 							onClick={handleSubmit}
 							disabled={!isChangeDetected || !isSettingValid}
@@ -800,7 +879,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 									isSelected // Use manual isSelected for styling
 										? `${settingsTabTrigger} ${settingsTabTriggerActive}`
 										: settingsTabTrigger,
-									"focus:ring-0", // Remove the focus ring styling
+									"cursor-pointer focus:ring-0", // Remove the focus ring styling
 								)}
 								data-testid={`tab-${id}`}
 								data-compact={isCompactMode}>
@@ -906,25 +985,31 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 											prevApiConfigName.current = newName
 										}
 									}}
-									onUpsertConfig={(configName: string) => {
+									// kilocode_change start - autocomplete profile type system
+									onUpsertConfig={(configName: string, profileType?: ProfileType) => {
 										vscode.postMessage({
 											type: "upsertApiConfiguration",
 											text: configName,
-											apiConfiguration,
+											apiConfiguration: {
+												...apiConfiguration,
+												profileType: profileType || "chat",
+											},
 										})
 										setEditingApiConfigName(configName)
 									}}
 								/>
 								{/* kilocode_change end changes to allow for editting a non-active profile */}
 
+								{/* kilocode_change start - pass editing profile name */}
 								<ApiOptions
 									uriScheme={uriScheme}
 									apiConfiguration={apiConfiguration}
 									setApiConfigurationField={setApiConfigurationField}
 									errorMessage={errorMessage}
 									setErrorMessage={setErrorMessage}
-									currentApiConfigName={currentApiConfigName}
+									currentApiConfigName={editingApiConfigName}
 								/>
+								{/* kilocode_change end - pass editing profile name */}
 							</Section>
 						</div>
 					)}
@@ -1045,6 +1130,7 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 							writeDelayMs={writeDelayMs}
 							includeCurrentTime={includeCurrentTime}
 							includeCurrentCost={includeCurrentCost}
+							maxGitStatusFiles={maxGitStatusFiles}
 							setCachedStateField={setCachedStateField}
 						/>
 					)}
@@ -1067,6 +1153,12 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 							setCachedStateField={setCachedStateField}
 						/>
 					)}
+
+					{/* Modes Section */}
+					{activeTab === "modes" && <ModesView />}
+
+					{/* MCP Section */}
+					{activeTab === "mcp" && <McpView />}
 
 					{/* Prompts Section */}
 					{activeTab === "prompts" && (
@@ -1097,14 +1189,17 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 							setCachedStateField={setCachedStateField}
 							morphApiKey={morphApiKey}
 							fastApplyModel={fastApplyModel}
+							fastApplyApiProvider={fastApplyApiProvider}
 							// kilocode_change end
 							apiConfiguration={apiConfiguration}
 							setApiConfigurationField={setApiConfigurationField}
+							imageGenerationProvider={imageGenerationProvider}
 							openRouterImageApiKey={openRouterImageApiKey as string | undefined}
 							kiloCodeImageApiKey={kiloCodeImageApiKey}
 							openRouterImageGenerationSelectedModel={
 								openRouterImageGenerationSelectedModel as string | undefined
 							}
+							setImageGenerationProvider={setImageGenerationProvider}
 							setOpenRouterImageApiKey={setOpenRouterImageApiKey}
 							setKiloCodeImageApiKey={setKiloCodeImageApiKey}
 							setImageGenerationSelectedModel={setImageGenerationSelectedModel}

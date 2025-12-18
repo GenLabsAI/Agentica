@@ -22,6 +22,8 @@
 	},
 	"sections": {
 		"providers": "Providers",
+		"modes": "Modes",
+		"mcp": "MCP Servers",
 		"autoApprove": "Auto-Approve",
 		"browser": "Browser",
 		"checkpoints": "Checkpoints",
@@ -36,6 +38,26 @@
 		"language": "Language",
 		"about": "About Agentica",
 		"autoPurge": "Auto-Cleanup"
+	},
+	"about": {
+		"bugReport": {
+			"label": "Found a bug?",
+			"link": "Report on GitHub"
+		},
+		"featureRequest": {
+			"label": "Have an idea?",
+			"link": "Share it with us"
+		},
+		"securityIssue": {
+			"label": "Discovered a vulnerability?",
+			"link": "Follow our disclosure process"
+		},
+		"contact": {
+			"label": "Need to talk to us? Write"
+		},
+		"community": "Want tips or to just hang out with other Kilo Code users? Join <redditLink>reddit.com/r/kilocode</redditLink> or <discordLink>kilo.ai/discord</discordLink>",
+		"contactAndCommunity": "Contact & Community",
+		"manageSettings": "Manage Settings"
 	},
 	"slashCommands": {
 		"description": "Manage your slash commands to quickly execute custom workflows and actions. <DocsLink>Learn more</DocsLink>"
@@ -71,9 +93,17 @@
 		"vercelAiGatewayProvider": "Vercel AI Gateway",
 		"vercelAiGatewayApiKeyLabel": "API Key",
 		"vercelAiGatewayApiKeyPlaceholder": "Enter your Vercel AI Gateway API key",
+		"bedrockProvider": "Amazon Bedrock",
+		"bedrockRegionLabel": "AWS Region",
+		"bedrockRegionPlaceholder": "us-east-1",
+		"bedrockProfileLabel": "AWS Profile",
+		"bedrockProfilePlaceholder": "default",
+		"bedrockProfileDescription": "AWS profile name from ~/.aws/credentials (required).",
 		"openRouterProvider": "OpenRouter",
 		"openRouterApiKeyLabel": "OpenRouter API Key",
 		"openRouterApiKeyPlaceholder": "Enter your OpenRouter API key",
+		"openRouterProviderRoutingLabel": "OpenRouter Provider Routing",
+		"openRouterProviderRoutingDescription": "OpenRouter routes requests to the best available providers for your embedding model. By default, requests are load balanced across the top providers to maximize uptime. However, you can choose a specific provider to use for this model.",
 		"openaiCompatibleProvider": "OpenAI Compatible",
 		"openAiKeyLabel": "OpenAI API Key",
 		"openAiKeyPlaceholder": "Enter your OpenAI API key",
@@ -90,10 +120,14 @@
 		"selectModelPlaceholder": "Select model",
 		"ollamaUrlLabel": "Ollama URL:",
 		"ollamaBaseUrlLabel": "Ollama Base URL",
+		"vectorStoreProviderLabel": "Vector Store Provider",
 		"qdrantUrlLabel": "Qdrant URL",
 		"qdrantKeyLabel": "Qdrant Key:",
 		"qdrantApiKeyLabel": "Qdrant API Key",
 		"qdrantApiKeyPlaceholder": "Enter your Qdrant API key (optional)",
+		"lancedbVectorStoreDirectoryLabel": "LanceDB Vector Store Path",
+		"lancedbVectorStoreDirectoryPlaceholder": "Enter custom vector store path (optional)",
+		"lancedbVectorStoreDirectoryDescription": "Path to store the lancedb vector database. If empty, uses the default location in the globalStorageUri/vector.",
 		"setupConfigLabel": "Setup",
 		"advancedConfigLabel": "Advanced Configuration",
 		"searchMinScoreLabel": "Search Score Threshold",
@@ -140,13 +174,16 @@
 			"geminiApiKeyRequired": "Gemini API key is required",
 			"mistralApiKeyRequired": "Mistral API key is required",
 			"vercelAiGatewayApiKeyRequired": "Vercel AI Gateway API key is required",
+			"bedrockRegionRequired": "AWS region is required",
+			"bedrockProfileRequired": "AWS profile is required",
 			"openRouterApiKeyRequired": "OpenRouter API key is required",
 			"ollamaBaseUrlRequired": "Ollama base URL is required",
 			"baseUrlRequired": "Base URL is required",
 			"modelDimensionMinValue": "Model dimension must be greater than 0"
 		},
 		"cancelling": "Cancelling...",
-		"cancelIndexingButton": "Cancel Indexing"
+		"cancelIndexingButton": "Cancel Indexing",
+		"optional": "optional"
 	},
 	"autoApprove": {
 		"description": "Run these actions without asking for permission. Only enable for actions you fully trust and if you understand the security risks.",
@@ -172,6 +209,10 @@
 				"label": "Include protected files",
 				"description": "Allow Agentica to create and edit protected files (like .kilocodeignore and .kilocode/ configuration files) without requiring approval."
 			}
+		},
+		"delete": {
+			"label": "Delete",
+			"description": "Automatically delete files and directories without requiring approval"
 		},
 		"browser": {
 			"label": "Browser",
@@ -257,6 +298,15 @@
 		"searchProviderPlaceholder": "Search providers",
 		"noProviderMatchFound": "No providers found",
 		"noMatchFound": "No matching profiles found",
+		"profileName": "Profile Name",
+		"profileType": "Profile Type",
+		"profileTypeChat": "Chat",
+		"profileTypeAutocomplete": "Autocomplete",
+		"profileTypeDescription": "Chat profiles are used for conversations. Only one autocomplete profile is allowed.",
+		"autocompleteLabel": "(Autocomplete)",
+		"autocomplete": {
+			"onlyOneAllowed": "Only one autocomplete profile is allowed. Profile \"{{existingName}}\" is already configured for autocomplete. Please change its type first or delete it."
+		},
 		"vscodeLmDescription": " The VS Code Language Model API allows you to run models provided by other VS Code extensions (including but not limited to GitHub Copilot). The easiest way to get started is to install the Copilot and Copilot Chat extensions from the VS Code Marketplace.",
 		"vscodeLmUnavailable": "VS Code Language Model support is only available on Visual Studio Code. Forks such as VSCodium and others may not work. Further, this capability is not available in JetBrains tools.",
 		"vscodeLmUnavailableInstructions": "Ensure you are using a supported tool and that VS Code Chat is installed and enabled",
@@ -294,8 +344,12 @@
 		"anthropicUseAuthToken": "Pass Anthropic API Key as Authorization header instead of X-Api-Key",
 		"anthropic1MContextBetaLabel": "Enable 1M context window (Beta)",
 		"anthropic1MContextBetaDescription": "Extends context window to 1 million tokens for Claude Sonnet 4",
+		"anthropicUseAzureDeployment": "Use Azure deployment name",
+		"anthropicAzureDeploymentPlaceholder": "Enter deployment name...",
 		"awsBedrock1MContextBetaLabel": "Enable 1M context window (Beta)",
 		"awsBedrock1MContextBetaDescription": "Extends context window to 1 million tokens for Claude Sonnet 4",
+		"basetenApiKey": "Baseten API Key",
+		"getBasetenApiKey": "Get Baseten API Key",
 		"cerebrasApiKey": "Cerebras API Key",
 		"getCerebrasApiKey": "Get Cerebras API Key",
 		"chutesApiKey": "Chutes API Key",
@@ -326,6 +380,14 @@
 		"geminiApiKey": "Gemini API Key",
 		"getGroqApiKey": "Get Groq API Key",
 		"groqApiKey": "Groq API Key",
+		"nanoGptApiKey": "Nano-GPT API Key",
+		"getNanoGptApiKey": "Get Nano-GPT API Key",
+		"nanoGptModelList": "Model List",
+		"nanoGptModelListOptions": {
+			"all": "All Models",
+			"personalized": "Personalized Models",
+			"subscription": "Subscription Models"
+		},
 		"getSambaNovaApiKey": "Get SambaNova API Key",
 		"sambaNovaApiKey": "SambaNova API Key",
 		"getHuggingFaceApiKey": "Get Hugging Face API Key",
@@ -345,6 +407,32 @@
 		"huggingFaceSelectProvider": "Select a provider...",
 		"huggingFaceSearchProviders": "Search providers...",
 		"huggingFaceNoProvidersFound": "No providers found",
+		"sapAiCore": {
+			"serviceKey": "AI Core Service Key",
+			"serviceKeyJson": "Enter Service Key JSON...",
+			"resourceGroup": "AI Core Resource Group",
+			"credentialsNote": "These credentials are stored locally and only used to make API requests from this extension.",
+			"learnMore": "You can find more information about SAP AI Core API access here.",
+			"orchestrationMode": "Orchestration Mode",
+			"orchestrationEnabledDesc": "When enabled, provides access to all available models without requiring individual deployments.",
+			"orchestrationDisabledDesc": "When disabled, provides access only to deployed foundation models in your AI Core service instance.",
+			"modelDeploymentDesc": "You may only select models with available deployments.",
+			"deployment": "Deployment",
+			"loading": "Loading...",
+			"modelsCount": "({{count}} models)",
+			"deploymentsCount": "({{count}} deployments)",
+			"selectModel": "Select a model...",
+			"selectDeployment": "Select a deployment...",
+			"searchModels": "Search models...",
+			"searchDeployments": "Search deployments...",
+			"noModelsFound": "No models found",
+			"noDeploymentFound": "No deployment found",
+			"getStarted": "Get Started with SAP AI Core",
+			"supportedProviders": "Supported Providers",
+			"supportedProvidersDesc1": "The SAP AI Core provider currently only supports foundation models for the following LLM providers:",
+			"supportedProvidersDesc2": "Consider switching to Orchestration Mode for access to more models.",
+			"supportedProvidersDesc3": "Learn more about Orchestration Mode"
+		},
 		"getGeminiApiKey": "Get Gemini API Key",
 		"openAiApiKey": "OpenAI API Key",
 		"apiKey": "API Key",
@@ -367,6 +455,7 @@
 		"awsSessionToken": "AWS Session Token",
 		"awsRegion": "AWS Region",
 		"awsCrossRegion": "Use cross-region inference",
+		"awsGlobalInference": "Use Global inference (auto-select optimal AWS Region)",
 		"awsBedrockVpc": {
 			"useCustomVpcEndpoint": "Use custom VPC endpoint",
 			"vpcEndpointUrlPlaceholder": "Enter VPC Endpoint URL (optional)",
@@ -489,7 +578,7 @@
 		},
 		"consecutiveMistakeLimit": {
 			"label": "Error & Repetition Limit",
-			"description": "Number of consecutive errors or repeated actions before showing 'Agentica is having trouble' dialog",
+
 			"unlimitedDescription": "Unlimited retries enabled (auto-proceed). The dialog will never appear.",
 			"warning": "⚠️ Setting to 0 allows unlimited retries which may consume significant API usage"
 		},
@@ -499,7 +588,8 @@
 			"minimal": "Minimal (Fastest)",
 			"low": "Low",
 			"medium": "Medium",
-			"high": "High"
+			"high": "High",
+			"xhigh": "Extra High"
 		},
 		"verbosity": {
 			"label": "Output Verbosity",
@@ -733,6 +823,10 @@
 		"includeCurrentCost": {
 			"label": "Include current cost in context",
 			"description": "When enabled, the current API usage cost will be included in the system prompt. Disable this if models are stopping work due to cost concerns."
+		},
+		"maxGitStatusFiles": {
+			"label": "Git status max files",
+			"description": "Maximum number of file entries to include in git status context. Set to 0 to disable. Branch info is always shown when > 0."
 		}
 	},
 	"terminal": {
@@ -796,6 +890,14 @@
 	"advancedSettings": {
 		"title": "Advanced settings"
 	},
+	"toolProtocol": {
+		"label": "Tool Call Protocol",
+		"description": "Choose how Kilo Code communicates with the API. Native uses the provider's function calling API, while XML uses XML-formatted tool definitions.",
+		"default": "Default",
+		"xml": "XML",
+		"native": "Native",
+		"currentDefault": "Default: {{protocol}}"
+	},
 	"advanced": {
 		"diff": {
 			"label": "Enable editing through diffs",
@@ -852,11 +954,13 @@
 			"name": "Enable concurrent file edits",
 			"description": "When enabled, Agentica can edit multiple files in a single request. When disabled, Agentica must edit files one at a time. Disabling this can help when working with less capable models or when you want more control over file modifications."
 		},
+		"SPEECH_TO_TEXT": {
+			"name": "Speech-to-Text (STT)",
+			"description": "When enabled, Kilo Code can transcribe your voice into text using OpenAI's Whisper model. Click the microphone button in the chat to start recording. Requires FFmpeg to be installed and a configured OpenAI API provider."
+		},
 		"MORPH_FAST_APPLY": {
 			"name": "Enable Fast Apply",
-			"description": "When enabled, Agentica can edit files using Fast Apply with specialized models optimized for code modifications. Requires the Kilo Gateway Provider, OpenRouter, or a Morph API key.",
-			"apiKey": "Morph API key (optional)",
-			"placeholder": "Enter your Morph API key (optional)",
+
 			"modelLabel": "Model Selection",
 			"modelDescription": "Choose which Fast Apply model to use for file edits",
 			"models": {
@@ -882,6 +986,8 @@
 			"name": "Enable AI image generation",
 			"description": "When enabled, Agentica can generate images from text prompts. Requires a Agentica or OpenRouter API key to be configured.",
 			"apiProvider": "API Provider",
+			"providerLabel": "Provider",
+			"providerDescription": "Select which provider to use for image generation.",
 			"openRouterApiKeyLabel": "OpenRouter API Key",
 			"openRouterApiKeyPlaceholder": "Enter your OpenRouter API key",
 			"kiloCodeApiKeyLabel": "Agentica API Key",
@@ -895,7 +1001,7 @@
 		},
 		"RUN_SLASH_COMMAND": {
 			"name": "Enable model-initiated slash commands",
-			"description": "When enabled, Agentica can run your slash commands to execute workflows."
+
 		}
 	},
 	"promptCaching": {
@@ -935,11 +1041,12 @@
 		"label": "Model",
 		"searchPlaceholder": "Search",
 		"noMatchFound": "No match found",
-		"useCustomModel": "Use custom: {{modelId}}"
+		"useCustomModel": "Use custom: {{modelId}}",
+		"simplifiedExplanation": "You can adjust detailed model settings later."
 	},
 	"footer": {
-		"feedback": "If you have any questions or feedback, feel free to open an issue at <githubLink>github.com/Kilo-Org/kilocode</githubLink> or join <redditLink>reddit.com/r/kilocode</redditLink> or <discordLink>kilocode.ai/discord</discordLink>.",
-		"support": "For financial questions, please contact Customer Support at <supportLink>https://kilocode.ai/support</supportLink>",
+		"feedback": "If you have any questions or feedback, feel free to open an issue at <githubLink>github.com/Kilo-Org/kilocode</githubLink> or join <redditLink>reddit.com/r/kilocode</redditLink> or <discordLink>kilo.ai/discord</discordLink>.",
+		"support": "For financial questions, please contact Customer Support at <supportLink>https://kilo.ai/support</supportLink>",
 		"telemetry": {
 			"label": "Allow error and usage reporting",
 			"description": "Help improve Agentica by sending usage data and error reports. No code, prompts, or personal information is ever sent. See our privacy policy for more details."
@@ -970,7 +1077,9 @@
 		"providerNotAllowed": "Provider '{{provider}}' is not allowed by your organization",
 		"modelNotAllowed": "Model '{{model}}' is not allowed for provider '{{provider}}' by your organization",
 		"profileInvalid": "This profile contains a provider or model that is not allowed by your organization",
-		"qwenCodeOauthPath": "You must provide a valid OAuth credentials path."
+		"qwenCodeOauthPath": "You must provide a valid OAuth credentials path.",
+		"sapAiCore": "You must provide a valid SAP AI Core Service Key.",
+		"sapAiCoreDeploymentId": "You must select a running deployment for model '{{model}}'."
 	},
 	"placeholders": {
 		"apiKey": "Enter API Key...",
@@ -1025,3 +1134,4 @@
 		}
 	}
 }
+

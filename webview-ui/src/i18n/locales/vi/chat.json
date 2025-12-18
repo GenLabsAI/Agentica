@@ -26,7 +26,9 @@
 		"shareSuccessOrganization": "Liên kết tổ chức đã được sao chép vào clipboard",
 		"shareSuccessPublic": "Liên kết công khai đã được sao chép vào clipboard",
 		"openInCloud": "Mở tác vụ trong Roo Code Cloud",
-		"openInCloudIntro": "Tiếp tục theo dõi hoặc tương tác với Roo từ bất cứ đâu. Quét, nhấp hoặc sao chép để mở."
+		"openInCloudIntro": "Tiếp tục theo dõi hoặc tương tác với Roo từ bất cứ đâu. Quét, nhấp hoặc sao chép để mở.",
+		"openApiHistory": "Mở lịch sử API",
+		"openUiHistory": "Mở lịch sử UI"
 	},
 	"history": {
 		"title": "Lịch Sử"
@@ -91,24 +93,15 @@
 		"tooltip": "Hủy thao tác hiện tại"
 	},
 	"scrollToBottom": "Cuộn xuống cuối cuộc trò chuyện",
-	"about": "Tạo, tái cấu trúc và gỡ lỗi mã bằng sự hỗ trợ của AI. Kiểm tra <DocsLink>tài liệu</DocsLink> của chúng tôi để tìm hiểu thêm.",
-	"onboarding": "<strong>Danh sách nhiệm vụ của bạn trong không gian làm việc này trống.</strong> Bắt đầu bằng cách nhập nhiệm vụ bên dưới. Bạn không chắc chắn nên bắt đầu như thế nào? Đọc thêm về những gì Agentica có thể làm cho bạn trong <DocsLink>tài liệu</DocsLink>.",
+
 	"rooTips": {
-		"boomerangTasks": {
-			"title": "Điều phối Nhiệm vụ",
-			"description": "Chia nhỏ các nhiệm vụ thành các phần nhỏ hơn, dễ quản lý hơn."
-		},
-		"stickyModels": {
-			"title": "Chế độ dính",
-			"description": "Mỗi chế độ ghi nhớ mô hình đã sử dụng cuối cùng của bạn"
-		},
-		"tools": {
-			"title": "Công cụ",
-			"description": "Cho phép AI giải quyết vấn đề bằng cách duyệt web, chạy lệnh, v.v."
-		},
 		"customizableModes": {
-			"title": "Chế độ tùy chỉnh",
-			"description": "Các nhân vật chuyên biệt với hành vi riêng và mô hình được chỉ định"
+			"title": "Chế độ có thể tùy chỉnh",
+			"description": "Các nhân vật chuyên biệt luôn bám sát nhiệm vụ và mang lại hiệu quả."
+		},
+		"modelAgnostic": {
+			"title": "Mang theo mô hình của riêng bạn",
+			"description": "Sử dụng khóa nhà cung cấp của riêng bạn hoặc thậm chí chạy suy luận cục bộ — không phụ phí, không khóa, không hạn chế"
 		}
 	},
 	"selectMode": "Chọn chế độ tương tác",
@@ -149,7 +142,18 @@
 		"failed": "Yêu cầu API thất bại",
 		"streaming": "Yêu cầu API...",
 		"cancelled": "Yêu cầu API đã hủy",
-		"streamingFailed": "Streaming API thất bại"
+		"streamingFailed": "Streaming API thất bại",
+		"errorTitle": "Lỗi API {{code}}",
+		"errorMessage": {
+			"docs": "Tài liệu",
+			"400": "Nhà cung cấp không thể xử lý yêu cầu theo cách này. Hãy dừng nhiệm vụ và thử một cách tiếp cận khác.",
+			"401": "Không thể xác thực với nhà cung cấp. Vui lòng kiểm tra cấu hình khóa API của bạn.",
+			"402": "Có vẻ như bạn đã hết tiền/tín dụng trong tài khoản. Hãy truy cập nhà cung cấp và thêm tiền để tiếp tục.",
+			"403": "Truy cập bị từ chối. Khóa API của bạn hợp lệ, nhưng nhà cung cấp từ chối hoàn thành yêu cầu này.",
+			"429": "Quá nhiều yêu cầu. Nhà cung cấp đang giới hạn tốc độ yêu cầu của bạn. Vui lòng chờ một chút trước khi gọi API tiếp theo.",
+			"500": "Lỗi máy chủ của nhà cung cấp. Có sự cố ở phía nhà cung cấp, không có gì sai với yêu cầu của bạn.",
+			"unknown": "Lỗi API không xác định. Vui lòng liên hệ hỗ trợ Roo Code."
+		}
 	},
 	"checkpoint": {
 		"regular": "Điểm kiểm tra",
@@ -174,25 +178,7 @@
 		"wantsToFetch": "Agentica muốn lấy hướng dẫn chi tiết để hỗ trợ nhiệm vụ hiện tại"
 	},
 	"fileOperations": {
-		"wantsToRead": "Agentica muốn đọc tệp này",
-		"wantsToReadOutsideWorkspace": "Agentica muốn đọc tệp này bên ngoài không gian làm việc",
-		"didRead": "Agentica đã đọc tệp này",
-		"wantsToEdit": "Agentica muốn chỉnh sửa tệp này",
-		"wantsToEditOutsideWorkspace": "Agentica muốn chỉnh sửa tệp này bên ngoài không gian làm việc",
-		"wantsToEditProtected": "Agentica muốn chỉnh sửa tệp cấu hình được bảo vệ",
-		"wantsToCreate": "Agentica muốn tạo một tệp mới",
-		"wantsToSearchReplace": "Agentica muốn thực hiện tìm kiếm và thay thế trong tệp này",
-		"didSearchReplace": "Agentica đã thực hiện tìm kiếm và thay thế trong tệp này",
-		"wantsToInsert": "Agentica muốn chèn nội dung vào tệp này",
-		"wantsToInsertWithLineNumber": "Agentica muốn chèn nội dung vào dòng {{lineNumber}} của tệp này",
-		"wantsToInsertAtEnd": "Agentica muốn thêm nội dung vào cuối tệp này",
-		"wantsToReadAndXMore": "Agentica muốn đọc tệp này và {{count}} tệp khác",
-		"wantsToReadMultiple": "Agentica muốn đọc nhiều tệp",
-		"wantsToApplyBatchChanges": "Agentica muốn áp dụng thay đổi cho nhiều tệp",
-		"wantsToGenerateImage": "Agentica muốn tạo một hình ảnh",
-		"wantsToGenerateImageOutsideWorkspace": "Agentica muốn tạo hình ảnh bên ngoài không gian làm việc",
-		"wantsToGenerateImageProtected": "Agentica muốn tạo hình ảnh ở vị trí được bảo vệ",
-		"didGenerateImage": "Agentica đã tạo một hình ảnh"
+
 	},
 	"directoryOperations": {
 		"wantsToViewTopLevel": "Agentica muốn xem các tệp cấp cao nhất trong thư mục này",
@@ -307,22 +293,21 @@
 			"goToSettingsButton": "Đi tới Cài đặt"
 		},
 		"release": {
-			"heading": "Mới trong Extension:",
-			"openRouterEmbeddings": "Hỗ trợ các mô hình nhúng OpenRouter",
-			"chutesDynamic": "Chutes giờ đây tải các mô hình mới nhất một cách động",
-			"queuedMessagesFix": "Sửa lỗi tin nhắn trong hàng đợi bị mất"
+			"heading": "Mới trong phiên bản này:",
+			"contextRewind": "Nén ngữ cảnh được cải thiện hiện cho phép bạn khôi phục bối cảnh trước đó đầy đủ khi cuộn lại đến một điểm kiểm tra",
+			"rooProvider": "Nhà cung cấp Roo Code Cloud hiện giữ lại nội dung lý luận và sử dụng các công cụ gốc theo mặc định để có hiệu suất tốt hơn"
 		},
 		"cloudAgents": {
 			"heading": "Mới trên Cloud:",
-			"prFixer": "Giới thiệu agent đám mây <bold>PR Fixer</bold> để bổ sung cho PR Reviewer.",
-			"prFixerDescription": "PR Fixer của Roo Code áp dụng các thay đổi chất lượng cao cho PR của bạn, ngay từ GitHub. Gọi qua bình luận PR và nó sẽ đọc toàn bộ lịch sử bình luận để hiểu ngữ cảnh, thỏa thuận và đánh đổi - sau đó triển khai bản sửa lỗi phù hợp.",
-			"tryPrFixerButton": "Dùng thử PR Fixer"
+			"specialized": "Giới thiệu <bold>Explainer</bold>, <bold>Planner</bold> và <bold>Coder</bold> - ba agent đám mây chuyên biệt để nâng cao quy trình làm việc của bạn.",
+			"description": "Các agent làm việc cùng nhau trên đám mây và có thể được kích hoạt từ web hoặc qua Slack.",
+			"tryButton": "Dùng thử Agents trên Cloud"
 		},
 		"careers": "Ngoài ra, <careersLink>chúng tôi đang tuyển dụng!</careersLink>",
-		"socialLinks": "Tham gia với chúng tôi trên <xLink>X</xLink>, <discordLink>Discord</discordLink>, hoặc <redditLink>r/RooCode</redditLink> 🚀"
+		"socialLinks": "Tham gia với chúng tôi trên <xLink>X</xLink>, <discordLink>Discord</discordLink>, hoặc <redditLink>r/KiloCode</redditLink> 🚀"
 	},
 	"browser": {
-		"rooWantsToUse": "Agentica muốn sử dụng trình duyệt",
+
 		"consoleLogs": "Nhật ký bảng điều khiển",
 		"noNewLogs": "(Không có nhật ký mới)",
 		"screenshot": "Ảnh chụp màn hình trình duyệt",
@@ -338,8 +323,10 @@
 			"launch": "Khởi chạy trình duyệt tại {{url}}",
 			"click": "Nhấp ({{coordinate}})",
 			"type": "Gõ \"{{text}}\"",
+			"press": "Nhấn {{key}}",
 			"scrollDown": "Cuộn xuống",
 			"scrollUp": "Cuộn lên",
+			"hover": "Di chuột ({{coordinate}})",
 			"close": "Đóng trình duyệt"
 		}
 	},
@@ -438,7 +425,7 @@
 		"clickToEdit": "Nhấp để chỉnh sửa tin nhắn"
 	},
 	"slashCommand": {
-		"wantsToRun": "Agentica muốn chạy lệnh slash",
-		"didRun": "Agentica đã chạy lệnh slash"
+
 	}
 }
+

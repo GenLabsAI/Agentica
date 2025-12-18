@@ -16,7 +16,7 @@
 			"incentive": "جرب Roo مجاناً"
 		}
 	},
-	"chooseProvider": "عشان يشتغل سحر Agentica، يلزم مفتاح API.",
+
 	"startRouter": "نوصي باستخدام موجّه LLM:",
 	"startCustom": "أو تقدر تستخدم مفتاح مزوّدك الخاص:",
 	"telemetry": {
@@ -25,3 +25,4 @@
 	},
 	"importSettings": "استيراد الإعدادات"
 }
+

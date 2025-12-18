@@ -30,6 +30,9 @@ describe("Amazon Bedrock Inference Profiles", () => {
 	describe("AWS_INFERENCE_PROFILE_MAPPING constant", () => {
 		it("should contain all expected region mappings", () => {
 			expect(AWS_INFERENCE_PROFILE_MAPPING).toEqual([
+				["ap-southeast-2", "au."],
+				["ap-southeast-4", "au."],
+				["ap-northeast-", "jp."],
 				["us-gov-", "ug."],
 				["us-", "us."],
 				["eu-", "eu."],
@@ -47,7 +50,7 @@ describe("Amazon Bedrock Inference Profiles", () => {
 
 		it("should have valid inference profile prefixes", () => {
 			AWS_INFERENCE_PROFILE_MAPPING.forEach(([regionPattern, inferenceProfile]) => {
-				expect(regionPattern).toMatch(/^[a-z-]+$/)
+				expect(regionPattern).toMatch(/^[a-z0-9-]+$/)
 				expect(inferenceProfile).toMatch(/^[a-z]+\.$/)
 			})
 		})
@@ -77,8 +80,14 @@ describe("Amazon Bedrock Inference Profiles", () => {
 
 		it("should return correct prefix for Asia Pacific regions", () => {
 			const handler = createHandler()
+			// Australia regions (Sydney and Melbourne) get au. prefix
+			expect((handler as any).constructor.getPrefixForRegion("ap-southeast-2")).toBe("au.")
+			expect((handler as any).constructor.getPrefixForRegion("ap-southeast-4")).toBe("au.")
+			// Japan regions (Tokyo and Osaka) get jp. prefix
+			expect((handler as any).constructor.getPrefixForRegion("ap-northeast-1")).toBe("jp.")
+			expect((handler as any).constructor.getPrefixForRegion("ap-northeast-3")).toBe("jp.")
+			// Other APAC regions get apac. prefix
 			expect((handler as any).constructor.getPrefixForRegion("ap-southeast-1")).toBe("apac.")
-			expect((handler as any).constructor.getPrefixForRegion("ap-northeast-1")).toBe("apac.")
 			expect((handler as any).constructor.getPrefixForRegion("ap-south-1")).toBe("apac.")
 			expect((handler as any).constructor.getPrefixForRegion("ap-east-1")).toBe("apac.")
 		})
@@ -244,6 +253,47 @@ describe("Amazon Bedrock Inference Profiles", () => {
 
 			const usModel = usHandler.getModel()
 			expect(usModel.id).toBe("us.anthropic.claude-3-sonnet-20240229-v1:0")
+		})
+
+		it("should prioritize global inference over cross-region inference when both are enabled", () => {
+			// When both global inference and cross-region inference are enabled,
+			// global inference should take precedence
+			const handler = createHandler({
+				awsUseCrossRegionInference: true,
+				awsUseGlobalInference: true,
+				awsRegion: "us-east-1",
+				apiModelId: "anthropic.claude-sonnet-4-20250514-v1:0", // Model that supports global inference
+			})
+
+			const model = handler.getModel()
+			// Should use global. prefix, not us. prefix
+			expect(model.id).toBe("global.anthropic.claude-sonnet-4-20250514-v1:0")
+		})
+
+		it("should fall back to cross-region inference when global inference is disabled", () => {
+			const handler = createHandler({
+				awsUseCrossRegionInference: true,
+				awsUseGlobalInference: false,
+				awsRegion: "us-east-1",
+				apiModelId: "anthropic.claude-sonnet-4-20250514-v1:0",
+			})
+
+			const model = handler.getModel()
+			// Should use cross-region prefix since global is disabled
+			expect(model.id).toBe("us.anthropic.claude-sonnet-4-20250514-v1:0")
+		})
+
+		it("should not apply global inference prefix to unsupported models even when enabled", () => {
+			const handler = createHandler({
+				awsUseCrossRegionInference: true,
+				awsUseGlobalInference: true,
+				awsRegion: "us-east-1",
+				apiModelId: "anthropic.claude-3-sonnet-20240229-v1:0", // Model that does NOT support global inference
+			})
+
+			const model = handler.getModel()
+			// Should fall back to cross-region prefix since model doesn't support global inference
+			expect(model.id).toBe("us.anthropic.claude-3-sonnet-20240229-v1:0")
 		})
 	})
 })

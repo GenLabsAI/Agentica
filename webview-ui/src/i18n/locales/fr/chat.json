@@ -26,7 +26,9 @@
 		"shareSuccessOrganization": "Lien d'organisation copié dans le presse-papiers",
 		"shareSuccessPublic": "Lien public copié dans le presse-papiers",
 		"openInCloud": "Ouvrir la tâche dans Roo Code Cloud",
-		"openInCloudIntro": "Continue à surveiller ou interagir avec Roo depuis n'importe où. Scanne, clique ou copie pour ouvrir."
+		"openInCloudIntro": "Continue à surveiller ou interagir avec Roo depuis n'importe où. Scanne, clique ou copie pour ouvrir.",
+		"openApiHistory": "Ouvrir l'historique de l'API",
+		"openUiHistory": "Ouvrir l'historique de l'UI"
 	},
 	"history": {
 		"title": "Historique"
@@ -91,24 +93,17 @@
 		"tooltip": "Annuler l'opération actuelle"
 	},
 	"scrollToBottom": "Défiler jusqu'au bas du chat",
-	"about": "Générer, refactoriser et déboguer du code avec l'assistance de l'IA. Consultez notre <DocsLink>documentation</DocsLink> pour en savoir plus.",
-	"onboarding": "Grâce aux dernières avancées en matière de capacités de codage agent, je peux gérer des tâches complexes de développement logiciel étape par étape. Avec des outils qui me permettent de créer et d'éditer des fichiers, d'explorer des projets complexes, d'utiliser le navigateur et d'exécuter des commandes de terminal (après votre autorisation), je peux vous aider de manières qui vont au-delà de la complétion de code ou du support technique. Je peux même utiliser MCP pour créer de nouveaux outils et étendre mes propres capacités.",
+	"about": "Génère, refactorise et débogue du code avec l'assistance de l'IA. Consulte notre <DocsLink>documentation</DocsLink> pour en savoir plus.",
+	"docs": "Consultez notre <DocsLink>documentation</DocsLink> pour en savoir plus.",
+	"onboarding": "Votre liste de tâches dans cet espace de travail est vide.",
 	"rooTips": {
-		"boomerangTasks": {
-			"title": "Orchestration de Tâches",
-			"description": "Divisez les tâches en parties plus petites et gérables."
-		},
-		"stickyModels": {
-			"title": "Modes persistants",
-			"description": "Chaque mode se souvient de votre dernier modèle utilisé"
-		},
-		"tools": {
-			"title": "Outils",
-			"description": "Permettez à l'IA de résoudre des problèmes en naviguant sur le Web, en exécutant des commandes, et plus encore."
-		},
 		"customizableModes": {
 			"title": "Modes personnalisables",
-			"description": "Des personas spécialisés avec leurs propres comportements et modèles assignés"
+			"description": "Des personas spécialisés qui restent concentrés sur la tâche et livrent des résultats."
+		},
+		"modelAgnostic": {
+			"title": "Apportez votre propre modèle",
+			"description": "Utilisez votre propre clé de fournisseur ou même exécutez une inférence locale — pas de majoration, pas de verrouillage, pas de restrictions"
 		}
 	},
 	"selectMode": "Sélectionner le mode d'interaction",
@@ -149,7 +144,18 @@
 		"failed": "Échec de la requête API",
 		"streaming": "Requête API...",
 		"cancelled": "Requête API annulée",
-		"streamingFailed": "Échec du streaming API"
+		"streamingFailed": "Échec du streaming API",
+		"errorTitle": "Erreur API {{code}}",
+		"errorMessage": {
+			"docs": "Documentation",
+			"400": "Le fournisseur n'a pas pu traiter la demande telle que présentée. Arrête la tâche et essaie une approche différente.",
+			"401": "Impossible de s'authentifier auprès du fournisseur. Veuillez vérifier la configuration de votre clé API.",
+			"402": "Il semble que vous ayez épuisé vos fonds/crédits sur votre compte. Allez chez votre fournisseur et ajoutez-en plus pour continuer.",
+			"403": "Non autorisé. Votre clé API est valide, mais le fournisseur a refusé de compléter cette demande.",
+			"429": "Trop de demandes. Vous êtes limité par le fournisseur. Veuillez attendre un peu avant votre prochain appel API.",
+			"500": "Erreur du serveur du fournisseur. Quelque chose ne va pas du côté du fournisseur, il n'y a rien de mal avec votre demande.",
+			"unknown": "Erreur API inconnue. Veuillez contacter le support Roo Code."
+		}
 	},
 	"checkpoint": {
 		"regular": "Point de contrôle",
@@ -171,25 +177,7 @@
 		"current": "Actuel"
 	},
 	"fileOperations": {
-		"wantsToRead": "Agentica veut lire ce fichier",
-		"wantsToReadOutsideWorkspace": "Agentica veut lire ce fichier en dehors de l'espace de travail",
-		"didRead": "Agentica a lu ce fichier",
-		"wantsToEdit": "Agentica veut éditer ce fichier",
-		"wantsToEditOutsideWorkspace": "Agentica veut éditer ce fichier en dehors de l'espace de travail",
-		"wantsToEditProtected": "Agentica veut éditer un fichier de configuration protégé",
-		"wantsToCreate": "Agentica veut créer un nouveau fichier",
-		"wantsToSearchReplace": "Agentica veut effectuer une recherche et remplacement sur ce fichier",
-		"didSearchReplace": "Agentica a effectué une recherche et remplacement sur ce fichier",
-		"wantsToInsert": "Agentica veut insérer du contenu dans ce fichier",
-		"wantsToInsertWithLineNumber": "Agentica veut insérer du contenu dans ce fichier à la ligne {{lineNumber}}",
-		"wantsToInsertAtEnd": "Agentica veut ajouter du contenu à la fin de ce fichier",
-		"wantsToReadAndXMore": "Agentica veut lire ce fichier et {{count}} de plus",
-		"wantsToReadMultiple": "Agentica souhaite lire plusieurs fichiers",
-		"wantsToApplyBatchChanges": "Agentica veut appliquer des modifications à plusieurs fichiers",
-		"wantsToGenerateImage": "Agentica veut générer une image",
-		"wantsToGenerateImageOutsideWorkspace": "Agentica veut générer une image en dehors de l'espace de travail",
-		"wantsToGenerateImageProtected": "Agentica veut générer une image dans un emplacement protégé",
-		"didGenerateImage": "Agentica a généré une image"
+
 	},
 	"instructions": {
 		"wantsToFetch": "Agentica veut récupérer des instructions détaillées pour aider à la tâche actuelle"
@@ -306,22 +294,21 @@
 			"goToSettingsButton": "Aller aux Paramètres"
 		},
 		"release": {
-			"heading": "Nouveautés dans l'Extension :",
-			"openRouterEmbeddings": "Prise en charge des modèles d'embeddings OpenRouter",
-			"chutesDynamic": "Chutes charge maintenant les derniers modèles dynamiquement",
-			"queuedMessagesFix": "Corrections pour les messages en file d'attente qui se perdent"
+			"heading": "Nouveautés dans cette version :",
+			"contextRewind": "La condensation améliorée du contexte te permet désormais de restaurer le contexte précédent complet en rembobinant vers un point de contrôle",
+			"rooProvider": "Le fournisseur Roo Code Cloud préserve désormais le contenu du raisonnement et utilise par défaut les outils natifs pour de meilleures performances"
 		},
 		"cloudAgents": {
 			"heading": "Nouveautés dans le Cloud :",
-			"prFixer": "Présentation de l'agent cloud <bold>PR Fixer</bold> pour compléter le Réviseur de PR.",
-			"prFixerDescription": "Le PR Fixer de Roo Code applique des modifications de haute qualité à vos PR, directement depuis GitHub. Invoquez-le via un commentaire de PR et il lira tout l'historique des commentaires pour comprendre le contexte, les accords et les compromis - puis implémentera la bonne correction.",
-			"tryPrFixerButton": "Essayer le PR Fixer"
+			"specialized": "Présentation d'<bold>Explainer</bold>, <bold>Planner</bold> et <bold>Coder</bold> - trois agents cloud spécialisés pour améliorer tes workflows.",
+			"description": "Les agents travaillent ensemble dans le cloud et peuvent être déclenchés depuis le web ou via Slack.",
+			"tryButton": "Essayer les Agents Cloud"
 		},
 		"careers": "Aussi, <careersLink>on recrute !</careersLink>",
-		"socialLinks": "Rejoins-nous sur <xLink>X</xLink>, <discordLink>Discord</discordLink>, ou <redditLink>r/RooCode</redditLink> 🚀"
+		"socialLinks": "Rejoins-nous sur <xLink>X</xLink>, <discordLink>Discord</discordLink>, ou <redditLink>r/KiloCode</redditLink> 🚀"
 	},
 	"browser": {
-		"rooWantsToUse": "Agentica veut utiliser le navigateur",
+
 		"consoleLogs": "Journaux de console",
 		"noNewLogs": "(Pas de nouveaux journaux)",
 		"screenshot": "Capture d'écran du navigateur",
@@ -333,12 +320,14 @@
 		},
 		"sessionStarted": "Session de navigateur démarrée",
 		"actions": {
-			"title": "Action de navigation : ",
+			"title": "Action du navigateur : ",
 			"launch": "Lancer le navigateur sur {{url}}",
 			"click": "Cliquer ({{coordinate}})",
 			"type": "Saisir \"{{text}}\"",
+			"press": "Appuyer sur {{key}}",
 			"scrollDown": "Défiler vers le bas",
 			"scrollUp": "Défiler vers le haut",
+			"hover": "Survoler ({{coordinate}})",
 			"close": "Fermer le navigateur"
 		}
 	},
@@ -437,7 +426,7 @@
 		"clickToEdit": "Cliquez pour modifier le message"
 	},
 	"slashCommand": {
-		"wantsToRun": "Agentica veut exécuter une commande slash",
-		"didRun": "Agentica a exécuté une commande slash"
+
 	}
 }
+

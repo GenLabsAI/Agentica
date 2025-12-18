@@ -16,7 +16,7 @@
 			"incentive": "ลอง Roo ฟรี"
 		}
 	},
-	"chooseProvider": "เพื่อทำสิ่งมหัศจรรย์ Agentica ต้องการ API key",
+
 	"startRouter": "เราแนะนำให้ใช้ LLM Router:",
 	"startCustom": "หรือคุณสามารถใช้ API key ของผู้ให้บริการของคุณเอง:",
 	"telemetry": {
@@ -25,3 +25,4 @@
 	},
 	"importSettings": "นำเข้าการตั้งค่า"
 }
+

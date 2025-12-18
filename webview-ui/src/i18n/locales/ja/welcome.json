@@ -16,7 +16,7 @@
 			"incentive": "Rooを無料で試す"
 		}
 	},
-	"chooseProvider": "Agenticaが機能するには、APIキーが必要です。",
+
 	"startRouter": "LLMルーターの使用をお勧めします：",
 	"startCustom": "または、あなた自身のAPIキーを使用できます：",
 	"telemetry": {
@@ -25,3 +25,4 @@
 	},
 	"importSettings": "設定をインポート"
 }
+

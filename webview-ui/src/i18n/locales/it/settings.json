@@ -22,6 +22,8 @@
 	},
 	"sections": {
 		"providers": "Fornitori",
+		"modes": "Modalità",
+		"mcp": "Server MCP",
 		"autoApprove": "Auto-approvazione",
 		"browser": "Accesso computer",
 		"checkpoints": "Punti di controllo",
@@ -37,6 +39,26 @@
 		"about": "Informazioni su Agentica",
 		"ghost": "Ghost",
 		"autoPurge": "Auto-pulizia"
+	},
+	"about": {
+		"bugReport": {
+			"label": "Hai trovato un bug?",
+			"link": "Segnala su GitHub"
+		},
+		"featureRequest": {
+			"label": "Hai un'idea?",
+			"link": "Condividila con noi"
+		},
+		"securityIssue": {
+			"label": "Hai scoperto una vulnerabilità?",
+			"link": "Segui il nostro processo di divulgazione"
+		},
+		"contact": {
+			"label": "Hai bisogno di parlarci? Scrivi"
+		},
+		"community": "Vuoi consigli o semplicemente uscire con altri utenti di Roo Code? Unisciti a <redditLink>reddit.com/r/kilocode</redditLink> o <discordLink>kilo.ai/discord</discordLink>",
+		"contactAndCommunity": "Contatti e Comunità",
+		"manageSettings": "Gestisci Impostazioni"
 	},
 	"slashCommands": {
 		"description": "Gestisci i tuoi comandi slash per eseguire rapidamente flussi di lavoro e azioni personalizzate. <DocsLink>Scopri di più</DocsLink>"
@@ -58,9 +80,17 @@
 		"vercelAiGatewayProvider": "Vercel AI Gateway",
 		"vercelAiGatewayApiKeyLabel": "Chiave API",
 		"vercelAiGatewayApiKeyPlaceholder": "Inserisci la tua chiave API Vercel AI Gateway",
+		"bedrockProvider": "Amazon Bedrock",
+		"bedrockRegionLabel": "Regione AWS",
+		"bedrockRegionPlaceholder": "us-east-1",
+		"bedrockProfileLabel": "Profilo AWS",
+		"bedrockProfilePlaceholder": "default",
+		"bedrockProfileDescription": "Nome del profilo AWS da ~/.aws/credentials (richiesto).",
 		"openRouterProvider": "OpenRouter",
 		"openRouterApiKeyLabel": "Chiave API OpenRouter",
 		"openRouterApiKeyPlaceholder": "Inserisci la tua chiave API OpenRouter",
+		"openRouterProviderRoutingLabel": "Routing dei fornitori OpenRouter",
+		"openRouterProviderRoutingDescription": "OpenRouter indirizza le richieste ai migliori fornitori disponibili per il tuo modello di embedding. Per impostazione predefinita, le richieste sono bilanciate tra i principali fornitori per massimizzare il tempo di attività. Tuttavia, puoi scegliere un fornitore specifico da utilizzare per questo modello.",
 		"mistralProvider": "Mistral",
 		"mistralApiKeyLabel": "Chiave API:",
 		"mistralApiKeyPlaceholder": "Inserisci la tua chiave API Mistral",
@@ -96,8 +126,12 @@
 		"modelPlaceholder": "Inserisci il nome del modello",
 		"selectModel": "Seleziona un modello",
 		"ollamaBaseUrlLabel": "URL base Ollama",
+		"vectorStoreProviderLabel": "Fornitore di archivio vettoriale",
 		"qdrantApiKeyLabel": "Chiave API Qdrant",
 		"qdrantApiKeyPlaceholder": "Inserisci la tua chiave API Qdrant (opzionale)",
+		"lancedbVectorStoreDirectoryLabel": "Percorso LanceDB Vector Store",
+		"lancedbVectorStoreDirectoryPlaceholder": "Inserisci un percorso personalizzato dell'archivio vettoriale (opzionale)",
+		"lancedbVectorStoreDirectoryDescription": "Percorso per archiviare il database vettoriale LanceDB. Se vuoto, viene utilizzata la posizione predefinita in globalStorageUri/vector.",
 		"setupConfigLabel": "Impostazione",
 		"ollamaUrlPlaceholder": "http://localhost:11434",
 		"openAiCompatibleBaseUrlPlaceholder": "https://api.example.com",
@@ -128,11 +162,14 @@
 			"geminiApiKeyRequired": "È richiesta la chiave API Gemini",
 			"mistralApiKeyRequired": "La chiave API di Mistral è richiesta",
 			"vercelAiGatewayApiKeyRequired": "È richiesta la chiave API Vercel AI Gateway",
+			"bedrockRegionRequired": "La regione AWS è richiesta",
+			"bedrockProfileRequired": "Il profilo AWS è richiesto",
 			"ollamaBaseUrlRequired": "È richiesto l'URL di base di Ollama",
 			"baseUrlRequired": "È richiesto l'URL di base",
 			"modelDimensionMinValue": "La dimensione del modello deve essere maggiore di 0",
 			"openRouterApiKeyRequired": "Chiave API OpenRouter è richiesta"
 		},
+		"optional": "opzionale",
 		"advancedConfigLabel": "Configurazione avanzata",
 		"searchMinScoreLabel": "Soglia punteggio di ricerca",
 		"searchMinScoreDescription": "Punteggio minimo di somiglianza (0.0-1.0) richiesto per i risultati della ricerca. Valori più bassi restituiscono più risultati ma potrebbero essere meno pertinenti. Valori più alti restituiscono meno risultati ma più pertinenti.",
@@ -173,6 +210,10 @@
 		"browser": {
 			"label": "Browser",
 			"description": "Esegui automaticamente azioni del browser senza richiedere approvazione. Nota: Si applica solo quando il modello supporta l'uso del computer"
+		},
+		"delete": {
+			"label": "Elimina",
+			"description": "Elimina automaticamente file e directory senza richiedere approvazione"
 		},
 		"retry": {
 			"label": "Riprova",
@@ -253,6 +294,15 @@
 		"noMatchFound": "Nessun profilo corrispondente trovato",
 		"searchProviderPlaceholder": "Cerca fornitori",
 		"noProviderMatchFound": "Nessun fornitore trovato",
+		"profileName": "Nome profilo",
+		"profileType": "Tipo di profilo",
+		"profileTypeChat": "Chat",
+		"profileTypeAutocomplete": "Autocompletamento",
+		"profileTypeDescription": "I profili chat sono usati per le conversazioni. È consentito un solo profilo di autocompletamento.",
+		"autocompleteLabel": "(Autocompletamento)",
+		"autocomplete": {
+			"onlyOneAllowed": "È consentito un solo profilo di autocompletamento. Il profilo \"{{existingName}}\" è già configurato per l'autocompletamento. Per favore, cambia prima il suo tipo o eliminalo."
+		},
 		"vscodeLmDescription": "L'API del Modello di Linguaggio di VS Code consente di eseguire modelli forniti da altre estensioni di VS Code (incluso, ma non limitato a, GitHub Copilot). Il modo più semplice per iniziare è installare le estensioni Copilot e Copilot Chat dal VS Code Marketplace.",
 		"vscodeLmUnavailable": "Il supporto ai Language Model di VS Code è disponibile solo in Visual Studio Code. Fork come VSCodium e altri potrebbero non funzionare. Inoltre, questa funzionalità non è disponibile negli strumenti JetBrains.",
 		"vscodeLmUnavailableInstructions": "Assicurati di utilizzare uno strumento supportato e che VS Code Chat sia installato e abilitato",
@@ -290,8 +340,12 @@
 		"anthropicUseAuthToken": "Passa la chiave API Anthropic come header di autorizzazione invece di X-Api-Key",
 		"anthropic1MContextBetaLabel": "Abilita finestra di contesto da 1M (Beta)",
 		"anthropic1MContextBetaDescription": "Estende la finestra di contesto a 1 milione di token per Claude Sonnet 4",
+		"anthropicUseAzureDeployment": "Usa nome deployment Azure",
+		"anthropicAzureDeploymentPlaceholder": "Inserisci nome deployment...",
 		"awsBedrock1MContextBetaLabel": "Abilita finestra di contesto da 1M (Beta)",
 		"awsBedrock1MContextBetaDescription": "Estende la finestra di contesto a 1 milione di token per Claude Sonnet 4",
+		"basetenApiKey": "Chiave API Baseten",
+		"getBasetenApiKey": "Ottieni chiave API Baseten",
 		"cerebrasApiKey": "Chiave API Cerebras",
 		"getCerebrasApiKey": "Ottieni chiave API Cerebras",
 		"chutesApiKey": "Chiave API Chutes",
@@ -341,6 +395,32 @@
 		"huggingFaceSelectProvider": "Seleziona un provider...",
 		"huggingFaceSearchProviders": "Cerca provider...",
 		"huggingFaceNoProvidersFound": "Nessun provider trovato",
+		"sapAiCore": {
+			"serviceKey": "Chiave Servizio AI Core",
+			"serviceKeyJson": "Inserisci JSON della Chiave Servizio...",
+			"resourceGroup": "Gruppo Risorse AI Core",
+			"credentialsNote": "Queste credenziali sono memorizzate localmente e utilizzate solo per effettuare richieste API da questa estensione.",
+			"learnMore": "Puoi trovare maggiori informazioni sull'accesso all'API SAP AI Core qui.",
+			"orchestrationMode": "Modalità Orchestrazione",
+			"orchestrationEnabledDesc": "Quando abilitata, fornisce accesso a tutti i modelli disponibili senza richiedere deployment individuali.",
+			"orchestrationDisabledDesc": "Quando disabilitata, fornisce accesso solo ai modelli foundation deployati nella tua istanza del servizio AI Core.",
+			"modelDeploymentDesc": "Puoi selezionare solo modelli con deployment disponibili.",
+			"deployment": "Deployment",
+			"loading": "Caricamento...",
+			"modelsCount": "({{count}} modelli)",
+			"deploymentsCount": "({{count}} deployment)",
+			"selectModel": "Seleziona un modello...",
+			"selectDeployment": "Seleziona un deployment...",
+			"searchModels": "Cerca modelli...",
+			"searchDeployments": "Cerca deployment...",
+			"noModelsFound": "Nessun modello trovato",
+			"noDeploymentFound": "Nessun deployment trovato",
+			"getStarted": "Inizia con SAP AI Core",
+			"supportedProviders": "Provider supportati",
+			"supportedProvidersDesc1": "Il provider SAP AI Core attualmente supporta solo modelli foundation per i seguenti provider LLM:",
+			"supportedProvidersDesc2": "Considera di passare alla Modalità Orchestrazione per accedere a più modelli.",
+			"supportedProvidersDesc3": "Scopri di più sulla Modalità Orchestrazione"
+		},
 		"getGeminiApiKey": "Ottieni chiave API Gemini",
 		"openAiApiKey": "Chiave API OpenAI",
 		"apiKey": "Chiave API",
@@ -363,6 +443,7 @@
 		"awsSessionToken": "Token di sessione AWS",
 		"awsRegion": "Regione AWS",
 		"awsCrossRegion": "Usa inferenza cross-regione",
+		"awsGlobalInference": "Usa l'inferenza globale (selezione automatica della regione AWS ottimale)",
 		"awsBedrockVpc": {
 			"useCustomVpcEndpoint": "Usa endpoint VPC personalizzato",
 			"vpcEndpointUrlPlaceholder": "Inserisci URL endpoint VPC (opzionale)",
@@ -418,6 +499,14 @@
 		"getUnboundApiKey": "Ottieni chiave API Unbound",
 		"unboundRefreshModelsSuccess": "Lista dei modelli aggiornata! Ora puoi selezionare tra gli ultimi modelli.",
 		"unboundInvalidApiKey": "Chiave API non valida. Controlla la tua chiave API e riprova.",
+		"nanoGptApiKey": "Chiave API Nano-GPT",
+		"getNanoGptApiKey": "Ottieni chiave API Nano-GPT",
+		"nanoGptModelList": "Elenco modelli",
+		"nanoGptModelListOptions": {
+			"all": "Tutti i modelli",
+			"personalized": "Modelli personalizzati",
+			"subscription": "Modelli in abbonamento"
+		},
 		"humanRelay": {
 			"description": "Non è richiesta alcuna chiave API, ma l'utente dovrà aiutare a copiare e incollare le informazioni nella chat web AI.",
 			"instructions": "Durante l'uso, apparirà una finestra di dialogo e il messaggio corrente verrà automaticamente copiato negli appunti. Dovrai incollarlo nelle versioni web dell'AI (come ChatGPT o Claude), quindi copiare la risposta dell'AI nella finestra di dialogo e fare clic sul pulsante di conferma."
@@ -485,7 +574,7 @@
 		},
 		"consecutiveMistakeLimit": {
 			"label": "Limite di errori e ripetizioni",
-			"description": "Numero di errori consecutivi o azioni ripetute prima di mostrare la finestra di dialogo 'Agentica sta riscontrando problemi'",
+
 			"unlimitedDescription": "Tentativi illimitati abilitati (procedi automaticamente). La finestra di dialogo non verrà mai visualizzata.",
 			"warning": "⚠️ L'impostazione a 0 consente tentativi illimitati che possono consumare un notevole utilizzo dell'API"
 		},
@@ -495,7 +584,8 @@
 			"minimal": "Minimo (più veloce)",
 			"high": "Alto",
 			"medium": "Medio",
-			"low": "Basso"
+			"low": "Basso",
+			"xhigh": "Extra Alto"
 		},
 		"verbosity": {
 			"label": "Verbosity dell'output",
@@ -704,6 +794,10 @@
 		"includeCurrentCost": {
 			"label": "Includi il costo corrente nel contesto",
 			"description": "Se abilitato, il costo di utilizzo corrente dell'API verrà incluso nel prompt di sistema. Disabilita questa opzione se i modelli smettono di funzionare a causa di problemi di costo."
+		},
+		"maxGitStatusFiles": {
+			"label": "Git status max file",
+			"description": "Numero massimo di voci di file da includere nel contesto dello stato di git. Imposta a 0 per disabilitare. Le informazioni sul ramo e sui commit vengono sempre mostrate quando > 0."
 		}
 	},
 	"terminal": {
@@ -766,6 +860,14 @@
 	},
 	"advancedSettings": {
 		"title": "Impostazioni avanzate"
+	},
+	"toolProtocol": {
+		"label": "Protocollo di chiamata dello strumento",
+		"description": "Scegli come Kilo Code comunica con l'API. Nativo utilizza l'API di chiamata di funzione del provider, mentre XML utilizza definizioni di strumenti in formato XML.",
+		"default": "Predefinito",
+		"xml": "XML",
+		"native": "Nativo",
+		"currentDefault": "Predefinito: {{protocol}}"
 	},
 	"advanced": {
 		"diff": {
@@ -836,6 +938,8 @@
 			"description": "Quando abilitato, lo strumento new_task richiederà la fornitura di un parametro todos. Ciò garantisce che tutte le nuove attività inizino con un elenco chiaro di obiettivi. Quando disabilitato (impostazione predefinita), il parametro todos rimane facoltativo per la compatibilità con le versioni precedenti."
 		},
 		"IMAGE_GENERATION": {
+			"providerLabel": "Provider",
+			"providerDescription": "Seleziona il provider per la generazione di immagini.",
 			"name": "Abilita generazione immagini AI",
 			"description": "Quando abilitato, Agentica può generare immagini da prompt di testo. Richiede una chiave API Agentica o OpenRouter configurata.",
 			"apiProvider": "Fornitore API",
@@ -856,9 +960,7 @@
 		},
 		"MORPH_FAST_APPLY": {
 			"name": "Abilita Fast Apply",
-			"description": "Quando abilitato, Agentica può modificare i file utilizzando Fast Apply con modelli specializzati ottimizzati per le modifiche al codice. Richiede Kilo Gateway Provider, OpenRouter o una chiave API Morph.",
-			"apiKey": "Chiave API Morph (opzionale)",
-			"placeholder": "Inserisci la tua chiave API Morph (opzionale)",
+
 			"modelLabel": "Selezione modello",
 			"modelDescription": "Scegli quale modello Fast Apply utilizzare per le modifiche ai file",
 			"models": {
@@ -870,7 +972,7 @@
 		},
 		"RUN_SLASH_COMMAND": {
 			"name": "Abilita comandi slash avviati dal modello",
-			"description": "Quando abilitato, Agentica può eseguire i tuoi comandi slash per eseguire flussi di lavoro."
+
 		}
 	},
 	"promptCaching": {
@@ -909,11 +1011,12 @@
 		"label": "Modello",
 		"searchPlaceholder": "Cerca",
 		"noMatchFound": "Nessuna corrispondenza trovata",
-		"useCustomModel": "Usa personalizzato: {{modelId}}"
+		"useCustomModel": "Usa personalizzato: {{modelId}}",
+		"simplifiedExplanation": "Puoi modificare le impostazioni dettagliate del modello in seguito."
 	},
 	"footer": {
-		"feedback": "Se hai domande o feedback, sentiti libero di aprire un issue su <githubLink>github.com/Kilo-Org/kilocode</githubLink> o unirti a <redditLink>reddit.com/r/kilocode</redditLink> o <discordLink>kilocode.ai/discord</discordLink>",
-		"support": "Per domande finanziarie, contatta il Supporto Clienti a <supportLink>https://kilocode.ai/support</supportLink>",
+		"feedback": "Se hai domande o feedback, sentiti libero di aprire un issue su <githubLink>github.com/Kilo-Org/kilocode</githubLink> o unirti a <redditLink>reddit.com/r/kilocode</redditLink> o <discordLink>kilo.ai/discord</discordLink>",
+		"support": "Per domande finanziarie, contatta il Supporto Clienti a <supportLink>https://kilo.ai/support</supportLink>",
 		"telemetry": {
 			"label": "Consenti segnalazioni di errori e utilizzo",
 			"description": "Aiuta a migliorare Agentica inviando dati di utilizzo e segnalazioni di errori. Non vengono mai inviati codice, prompt o informazioni personali. Consulta la nostra politica sulla privacy per maggiori dettagli."
@@ -944,7 +1047,9 @@
 		"providerNotAllowed": "Il fornitore '{{provider}}' non è consentito dalla tua organizzazione",
 		"modelNotAllowed": "Il modello '{{model}}' non è consentito per il fornitore '{{provider}}' dalla tua organizzazione.",
 		"profileInvalid": "Questo profilo contiene un fornitore o un modello non consentito dalla tua organizzazione.",
-		"qwenCodeOauthPath": "Devi fornire un percorso valido per le credenziali OAuth"
+		"qwenCodeOauthPath": "Devi fornire un percorso valido per le credenziali OAuth",
+		"sapAiCore": "Devi fornire una Chiave Servizio SAP AI Core valida.",
+		"sapAiCoreDeploymentId": "Devi selezionare un deployment attivo per il modello '{{model}}'."
 	},
 	"placeholders": {
 		"apiKey": "Inserisci chiave API...",
@@ -1031,3 +1136,4 @@
 		}
 	}
 }
+

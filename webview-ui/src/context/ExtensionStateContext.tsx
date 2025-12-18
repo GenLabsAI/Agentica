@@ -98,6 +98,7 @@ export interface ExtensionStateContextType extends ExtensionState {
 	setCustomCondensingPrompt: (value: string) => void
 	yoloGatekeeperApiConfigId?: string // kilocode_change: AI gatekeeper for YOLO mode
 	setYoloGatekeeperApiConfigId: (value: string) => void // kilocode_change: AI gatekeeper for YOLO mode
+	speechToTextStatus?: { available: boolean; reason?: "openaiKeyMissing" | "ffmpegNotInstalled" } // kilocode_change: Speech-to-text availability status with failure reason
 	marketplaceItems?: any[]
 	marketplaceInstalledMetadata?: MarketplaceInstalledMetadata
 	profileThresholds: Record<string, number>
@@ -108,6 +109,7 @@ export interface ExtensionStateContextType extends ExtensionState {
 	setAlwaysAllowReadOnlyOutsideWorkspace: (value: boolean) => void
 	setAlwaysAllowWrite: (value: boolean) => void
 	setAlwaysAllowWriteOutsideWorkspace: (value: boolean) => void
+	setAlwaysAllowDelete: (value: boolean) => void // kilocode_change
 	setAlwaysAllowExecute: (value: boolean) => void
 	setAlwaysAllowBrowser: (value: boolean) => void
 	setAlwaysAllowMcp: (value: boolean) => void
@@ -255,6 +257,7 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 		deniedCommands: [],
 		soundEnabled: false,
 		soundVolume: 0.5,
+		isBrowserSessionActive: false,
 		ttsEnabled: false,
 		ttsSpeed: 1.0,
 		diffEnabled: false,
@@ -330,6 +333,10 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 			codebaseIndexEnabled: true,
 			codebaseIndexQdrantUrl: "http://localhost:6333",
 			codebaseIndexEmbedderProvider: "openai",
+			// kilocode_change start
+			codebaseIndexVectorStoreProvider: "qdrant",
+			codebaseIndexLancedbVectorStoreDirectory: undefined,
+			// kilocode_change end
 			codebaseIndexEmbedderBaseUrl: "",
 			codebaseIndexEmbedderModelId: "",
 			codebaseIndexSearchMaxResults: undefined,
@@ -591,6 +598,7 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 		setAlwaysAllowWrite: (value) => setState((prevState) => ({ ...prevState, alwaysAllowWrite: value })),
 		setAlwaysAllowWriteOutsideWorkspace: (value) =>
 			setState((prevState) => ({ ...prevState, alwaysAllowWriteOutsideWorkspace: value })),
+		setAlwaysAllowDelete: (value) => setState((prevState) => ({ ...prevState, alwaysAllowDelete: value })), // kilocode_change
 		setAlwaysAllowExecute: (value) => setState((prevState) => ({ ...prevState, alwaysAllowExecute: value })),
 		setAlwaysAllowBrowser: (value) => setState((prevState) => ({ ...prevState, alwaysAllowBrowser: value })),
 		setAlwaysAllowMcp: (value) => setState((prevState) => ({ ...prevState, alwaysAllowMcp: value })),

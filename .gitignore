@@ -69,3 +69,5 @@ qdrant_storage/
 # Custom git commit/push macros
 git-commit-push.bat
 quick-commit.sh
+# Act Secret Files
+.secrets

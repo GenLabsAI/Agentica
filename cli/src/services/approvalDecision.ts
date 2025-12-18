@@ -296,11 +296,12 @@ function getRetryApprovalDecision(
  * @param message - The message requiring approval
  * @param config - The approval configuration
  * @param isCIMode - Whether CI mode is active
+ * @param isYoloMode - Whether YOLO mode is active (auto-approve all tool permissions)
  * @returns The approval decision
  *
  * @example
  * ```typescript
- * const decision = getApprovalDecision(message, config, false)
+ * const decision = getApprovalDecision(message, config, false, false)
  * if (decision.action === 'auto-approve') {
  *   await approve(decision.message)
  * } else if (decision.action === 'auto-reject') {
@@ -314,6 +315,7 @@ export function getApprovalDecision(
 	message: ExtensionChatMessage,
 	config: AutoApprovalConfig,
 	isCIMode: boolean,
+	isYoloMode: boolean = false,
 ): ApprovalDecision {
 	// Only process ask messages
 	if (message.type !== "ask") {
@@ -327,12 +329,24 @@ export function getApprovalDecision(
 
 	const askType = message.ask
 
+	// In YOLO mode, auto-approve all tool permissions but NOT followup questions
+	// Followup questions should still require user input in YOLO mode
+	if (isYoloMode && askType !== "followup") {
+		logs.info(`YOLO mode: Auto-approving ${askType}`, "approvalDecision")
+		return { action: "auto-approve" }
+	}
+
 	switch (askType) {
 		case "tool":
 			return getToolApprovalDecision(message, config, isCIMode)
 
 		case "command":
 			return getCommandApprovalDecision(message, config, isCIMode)
+
+		case "command_output":
+			// Command output always requires manual approval
+			// User must choose to continue (proceed with conversation) or abort (kill command)
+			return { action: "manual" }
 
 		case "followup":
 			return getFollowupApprovalDecision(message, config, isCIMode)

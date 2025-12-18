@@ -3,6 +3,8 @@ import {
 	type ProviderSettings,
 	anthropicDefaultModelId,
 	anthropicModels,
+	basetenModels,
+	basetenDefaultModelId,
 	bedrockDefaultModelId,
 	bedrockModels,
 	deepSeekDefaultModelId,
@@ -36,7 +38,6 @@ import {
 	doubaoDefaultModelId,
 	fireworksModels,
 	fireworksDefaultModelId,
-	syntheticModels,
 	syntheticDefaultModelId,
 	ioIntelligenceDefaultModelId,
 	moonshotModels,
@@ -48,6 +49,7 @@ import {
 	deepInfraDefaultModelId,
 	cerebrasModels,
 	cerebrasDefaultModelId,
+	nanoGptDefaultModelId, //kilocode_change
 	ovhCloudAiEndpointsDefaultModelId,
 	inceptionDefaultModelId,
 	minimaxModels,
@@ -243,7 +245,7 @@ export const getModelsByProvider = ({
 		// kilocode_change start
 		case "synthetic": {
 			return {
-				models: syntheticModels,
+				models: routerModels.synthetic,
 				defaultModel: syntheticDefaultModelId,
 			}
 		}
@@ -257,6 +259,12 @@ export const getModelsByProvider = ({
 			return {
 				models: routerModels.inception,
 				defaultModel: inceptionDefaultModelId,
+			}
+		}
+		case "sap-ai-core": {
+			return {
+				models: routerModels["sap-ai-core"],
+				defaultModel: "",
 			}
 		}
 		// kilocode_change end
@@ -290,10 +298,24 @@ export const getModelsByProvider = ({
 				defaultModel: deepInfraDefaultModelId,
 			}
 		}
+		//kilocode_change start
+		case "nano-gpt": {
+			return {
+				models: routerModels["nano-gpt"],
+				defaultModel: nanoGptDefaultModelId,
+			}
+		}
+		//kilocode_change end
 		case "minimax": {
 			return {
 				models: minimaxModels,
 				defaultModel: minimaxDefaultModelId,
+			}
+		}
+		case "baseten": {
+			return {
+				models: basetenModels,
+				defaultModel: basetenDefaultModelId,
 			}
 		}
 		default:
@@ -316,6 +338,11 @@ export const useProviderModels = (apiConfiguration?: ProviderSettings) => {
 		chutesApiKey: apiConfiguration?.chutesApiKey,
 		geminiApiKey: apiConfiguration?.geminiApiKey,
 		googleGeminiBaseUrl: apiConfiguration?.googleGeminiBaseUrl,
+		//kilocode_change start
+		nanoGptApiKey: apiConfiguration?.nanoGptApiKey,
+		nanoGptModelList: apiConfiguration?.nanoGptModelList,
+		//kilocode_change end
+		syntheticApiKey: apiConfiguration?.syntheticApiKey, // kilocode_change
 	})
 
 	const { models, defaultModel } =

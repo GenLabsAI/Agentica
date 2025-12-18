@@ -102,19 +102,43 @@
 		"noChanges": "Nie można wyświetlić nowych zmian, nie znaleziono żadnych zmian.",
 		"error": "Nie można wyświetlić nowych zmian, wystąpił błąd."
 	},
+	"agentManager": {
+		"errors": {
+			"cliOutdated": "Twoja wersja Kilocode CLI jest przestarzała i nie obsługuje Agent Managera. Zaktualizuj do najnowszej wersji.",
+			"cliNotFound": "Nie znaleziono Kilocode CLI. Zainstaluj go, aby korzystać z Agent Managera.",
+			"sessionFailed": "Nie udało się uruchomić sesji agenta",
+			"sessionFailedWithMessage": "Nie udało się uruchomić sesji agenta: {{message}}"
+		},
+		"actions": {
+			"updateInstructions": "Instrukcje Aktualizacji",
+			"installInstructions": "Instrukcje Instalacji",
+			"getHelp": "Uzyskaj Pomoc",
+			"runInTerminal": "Uruchom w Terminalu",
+			"loginCli": "Run kilocode auth",
+			"updateGlobal": "Aktualizuj Globalnie",
+			"updateLocal": "Aktualizuj Lokalnie",
+			"installGlobal": "Zainstaluj Globalnie",
+			"installLocal": "Zainstaluj Lokalnie"
+		},
+		"terminal": {
+			"installMessage": "Uruchamianie npm install w celu zainstalowania Kilocode CLI. Po zakończeniu możesz zamknąć ten terminal i spróbować ponownie uruchomić Agent Managera.",
+			"authReminder": "If this is your first install, run `kilocode auth` to sign in before starting the Agent Manager."
+		}
+	},
 	"ghost": {
 		"statusBar": {
-			"enabled": "$(sparkle) Agentica Autocomplete",
-			"disabled": "$(circle-slash) Agentica Autocomplete",
-			"warning": "$(warning) Agentica Autocomplete",
+
 			"tooltip": {
 				"basic": "Agentica Autocomplete",
 				"disabled": "Agentica Autocomplete (wyłączone)",
 				"tokenError": "Aby używać Autocomplete, musi być ustawiony ważny token",
-				"lastCompletion": "Ostatnia sugestia:",
 				"sessionTotal": "Całkowity koszt sesji:",
 				"provider": "Dostawca:",
-				"model": "Model:"
+				"model": "Model:",
+				"profile": "Profil: ",
+				"defaultProfile": "Domyślny",
+				"completionSummary": "Wykonano {{count}} uzupełnień między {{startTime}} a {{endTime}}, za łączny koszt {{cost}}.",
+				"providerInfo": "Autouzupełnianie zapewniane przez {{model}} za pośrednictwem {{provider}}."
 			},
 			"cost": {
 				"zero": "$0.00",
@@ -171,3 +195,4 @@
 		"tipMessage": "Kilo: Naciśnij {{shortcut}}, aby wygenerować polecenia terminala"
 	}
 }
+

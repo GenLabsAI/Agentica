@@ -16,7 +16,7 @@
 			"incentive": "Roo'yu ücretsiz dene"
 		}
 	},
-	"chooseProvider": "Sihirini yapabilmesi için Agentica'nun bir API anahtarına ihtiyacı var.",
+
 	"startRouter": "Bir LLM yönlendiricisi kullanmanı öneririz:",
 	"startCustom": "Veya kendi API anahtarını kullanabilirsin:",
 	"telemetry": {
@@ -25,3 +25,4 @@
 	},
 	"importSettings": "Ayarları İçe Aktar"
 }
+

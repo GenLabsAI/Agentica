@@ -5,7 +5,7 @@
 	"testApiAuthentication": "اختبار مصادقة API",
 	"signIn": "الاتصال بـ Agentica Cloud",
 	"connect": "الاتصال الآن",
-	"cloudBenefitsTitle": "الاتصال بـ Agentica Cloud",
+
 	"cloudBenefitWalkaway": "تابع وتحكم في المهام من أي مكان باستخدام Kilo remote Control",
 	"cloudBenefitSharing": "شارك المهام مع الآخرين",
 	"cloudBenefitHistory": "الوصول إلى تاريخ المهام",
@@ -32,3 +32,4 @@
 		"taskList": "شاهد كل مهامك في مكان واحد. جرّب إدارة المهام السحابية."
 	}
 }
+

@@ -16,7 +16,7 @@
 			"incentive": "Dùng thử Roo miễn phí"
 		}
 	},
-	"chooseProvider": "Để thực hiện phép màu của mình, Agentica cần một khóa API.",
+
 	"startRouter": "Chúng tôi khuyên bạn nên sử dụng bộ định tuyến LLM:",
 	"startCustom": "Hoặc bạn có thể sử dụng khóa API của riêng mình:",
 	"telemetry": {
@@ -25,3 +25,4 @@
 	},
 	"importSettings": "Nhập cài đặt"
 }
+

@@ -1,7 +1,7 @@
 import React, { HTMLAttributes } from "react"
 import { FlaskConical } from "lucide-react"
 
-import type { Experiments } from "@roo-code/types"
+import type { Experiments, ImageGenerationProvider } from "@roo-code/types"
 
 import { EXPERIMENT_IDS, experimentConfigsMap } from "@roo/experiments"
 
@@ -24,15 +24,18 @@ type ExperimentalSettingsProps = HTMLAttributes<HTMLDivElement> & {
 	// kilocode_change start
 	morphApiKey?: string
 	fastApplyModel?: string
-	setCachedStateField: SetCachedStateField<"morphApiKey" | "fastApplyModel">
+	fastApplyApiProvider?: string
+	setCachedStateField: SetCachedStateField<"morphApiKey" | "fastApplyModel" | "fastApplyApiProvider">
 	kiloCodeImageApiKey?: string
 	setKiloCodeImageApiKey?: (apiKey: string) => void
 	currentProfileKilocodeToken?: string
 	// kilocode_change end
 	apiConfiguration?: any
 	setApiConfigurationField?: any
+	imageGenerationProvider?: ImageGenerationProvider
 	openRouterImageApiKey?: string
 	openRouterImageGenerationSelectedModel?: string
+	setImageGenerationProvider?: (provider: ImageGenerationProvider) => void
 	setOpenRouterImageApiKey?: (apiKey: string) => void
 	setImageGenerationSelectedModel?: (model: string) => void
 }
@@ -42,14 +45,17 @@ export const ExperimentalSettings = ({
 	setExperimentEnabled,
 	apiConfiguration,
 	setApiConfigurationField,
+	imageGenerationProvider,
 	openRouterImageApiKey,
 	openRouterImageGenerationSelectedModel,
+	setImageGenerationProvider,
 	setOpenRouterImageApiKey,
 	setImageGenerationSelectedModel,
 	className,
 	// kilocode_change start
 	morphApiKey,
 	fastApplyModel, // kilocode_change: Fast Apply model selection
+	fastApplyApiProvider, // kilocode_change: Fast Apply model api base url
 	setCachedStateField,
 	setKiloCodeImageApiKey,
 	kiloCodeImageApiKey,
@@ -72,6 +78,8 @@ export const ExperimentalSettings = ({
 				{Object.entries(experimentConfigsMap)
 					.filter(([key]) => key in EXPERIMENT_IDS)
 					.filter((config) => config[0] !== "MARKETPLACE") // kilocode_change: we have our own market place, filter this out for now
+					// Hide MULTIPLE_NATIVE_TOOL_CALLS - feature is on hold
+					.filter(([key]) => key !== "MULTIPLE_NATIVE_TOOL_CALLS")
 					.map((config) => {
 						if (config[0] === "MULTI_FILE_APPLY_DIFF") {
 							return (
@@ -107,6 +115,7 @@ export const ExperimentalSettings = ({
 											setCachedStateField={setCachedStateField}
 											morphApiKey={morphApiKey}
 											fastApplyModel={fastApplyModel}
+											fastApplyApiProvider={fastApplyApiProvider}
 										/>
 									)}
 								</React.Fragment>
@@ -115,6 +124,7 @@ export const ExperimentalSettings = ({
 						// kilocode_change end
 						if (
 							config[0] === "IMAGE_GENERATION" &&
+							setImageGenerationProvider &&
 							setOpenRouterImageApiKey &&
 							setKiloCodeImageApiKey &&
 							setImageGenerationSelectedModel
@@ -126,9 +136,11 @@ export const ExperimentalSettings = ({
 									onChange={(enabled) =>
 										setExperimentEnabled(EXPERIMENT_IDS.IMAGE_GENERATION, enabled)
 									}
+									imageGenerationProvider={imageGenerationProvider}
 									openRouterImageApiKey={openRouterImageApiKey}
 									kiloCodeImageApiKey={kiloCodeImageApiKey}
 									openRouterImageGenerationSelectedModel={openRouterImageGenerationSelectedModel}
+									setImageGenerationProvider={setImageGenerationProvider}
 									setOpenRouterImageApiKey={setOpenRouterImageApiKey}
 									setKiloCodeImageApiKey={setKiloCodeImageApiKey}
 									setImageGenerationSelectedModel={setImageGenerationSelectedModel}

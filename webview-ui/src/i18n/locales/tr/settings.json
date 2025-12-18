@@ -22,6 +22,8 @@
 	},
 	"sections": {
 		"providers": "Sağlayıcılar",
+		"modes": "Modlar",
+		"mcp": "MCP Sunucuları",
 		"autoApprove": "Oto-Onay",
 		"browser": "Bilgisayar Erişimi",
 		"checkpoints": "Kontrol Noktaları",
@@ -37,6 +39,26 @@
 		"about": "Agentica Hakkında",
 		"ghost": "Ghost",
 		"autoPurge": "Otomatik Temizlik"
+	},
+	"about": {
+		"bugReport": {
+			"label": "Bir hata mı buldunuz?",
+			"link": "GitHub'da bildirin"
+		},
+		"featureRequest": {
+			"label": "Bir fikriniz mi var?",
+			"link": "Bizimle paylaşın"
+		},
+		"securityIssue": {
+			"label": "Bir güvenlik açığı mı keşfettiniz?",
+			"link": "Açıklama sürecimizi takip edin"
+		},
+		"contact": {
+			"label": "Bizimle konuşmanız mı gerekiyor? Yazın"
+		},
+		"community": "İpuçları mı istiyorsunuz yoksa sadece diğer Kilo Code kullanıcılarıyla takılmak mı istiyorsunuz? <redditLink>reddit.com/r/kilocode</redditLink> veya <discordLink>kilo.ai/discord</discordLink>'a katılın",
+		"contactAndCommunity": "İletişim ve Topluluk",
+		"manageSettings": "Ayarları Yönet"
 	},
 	"slashCommands": {
 		"description": "Özel iş akışlarını ve eylemleri hızlı bir şekilde yürütmek için eğik çizgi komutlarınızı yönetin. <DocsLink>Daha fazla bilgi edinin</DocsLink>"
@@ -61,9 +83,17 @@
 		"vercelAiGatewayProvider": "Vercel AI Gateway",
 		"vercelAiGatewayApiKeyLabel": "API Anahtarı",
 		"vercelAiGatewayApiKeyPlaceholder": "Vercel AI Gateway API anahtarınızı girin",
+		"bedrockProvider": "Amazon Bedrock",
+		"bedrockRegionLabel": "AWS Bölgesi",
+		"bedrockRegionPlaceholder": "us-east-1",
+		"bedrockProfileLabel": "AWS Profili",
+		"bedrockProfilePlaceholder": "default",
+		"bedrockProfileDescription": "~/.aws/credentials dosyasından AWS profil adı (gerekli).",
 		"openRouterProvider": "OpenRouter",
 		"openRouterApiKeyLabel": "OpenRouter API Anahtarı",
 		"openRouterApiKeyPlaceholder": "OpenRouter API anahtarınızı girin",
+		"openRouterProviderRoutingLabel": "OpenRouter Sağlayıcı Yönlendirmesi",
+		"openRouterProviderRoutingDescription": "OpenRouter, gömme modeliniz için mevcut en iyi sağlayıcılara istekleri yönlendirir. Varsayılan olarak, istekler çalışma süresini en üst düzeye çıkarmak için en iyi sağlayıcılar arasında dengelenir. Ancak, bu model için kullanılacak belirli bir sağlayıcı seçebilirsiniz.",
 		"openaiCompatibleProvider": "OpenAI Uyumlu",
 		"openAiKeyLabel": "OpenAI API Anahtarı",
 		"openAiKeyPlaceholder": "OpenAI API anahtarınızı girin",
@@ -96,8 +126,12 @@
 		"modelPlaceholder": "Model adını girin",
 		"selectModel": "Bir model seçin",
 		"ollamaBaseUrlLabel": "Ollama Temel URL",
+		"vectorStoreProviderLabel": "Vektör Depolama Sağlayıcısı",
 		"qdrantApiKeyLabel": "Qdrant API Anahtarı",
 		"qdrantApiKeyPlaceholder": "Qdrant API anahtarınızı girin (isteğe bağlı)",
+		"lancedbVectorStoreDirectoryLabel": "LanceDB Vector Store Yolu",
+		"lancedbVectorStoreDirectoryPlaceholder": "Özel vektör depolama yolu girin (isteğe bağlı)",
+		"lancedbVectorStoreDirectoryDescription": "LanceDB vektör veritabanının depolanacağı yol. Boşsa, globalStorageUri/vector konumunu kullanır.",
 		"setupConfigLabel": "Kurulum",
 		"ollamaUrlPlaceholder": "http://localhost:11434",
 		"openAiCompatibleBaseUrlPlaceholder": "https://api.example.com",
@@ -128,11 +162,14 @@
 			"geminiApiKeyRequired": "Gemini API anahtarı gereklidir",
 			"mistralApiKeyRequired": "Mistral API anahtarı gereklidir",
 			"vercelAiGatewayApiKeyRequired": "Vercel AI Gateway API anahtarı gereklidir",
+			"bedrockRegionRequired": "AWS bölgesi gereklidir",
+			"bedrockProfileRequired": "AWS profili gereklidir",
 			"ollamaBaseUrlRequired": "Ollama temel URL'si gereklidir",
 			"baseUrlRequired": "Temel URL'si gereklidir",
 			"modelDimensionMinValue": "Model boyutu 0'dan büyük olmalıdır",
 			"openRouterApiKeyRequired": "OpenRouter API anahtarı gereklidir"
 		},
+		"optional": "isteğe bağlı",
 		"advancedConfigLabel": "Gelişmiş Yapılandırma",
 		"searchMinScoreLabel": "Arama Skoru Eşiği",
 		"searchMinScoreDescription": "Arama sonuçları için gereken minimum benzerlik puanı (0.0-1.0). Düşük değerler daha fazla sonuç döndürür ancak daha az alakalı olabilir. Yüksek değerler daha az ancak daha alakalı sonuçlar döndürür.",
@@ -149,6 +186,10 @@
 		"enabled": "Oto-onay etkinleştirildi",
 		"toggleAriaLabel": "Otomatik onayı değiştir",
 		"disabledAriaLabel": "Otomatik onay devre dışı - önce seçenekleri belirleyin",
+		"delete": {
+			"label": "Sil",
+			"description": "Onay gerektirmeden otomatik olarak dosya ve dizinleri sil"
+		},
 		"readOnly": {
 			"label": "Okuma",
 			"description": "Etkinleştirildiğinde, Agentica otomatik olarak dizin içeriğini görüntüleyecek ve Onayla düğmesine tıklamanıza gerek kalmadan dosyaları okuyacaktır.",
@@ -288,10 +329,14 @@
 		"anthropicApiKey": "Anthropic API Anahtarı",
 		"getAnthropicApiKey": "Anthropic API Anahtarı Al",
 		"anthropicUseAuthToken": "Anthropic API Anahtarını X-Api-Key yerine Authorization başlığı olarak geçir",
+		"anthropicUseAzureDeployment": "Azure dağıtım adını kullan",
+		"anthropicAzureDeploymentPlaceholder": "Dağıtım adını girin...",
 		"anthropic1MContextBetaLabel": "1M bağlam penceresini etkinleştir (Beta)",
 		"anthropic1MContextBetaDescription": "Claude Sonnet 4 için bağlam penceresini 1 milyon token'a genişletir",
 		"awsBedrock1MContextBetaLabel": "1M bağlam penceresini etkinleştir (Beta)",
 		"awsBedrock1MContextBetaDescription": "Claude Sonnet 4 için bağlam penceresini 1 milyon token'a genişletir",
+		"basetenApiKey": "Baseten API Anahtarı",
+		"getBasetenApiKey": "Baseten API Anahtarı Al",
 		"cerebrasApiKey": "Cerebras API Anahtarı",
 		"getCerebrasApiKey": "Cerebras API Anahtarını Al",
 		"chutesApiKey": "Chutes API Anahtarı",
@@ -363,6 +408,7 @@
 		"awsSessionToken": "AWS Oturum Belirteci",
 		"awsRegion": "AWS Bölgesi",
 		"awsCrossRegion": "Bölgeler arası çıkarım kullan",
+		"awsGlobalInference": "Genel çıkarımı kullan (en uygun AWS Bölgesini otomatik seç)",
 		"awsBedrockVpc": {
 			"useCustomVpcEndpoint": "Özel VPC uç noktası kullan",
 			"vpcEndpointUrlPlaceholder": "VPC uç noktası URL'sini girin (isteğe bağlı)",
@@ -418,9 +464,17 @@
 		"getUnboundApiKey": "Unbound API Anahtarı Al",
 		"unboundRefreshModelsSuccess": "Model listesi güncellendi! Artık en son modeller arasından seçim yapabilirsiniz.",
 		"unboundInvalidApiKey": "Geçersiz API anahtarı. Lütfen API anahtarınızı kontrol edin ve tekrar deneyin.",
+		"nanoGptApiKey": "Nano-GPT API Anahtarı",
+		"getNanoGptApiKey": "Nano-GPT API Anahtarı Al",
+		"nanoGptModelList": "Model Listesi",
 		"humanRelay": {
 			"description": "API anahtarı gerekmez, ancak kullanıcının bilgileri web sohbet yapay zekasına kopyalayıp yapıştırması gerekir.",
 			"instructions": "Kullanım sırasında bir iletişim kutusu açılacak ve mevcut mesaj otomatik olarak panoya kopyalanacaktır. Bunları web yapay zekalarına (ChatGPT veya Claude gibi) yapıştırmanız, ardından yapay zekanın yanıtını iletişim kutusuna kopyalayıp onay düğmesine tıklamanız gerekir."
+		},
+		"nanoGptModelListOptions": {
+			"all": "Tüm Modeller",
+			"personalized": "Kişiselleştirilmiş Modeller",
+			"subscription": "Abonelik Modelleri"
 		},
 		"roo": {
 			"authenticatedMessage": "Roo Code Cloud hesabın üzerinden güvenli bir şekilde kimlik doğrulandı.",
@@ -485,7 +539,7 @@
 		},
 		"consecutiveMistakeLimit": {
 			"label": "Hata ve Tekrar Limiti",
-			"description": "'Agentica sorun yaşıyor' iletişim kutusunu göstermeden önceki ardışık hata veya tekrarlanan eylem sayısı",
+
 			"unlimitedDescription": "Sınırsız yeniden deneme etkin (otomatik devam et). Diyalog asla görünmeyecek.",
 			"warning": "⚠️ 0'a ayarlamak, önemli API kullanımına neden olabilecek sınırsız yeniden denemeye izin verir"
 		},
@@ -495,7 +549,8 @@
 			"minimal": "Minimal (en hızlı)",
 			"high": "Yüksek",
 			"medium": "Orta",
-			"low": "Düşük"
+			"low": "Düşük",
+			"xhigh": "Ekstra Yüksek"
 		},
 		"verbosity": {
 			"label": "Çıktı Ayrıntı Düzeyi",
@@ -533,6 +588,41 @@
 			"description": "Bu sağlayıcı Qwen hizmetinden OAuth kimlik doğrulaması kullanır ve API anahtarları gerektirmez.",
 			"instructions": "Yetkilendirme dosyasını almak ve belirtilen yola yerleştirmek için lütfen resmi belgeleri takip edin.",
 			"setupLink": "Qwen Resmi Belgeleri"
+		},
+		"profileName": "Profil Adı",
+		"profileType": "Profil Türü",
+		"profileTypeChat": "Sohbet",
+		"profileTypeAutocomplete": "Otomatik Tamamlama",
+		"profileTypeDescription": "Sohbet profilleri konuşmalar için kullanılır. Yalnızca bir otomatik tamamlama profiline izin verilir.",
+		"autocompleteLabel": "(Otomatik Tamamlama)",
+		"autocomplete": {
+			"onlyOneAllowed": "Yalnızca bir otomatik tamamlama profiline izin verilir. \"{{existingName}}\" profili zaten otomatik tamamlama için yapılandırılmış. Lütfen önce türünü değiştir veya sil."
+		},
+		"sapAiCore": {
+			"serviceKey": "AI Core Servis Anahtarı",
+			"serviceKeyJson": "Servis Anahtarı JSON'ını girin...",
+			"resourceGroup": "AI Core Kaynak Grubu",
+			"credentialsNote": "Bu kimlik bilgileri yerel olarak saklanır ve yalnızca bu uzantıdan API istekleri yapmak için kullanılır.",
+			"learnMore": "SAP AI Core API erişimi hakkında daha fazla bilgiyi burada bulabilirsiniz.",
+			"orchestrationMode": "Orkestrasyon Modu",
+			"orchestrationEnabledDesc": "Etkinleştirildiğinde, bireysel dağıtımlar gerektirmeden tüm mevcut modellere erişim sağlar.",
+			"orchestrationDisabledDesc": "Devre dışı bırakıldığında, yalnızca AI Core hizmet örneğinizdeki dağıtılmış temel modellere erişim sağlar.",
+			"modelDeploymentDesc": "Yalnızca mevcut dağıtımları olan modelleri seçebilirsiniz.",
+			"deployment": "Dağıtım",
+			"loading": "Yükleniyor...",
+			"modelsCount": "({{count}} model)",
+			"deploymentsCount": "({{count}} dağıtım)",
+			"selectModel": "Bir model seçin...",
+			"selectDeployment": "Bir dağıtım seçin...",
+			"searchModels": "Modelleri ara...",
+			"searchDeployments": "Dağıtımları ara...",
+			"noModelsFound": "Model bulunamadı",
+			"noDeploymentFound": "Dağıtım bulunamadı",
+			"getStarted": "SAP AI Core'a Başlayın",
+			"supportedProviders": "Desteklenen Sağlayıcılar",
+			"supportedProvidersDesc1": "SAP AI Core sağlayıcısı şu anda yalnızca aşağıdaki LLM sağlayıcıları için temel modelleri desteklemektedir:",
+			"supportedProvidersDesc2": "Daha fazla modele erişim için Orkestrasyon Moduna geçmeyi düşünün.",
+			"supportedProvidersDesc3": "Orkestrasyon Modu hakkında daha fazla bilgi edinin"
 		}
 	},
 	"browser": {
@@ -704,6 +794,10 @@
 		"includeCurrentCost": {
 			"label": "Mevcut maliyeti bağlama dahil et",
 			"description": "Etkinleştirildiğinde, mevcut API kullanım maliyeti sistem istemine dahil edilecektir. Modeller maliyet endişeleri nedeniyle çalışmayı durdurursa bunu devre dışı bırakın."
+		},
+		"maxGitStatusFiles": {
+			"label": "Git durumu maks. dosya",
+			"description": "Git durum bağlamına dahil edilecek maksimum dosya girişi sayısı. Devre dışı bırakmak için 0 olarak ayarlayın. Dal bilgisi ve commit'ler > 0 olduğunda her zaman gösterilir."
 		}
 	},
 	"terminal": {
@@ -767,6 +861,14 @@
 	"advancedSettings": {
 		"title": "Gelişmiş ayarlar"
 	},
+	"toolProtocol": {
+		"label": "Araç Çağrı Protokolü",
+		"description": "Kilo Code'nun API ile nasıl iletişim kuracağını seçin. Yerel, sağlayıcının işlev çağırma API'sini kullanırken, XML, XML biçimli araç tanımlarını kullanır.",
+		"default": "Varsayılan",
+		"xml": "XML",
+		"native": "Yerel",
+		"currentDefault": "Varsayılan: {{protocol}}"
+	},
 	"advanced": {
 		"diff": {
 			"label": "Diff'ler aracılığıyla düzenlemeyi etkinleştir",
@@ -825,9 +927,7 @@
 		},
 		"MORPH_FAST_APPLY": {
 			"name": "Fast Apply'ı etkinleştir",
-			"description": "Etkinleştirildiğinde, Agentica dosyaları kod değişiklikleri için optimize edilmiş özel modellerle Fast Apply kullanarak düzenleyebilir. Kilo Gateway Provider, OpenRouter veya bir Morph API anahtarı gerektirir.",
-			"apiKey": "Morph API anahtarı (isteğe bağlı)",
-			"placeholder": "Morph API anahtarınızı girin (isteğe bağlı)",
+
 			"modelLabel": "Model Seçimi",
 			"modelDescription": "Dosya düzenlemeleri için hangi Hızlı Uygulama modelinin kullanılacağını seçin",
 			"models": {
@@ -850,6 +950,8 @@
 			"description": "Etkinleştirildiğinde, new_task aracı bir todos parametresi sağlanmasını gerektirir. Bu, tüm yeni görevlerin net bir hedef listesiyle başlamasını sağlar. Devre dışı bırakıldığında (varsayılan), todos parametresi geriye dönük uyumluluk için isteğe bağlı kalır."
 		},
 		"IMAGE_GENERATION": {
+			"providerLabel": "Sağlayıcı",
+			"providerDescription": "Görüntü oluşturma için kullanılacak sağlayıcıyı seçin.",
 			"name": "AI görüntü üretimini etkinleştir",
 			"description": "Etkinleştirildiğinde, Agentica metin istemlerinden görüntüler üretebilir. Yapılandırılmış bir Agentica veya OpenRouter API anahtarı gerektirir.",
 			"apiProvider": "API Sağlayıcı",
@@ -870,7 +972,7 @@
 		},
 		"RUN_SLASH_COMMAND": {
 			"name": "Model tarafından başlatılan slash komutlarını etkinleştir",
-			"description": "Etkinleştirildiğinde, Agentica iş akışlarını yürütmek için slash komutlarınızı çalıştırabilir."
+
 		}
 	},
 	"promptCaching": {
@@ -909,11 +1011,12 @@
 		"label": "Model",
 		"searchPlaceholder": "Ara",
 		"noMatchFound": "Eşleşme bulunamadı",
-		"useCustomModel": "Özel kullan: {{modelId}}"
+		"useCustomModel": "Özel kullan: {{modelId}}",
+		"simplifiedExplanation": "Ayrıntılı model ayarlarını daha sonra ayarlayabilirsiniz."
 	},
 	"footer": {
-		"feedback": "Herhangi bir sorunuz veya geri bildiriminiz varsa, <githubLink>github.com/Kilo-Org/kilocode</githubLink> adresinde bir konu açmaktan veya <redditLink>reddit.com/r/kilocode</redditLink> ya da <discordLink>kilocode.ai/discord</discordLink>'a katılmaktan çekinmeyin",
-		"support": "Mali konular için lütfen <supportLink>https://kilocode.ai/support</supportLink> adresinden Müşteri Desteği ile iletişime geçin",
+		"feedback": "Herhangi bir sorunuz veya geri bildiriminiz varsa, <githubLink>github.com/Kilo-Org/kilocode</githubLink> adresinde bir konu açmaktan veya <redditLink>reddit.com/r/kilocode</redditLink> ya da <discordLink>kilo.ai/discord</discordLink>'a katılmaktan çekinmeyin",
+		"support": "Mali konular için lütfen <supportLink>https://kilo.ai/support</supportLink> adresinden Müşteri Desteği ile iletişime geçin",
 		"telemetry": {
 			"label": "Hata ve kullanım raporlamaya izin ver",
 			"description": "Kullanım verileri ve hata raporları göndererek Agentica'u geliştirmeye yardımcı olun. Hiçbir kod, istem veya kişisel bilgi asla gönderilmez. Daha fazla ayrıntı için gizlilik politikamıza bakın."
@@ -944,7 +1047,9 @@
 		"providerNotAllowed": "Sağlayıcı '{{provider}}' kuruluşunuz tarafından izin verilmiyor",
 		"modelNotAllowed": "Model '{{model}}' sağlayıcı '{{provider}}' için kuruluşunuz tarafından izin verilmiyor",
 		"profileInvalid": "Bu profil, kuruluşunuz tarafından izin verilmeyen bir sağlayıcı veya model içeriyor",
-		"qwenCodeOauthPath": "Geçerli bir OAuth kimlik bilgileri yolu sağlamalısın"
+		"qwenCodeOauthPath": "Geçerli bir OAuth kimlik bilgileri yolu sağlamalısın",
+		"sapAiCore": "Geçerli bir SAP AI Core Servis Anahtarı sağlamalısınız.",
+		"sapAiCoreDeploymentId": "'{{model}}' modeli için çalışan bir dağıtım seçmelisiniz."
 	},
 	"placeholders": {
 		"apiKey": "API anahtarını girin...",
@@ -1031,3 +1136,4 @@
 		}
 	}
 }
+

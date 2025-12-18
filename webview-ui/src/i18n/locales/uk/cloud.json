@@ -5,7 +5,7 @@
 	"testApiAuthentication": "Тестувати автентифікацію API",
 	"signIn": "Підключитися до Agentica Cloud",
 	"connect": "Підключитися зараз",
-	"cloudBenefitsTitle": "Підключитися до Agentica Cloud",
+
 	"cloudBenefitWalkaway": "Відстежуй і керуй завданнями звідусіль за допомогою Kilo remote Control",
 	"cloudBenefitSharing": "Діліться завданнями з іншими",
 	"cloudBenefitHistory": "Доступ до історії завдань",
@@ -32,3 +32,4 @@
 		"taskList": "Бачте всі ваші завдання в одному місці. Спробуйте хмарне керування завданнями."
 	}
 }
+

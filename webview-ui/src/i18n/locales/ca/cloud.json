@@ -9,6 +9,9 @@
 	"cloudBenefitWalkaway": "Segueix i controla tasques des de qualsevol lloc amb Roomote Control",
 	"cloudBenefitSharing": "Comparteix tasques amb altres",
 	"cloudBenefitHistory": "Accedeix al teu historial de tasques",
+	"cloudBenefitProvider": "Accedeix a models gratuïts i de pagament que funcionen molt bé amb Roo",
+	"cloudBenefitCloudAgents": "Dona tasques a agents autònoms al núvol",
+	"cloudBenefitTriggers": "Obtén revisions de codi a Github, inicia tasques des de Slack i més",
 	"cloudBenefitMetrics": "Obtén una visió holística del teu consum de tokens",
 	"visitCloudWebsite": "Visita Roo Code Cloud",
 	"taskSync": "Sincronització de tasques",
@@ -29,6 +32,7 @@
 	"upsell": {
 		"autoApprovePowerUser": "Donant-li una mica d'independència a Roo? Controla'l des de qualsevol lloc amb Roo Code Cloud. <learnMoreLink>Més informació</learnMoreLink>.",
 		"longRunningTask": "Això pot trigar una estona. Continua des de qualsevol lloc amb Cloud.",
-		"taskList": "Roo Code Cloud ja és aquí: segueix i controla les teves tasques des de qualsevol lloc. <learnMoreLink>Més informació</learnMoreLink>."
+		"taskList": "T'agrada Roo? Fes una ullada a Roo Code Cloud: segueix i controla les teves tasques des de qualsevol lloc, executa agents autònoms al núvol, obtén estadístiques d'ús i més. <learnMoreLink>Aprèn-ne més</learnMoreLink>."
 	}
 }
+

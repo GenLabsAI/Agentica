@@ -16,12 +16,25 @@
 			"incentive": "Vyzkoušej Roo zdarma"
 		}
 	},
-	"chooseProvider": "Aby mohl dělat svá kouzla, Agentica potřebuje API klíč.",
+
 	"startRouter": "Doporučujeme použít LLM Router:",
 	"startCustom": "Nebo můžeš přinést svůj vlastní API klíč poskytovatele:",
+	"rooCloudProviderHeading": "Roo Code Cloud Provider",
+	"rooCloudProviderBody": "Nejjednodušší způsob začátku s kurátorovanými modely",
+	"rooCloudProviderSignUp": "Registrovat se do cloudu",
+	"rooCloudProviderSignUpDesc": "Vytvořte si účet pro přístup ke cloudovým modelům",
+	"rooCloudProviderAuthButtonText": "Připojit se ke cloudu",
+	"rooCloudProviderPaidModelAnnouncement": "Nové placené modely nyní dostupné",
+	"rooCloudProviderPaidModelAnnouncementDesc": "Přístup k nejnovějším modelům s vylepšenými funkcemi",
+	"rooCloudProviderExplainer": "Explainer Agent",
+	"rooCloudProviderExplainerDesc": "Specializovaný agent pro vysvětlování kódu a konceptů",
+	"rooCloudProviderPlanner": "Planner Agent",
+	"rooCloudProviderPlannerDesc": "Agent pro plánování a architekturu projektů",
+	"rooCloudProviderCoder": "Coder Agent",
+	"rooCloudProviderCoderDesc": "Specializovaný agent pro psaní a refaktoring kódu",
 	"telemetry": {
-		"helpImprove": "Pomoz vylepšit Agentica",
-		"helpImproveMessage": "Agentica sbírá data o chybách a používání, aby nám pomohl opravit chyby a vylepšit rozšíření. Tato telemetrie nesbírá kód, prompts ani osobní informace. Můžeš to vypnout v <settingsLink>nastavení</settingsLink>."
+
 	},
 	"importSettings": "Importovat Nastavení"
 }
+

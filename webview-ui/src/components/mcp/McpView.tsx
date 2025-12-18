@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { Trans } from "react-i18next"
 import {
-	VSCodeButton,
 	VSCodeCheckbox,
 	VSCodeLink,
 	VSCodePanels,
@@ -26,8 +25,9 @@ import {
 	// StandardTooltip, // kilocode_change: not used
 } from "@src/components/ui"
 import { buildDocLink } from "@src/utils/docLinks"
+import { Section } from "@src/components/settings/Section"
 
-import { Tab, TabContent, TabHeader } from "../common/Tab"
+import { Tab, TabHeader } from "../common/Tab" // kilocode_change
 
 import McpToolRow from "./McpToolRow"
 import McpResourceRow from "./McpResourceRow"
@@ -59,7 +59,7 @@ const McpView = ({ onDone, hideHeader = false }: McpViewProps) => {
 				<Button onClick={onDone}>{t("mcp:done")}</Button>
 			</TabHeader>
 
-			<TabContent>
+			<Section>
 				<div
 					style={{
 						color: "var(--vscode-foreground)",
@@ -203,7 +203,7 @@ const McpView = ({ onDone, hideHeader = false }: McpViewProps) => {
 						</div>
 					</>
 				)}
-			</TabContent>
+			</Section>
 		</Tab>
 	)
 }
@@ -540,15 +540,15 @@ const ServerRow = ({ server, alwaysAllowMcp }: { server: McpServer; alwaysAllowM
 										</React.Fragment>
 									))}
 							</div>
-							<VSCodeButton
-								appearance="secondary"
+							<Button
+								variant="secondary"
 								onClick={handleRestart}
 								disabled={server.status === "connecting"}
 								style={{ width: "calc(100% - 20px)", margin: "0 10px 10px 10px" }}>
 								{server.status === "connecting"
 									? t("mcp:serverStatus.retrying")
 									: t("mcp:serverStatus.retryConnection")}
-							</VSCodeButton>
+							</Button>
 						</div>
 					)}
 
@@ -565,7 +565,7 @@ const ServerRow = ({ server, alwaysAllowMcp }: { server: McpServer; alwaysAllowM
 						<Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>
 							{t("mcp:deleteDialog.cancel")}
 						</Button>
-						<Button variant="default" onClick={handleDelete}>
+						<Button variant="primary" onClick={handleDelete}>
 							{t("mcp:deleteDialog.delete")}
 						</Button>
 					</DialogFooter>

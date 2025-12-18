@@ -2,7 +2,7 @@ import {
 	type ModelInfo,
 	type ProviderSettings,
 	type VerbosityLevel,
-	type ReasoningEffortWithMinimal,
+	type ReasoningEffortExtended,
 	ANTHROPIC_DEFAULT_MAX_TOKENS,
 } from "@roo-code/types"
 
@@ -39,9 +39,10 @@ type GetModelParamsOptions<T extends Format> = {
 type BaseModelParams = {
 	maxTokens: number | undefined
 	temperature: number | undefined
-	reasoningEffort: ReasoningEffortWithMinimal | undefined
+	reasoningEffort: ReasoningEffortExtended | undefined
 	reasoningBudget: number | undefined
 	verbosity: VerbosityLevel | undefined
+	tools?: boolean
 }
 
 type AnthropicModelParams = {
@@ -94,10 +95,10 @@ export function getModelParams({
 		format,
 	})
 
-	let temperature = customTemperature ?? defaultTemperature
+	let temperature = customTemperature ?? model.defaultTemperature ?? defaultTemperature
 	let reasoningBudget: ModelParams["reasoningBudget"] = undefined
 	let reasoningEffort: ModelParams["reasoningEffort"] = undefined
-	let verbosity: VerbosityLevel | undefined = customVerbosity
+	let verbosity: VerbosityLevel | undefined = model.supportsVerbosity ? customVerbosity : undefined // kilocode_change
 
 	if (shouldUseReasoningBudget({ model, settings })) {
 		// Check if this is a Gemini 2.5 Pro model
@@ -129,8 +130,16 @@ export function getModelParams({
 		temperature = 1.0
 	} else if (shouldUseReasoningEffort({ model, settings })) {
 		// "Traditional" reasoning models use the `reasoningEffort` parameter.
-		const effort = customReasoningEffort ?? model.reasoningEffort
-		reasoningEffort = effort as ReasoningEffortWithMinimal
+		const effort = (customReasoningEffort ?? model.reasoningEffort) as
+			| ReasoningEffortExtended
+			| "disable"
+			| undefined
+		// Capability and settings checks are handled by shouldUseReasoningEffort.
+		// Here we simply propagate the resolved effort into the params, while
+		// still treating "disable" as an omission.
+		if (effort && effort !== "disable") {
+			reasoningEffort = effort as ReasoningEffortExtended
+		}
 	}
 
 	const params: BaseModelParams = { maxTokens, temperature, reasoningEffort, reasoningBudget, verbosity }
@@ -152,6 +161,7 @@ export function getModelParams({
 			format,
 			...params,
 			reasoning: getOpenAiReasoning({ model, reasoningBudget, reasoningEffort, settings }),
+			tools: model.supportsNativeTools,
 		}
 	} else if (format === "gemini") {
 		return {
@@ -182,7 +192,7 @@ export function getModelParams({
 }
 
 // kilocode_change start
-function shouldDisableReasoning(modelId: string, reasoningEffort: ReasoningEffortWithMinimal | undefined) {
+function shouldDisableReasoning(modelId: string, reasoningEffort: ReasoningEffortExtended | undefined) {
 	const supportsReasoningToggle =
 		modelId.startsWith("deepseek/deepseek-v3.1") ||
 		modelId.startsWith("deepseek/deepseek-chat-v3.1") ||

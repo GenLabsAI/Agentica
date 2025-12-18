@@ -9,6 +9,7 @@ export type EmbedderProvider =
 	| "gemini"
 	| "mistral"
 	| "vercel-ai-gateway"
+	| "bedrock"
 	| "openrouter" // Add other providers as needed
 
 export interface EmbeddingModelProfile {
@@ -77,6 +78,17 @@ export const EMBEDDING_MODEL_PROFILES: EmbeddingModelProfiles = {
 		"mistral/codestral-embed": { dimension: 1536, scoreThreshold: 0.4 },
 		"mistral/mistral-embed": { dimension: 1024, scoreThreshold: 0.4 },
 	},
+	bedrock: {
+		// Amazon Titan Embed models
+		"amazon.titan-embed-text-v1": { dimension: 1536, scoreThreshold: 0.4 },
+		"amazon.titan-embed-text-v2:0": { dimension: 1024, scoreThreshold: 0.4 },
+		"amazon.titan-embed-image-v1": { dimension: 1024, scoreThreshold: 0.4 },
+		// Amazon Nova Embed models
+		"amazon.nova-2-multimodal-embeddings-v1:0": { dimension: 1024, scoreThreshold: 0.4 },
+		// Cohere models available through Bedrock
+		"cohere.embed-english-v3": { dimension: 1024, scoreThreshold: 0.4 },
+		"cohere.embed-multilingual-v3": { dimension: 1024, scoreThreshold: 0.4 },
+	},
 	openrouter: {
 		// OpenAI models via OpenRouter
 		"openai/text-embedding-3-small": { dimension: 1536, scoreThreshold: 0.4 },
@@ -86,8 +98,10 @@ export const EMBEDDING_MODEL_PROFILES: EmbeddingModelProfiles = {
 		"google/gemini-embedding-001": { dimension: 3072, scoreThreshold: 0.4 },
 		// Mistral models via OpenRouter
 		"mistralai/mistral-embed-2312": { dimension: 1024, scoreThreshold: 0.4 },
-		"mistralai/codestral-embed-2505": { dimension: 3072, scoreThreshold: 0.4 },
+		"mistralai/codestral-embed-2505": { dimension: 1536, scoreThreshold: 0.4 },
 		// Qwen models via OpenRouter
+		"qwen/qwen3-embedding-0.6b": { dimension: 1024, scoreThreshold: 0.4 },
+		"qwen/qwen3-embedding-4b": { dimension: 2560, scoreThreshold: 0.4 },
 		"qwen/qwen3-embedding-8b": { dimension: 4096, scoreThreshold: 0.4 },
 	},
 }
@@ -183,6 +197,8 @@ export function getDefaultModelId(provider: EmbedderProvider): string {
 		case "vercel-ai-gateway":
 			return "openai/text-embedding-3-large"
 
+		case "bedrock":
+			return "amazon.titan-embed-text-v2:0"
 		case "openrouter":
 			return "openai/text-embedding-3-large"
 

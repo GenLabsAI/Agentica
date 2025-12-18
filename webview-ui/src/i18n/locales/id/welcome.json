@@ -16,7 +16,7 @@
 			"incentive": "Coba Roo gratis"
 		}
 	},
-	"chooseProvider": "Untuk melakukan keajaibannya, Agentica membutuhkan API key.",
+
 	"startRouter": "Kami merekomendasikan menggunakan Router LLM:",
 	"startCustom": "Atau Anda dapat menggunakan API key Anda sendiri:",
 	"telemetry": {
@@ -25,3 +25,4 @@
 	},
 	"importSettings": "Impor Pengaturan"
 }
+

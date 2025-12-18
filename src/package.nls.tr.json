@@ -40,13 +40,14 @@
 	"settings.vsCodeLmModelSelector.vendor.description": "Dil modelinin sağlayıcısı (örn: copilot)",
 	"settings.vsCodeLmModelSelector.family.description": "Dil modelinin ailesi (örn: gpt-4)",
 	"settings.customStoragePath.description": "Özel depolama yolu. Varsayılan konumu kullanmak için boş bırakın. Mutlak yolları destekler (örn: 'D:\\KiloCodeStorage')",
-	"settings.enableCodeActions.description": "Agentica hızlı düzeltmeleri etkinleştir.",
-	"settings.autoImportSettingsPath.description": "Uzantı başlangıcında otomatik olarak içe aktarılacak bir Agentica yapılandırma dosyasının yolu. Mutlak yolları ve ana dizine göreli yolları destekler (ör. '~/Documents/kilo-code-settings.json'). Otomatik içe aktarmayı devre dışı bırakmak için boş bırakın.",
+
 	"settings.maximumIndexedFilesForFileSearch.description": "@ dosya arama özelliği için dizinlenecek maksimum dosya sayısı. Daha yüksek değerler büyük projelerde daha iyi arama sonuçları sağlar ancak daha fazla bellek kullanabilir. Varsayılan: 10.000.",
 	"settings.useAgentRules.description": "Aracıya özgü kurallar için AGENTS.md dosyalarının yüklenmesini etkinleştirin (bkz. https://agent-rules.org/)",
 	"settings.apiRequestTimeout.description": "API yanıtları için beklenecek maksimum süre (saniye cinsinden) (0 = zaman aşımı yok, 1-86400s, varsayılan: 600s). LM Studio ve Ollama gibi daha fazla işlem süresi gerektirebilecek yerel sağlayıcılar için daha yüksek değerler önerilir.",
 	"settings.codeIndex.embeddingBatchSize.description": "Kod indeksleme sırasında gömme işlemleri için toplu iş boyutu. Bunu API sağlayıcınızın sınırlarına göre ayarlayın. Varsayılan 60'tır.",
 	"settings.newTaskRequireTodos.description": "new_task aracıyla yeni görevler oluştururken todos parametresini gerekli kıl",
+	"settings.toolProtocol.description": "Yapay zeka etkileşimleri için kullanılacak araç protokolü. XML, varsayılan ve önerilen protokoldür. Yerel deneyseldir ve tüm sağlayıcılarla çalışmayabilir.",
+	"settings.debug.description": "API konuşma geçmişini ve kullanıcı arayüzü mesajlarını geçici dosyalarda biçimlendirilmiş JSON olarak görüntülemek için ek düğmeler göstermek üzere hata ayıklama modunu etkinleştir.",
 	"ghost.input.title": "Onaylamak için 'Enter'a, iptal etmek için 'Escape'e basın",
 	"ghost.input.placeholder": "Ne yapmak istediğinizi açıklayın...",
 	"ghost.commands.generateSuggestions": "Agentica: Düzenleme Önerileri Oluştur",
@@ -57,3 +58,4 @@
 	"ghost.commands.goToNextSuggestion": "Sonraki Öneriye Git",
 	"ghost.commands.goToPreviousSuggestion": "Önceki Öneriye Git"
 }
+

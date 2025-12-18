@@ -1,9 +1,4 @@
-import {
-	DEEP_SEEK_DEFAULT_TEMPERATURE,
-	chutesDefaultModelId,
-	chutesDefaultModelInfo,
-	getActiveToolUseStyle, // kilocode_change
-} from "@roo-code/types"
+import { DEEP_SEEK_DEFAULT_TEMPERATURE, chutesDefaultModelId, chutesDefaultModelInfo } from "@roo-code/types"
 import { Anthropic } from "@anthropic-ai/sdk"
 import OpenAI from "openai"
 
@@ -16,7 +11,7 @@ import { ApiStream } from "../transform/stream"
 import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from "../index"
 
 import { RouterProvider } from "./router-provider"
-import { addNativeToolCallsToParams, processNativeToolCallsFromDelta } from "./kilocode/nativeToolCallHelpers"
+import { addNativeToolCallsToParams, ToolCallAccumulator } from "./kilocode/nativeToolCallHelpers"
 
 export class ChutesHandler extends RouterProvider implements SingleCompletionHandler {
 	constructor(options: ApiHandlerOptions) {
@@ -34,7 +29,7 @@ export class ChutesHandler extends RouterProvider implements SingleCompletionHan
 	private getCompletionParams(
 		systemPrompt: string,
 		messages: Anthropic.Messages.MessageParam[],
-		metadata?: ApiHandlerCreateMessageMetadata, // kilocode_change
+		metadata?: ApiHandlerCreateMessageMetadata,
 	): OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming {
 		const { id: model, info } = this.getModel()
 
@@ -53,6 +48,8 @@ export class ChutesHandler extends RouterProvider implements SingleCompletionHan
 			messages: [{ role: "system", content: systemPrompt }, ...convertToOpenAiMessages(messages)],
 			stream: true,
 			stream_options: { include_usage: true },
+			...(metadata?.tools && { tools: metadata.tools }),
+			...(metadata?.tool_choice && { tool_choice: metadata.tool_choice }),
 		}
 
 		// Only add temperature if model supports it
@@ -72,13 +69,11 @@ export class ChutesHandler extends RouterProvider implements SingleCompletionHan
 	): ApiStream {
 		const model = await this.fetchModel()
 
+		const toolCallAccumulator = new ToolCallAccumulator() // kilocode_change
+
 		if (model.id.includes("DeepSeek-R1")) {
 			const stream = await this.client.chat.completions.create({
-				...this.getCompletionParams(
-					systemPrompt,
-					messages,
-					metadata, // kilocode_change
-				),
+				...this.getCompletionParams(systemPrompt, messages, metadata),
 				messages: convertToR1Format([{ role: "user", content: systemPrompt }, ...messages]),
 			})
 
@@ -94,11 +89,24 @@ export class ChutesHandler extends RouterProvider implements SingleCompletionHan
 			for await (const chunk of stream) {
 				const delta = chunk.choices[0]?.delta
 
-				yield* processNativeToolCallsFromDelta(delta, getActiveToolUseStyle(this.options)) // kilocode_change
+				yield* toolCallAccumulator.processChunk(chunk) // kilocode_change
 
 				if (delta?.content) {
 					for (const processedChunk of matcher.update(delta.content)) {
 						yield processedChunk
+					}
+				}
+
+				// Emit raw tool call chunks - NativeToolCallParser handles state management
+				if (delta && "tool_calls" in delta && Array.isArray(delta.tool_calls)) {
+					for (const toolCall of delta.tool_calls) {
+						yield {
+							type: "tool_call_partial",
+							index: toolCall.index,
+							id: toolCall.id,
+							name: toolCall.function?.name,
+							arguments: toolCall.function?.arguments,
+						}
 					}
 				}
 
@@ -118,17 +126,13 @@ export class ChutesHandler extends RouterProvider implements SingleCompletionHan
 		} else {
 			// For non-DeepSeek-R1 models, use standard OpenAI streaming
 			const stream = await this.client.chat.completions.create(
-				this.getCompletionParams(
-					systemPrompt,
-					messages,
-					metadata, // kilocode_change
-				),
+				this.getCompletionParams(systemPrompt, messages, metadata),
 			)
 
 			for await (const chunk of stream) {
 				const delta = chunk.choices[0]?.delta
 
-				yield* processNativeToolCallsFromDelta(delta, getActiveToolUseStyle(this.options)) // kilocode_change
+				yield* toolCallAccumulator.processChunk(chunk) // kilocode_change
 
 				if (delta?.content) {
 					yield { type: "text", text: delta.content }
@@ -136,6 +140,19 @@ export class ChutesHandler extends RouterProvider implements SingleCompletionHan
 
 				if (delta && "reasoning_content" in delta && delta.reasoning_content) {
 					yield { type: "reasoning", text: (delta.reasoning_content as string | undefined) || "" }
+				}
+
+				// Emit raw tool call chunks - NativeToolCallParser handles state management
+				if (delta && "tool_calls" in delta && Array.isArray(delta.tool_calls)) {
+					for (const toolCall of delta.tool_calls) {
+						yield {
+							type: "tool_call_partial",
+							index: toolCall.index,
+							id: toolCall.id,
+							name: toolCall.function?.name,
+							arguments: toolCall.function?.arguments,
+						}
+					}
 				}
 
 				if (chunk.usage) {
@@ -189,6 +206,7 @@ export class ChutesHandler extends RouterProvider implements SingleCompletionHan
 	override getModel() {
 		const model = super.getModel()
 		const isDeepSeekR1 = model.id.includes("DeepSeek-R1")
+
 		return {
 			...model,
 			info: {

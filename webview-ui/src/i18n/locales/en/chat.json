@@ -26,7 +26,9 @@
 		"shareSuccessOrganization": "Organization link copied to clipboard",
 		"shareSuccessPublic": "Public link copied to clipboard",
 		"openInCloud": "Open task in Roo Code Cloud",
-		"openInCloudIntro": "Keep monitoring or interacting with Roo from anywhere. Scan, click or copy to open."
+		"openInCloudIntro": "Keep monitoring or interacting with Roo from anywhere. Scan, click or copy to open.",
+		"openApiHistory": "Open API History",
+		"openUiHistory": "Open UI History"
 	},
 	"history": {
 		"title": "History"
@@ -103,23 +105,16 @@
 	},
 	"scrollToBottom": "Scroll to bottom of chat",
 	"about": "Generate, refactor, and debug code with AI assistance. Check out our <DocsLink>documentation</DocsLink> to learn more.",
-	"onboarding": "Your task list in this workspace is empty.",
+	"docs": "Check our <DocsLink>docs</DocsLink> to get started",
+	"onboarding": "What would you like to do?",
 	"rooTips": {
-		"boomerangTasks": {
-			"title": "Task Orchestration",
-			"description": "Split tasks into smaller, manageable parts"
-		},
-		"stickyModels": {
-			"title": "Sticky Models",
-			"description": "Each mode remembers your last used model"
-		},
-		"tools": {
-			"title": "Tools",
-			"description": "Allow the AI to solve problems by browsing the web, running commands, and more"
-		},
 		"customizableModes": {
-			"title": "Customizable Modes",
-			"description": "Specialized personas with their own behaviors and assigned models"
+			"title": "Customizable modes that don't swerve",
+			"description": "Specialized personas that stay on-task and deliver."
+		},
+		"modelAgnostic": {
+			"title": "Bring your own model, no markup or lock-in",
+			"description": "Use your own provider key or even run local inference — Roo doesn't charge for it"
 		}
 	},
 	"selectMode": "Select mode for interaction",
@@ -155,7 +150,18 @@
 		"failed": "API Request Failed",
 		"streaming": "API Request...",
 		"cancelled": "API Request Cancelled",
-		"streamingFailed": "API Streaming Failed"
+		"streamingFailed": "API Streaming Failed",
+		"errorTitle": "API Error {{code}}",
+		"errorMessage": {
+			"docs": "Docs",
+			"400": "The provider couldn't process the request as made. Stop the task and try a different approach.",
+			"401": "Couldn't authenticate with provider. Please check your API key configuration.",
+			"402": "You seem to have run out of funds/credits in your account. Go to your provider and add more to continue.",
+			"403": "Unauthorized. Your API key is valid, but the provider refused to complete this request.",
+			"429": "Too many requests. You're being rate-limited by the provider. Please wait a bit before your next API call.",
+			"500": "Provider server error. Something is wrong on the provider side, there's nothing wrong with your request.",
+			"unknown": "Unknown API error. Please contact Roo Code support."
+		}
 	},
 	"checkpoint": {
 		"regular": "Checkpoint",
@@ -186,23 +192,7 @@
 		"wantsToFetch": "Agentica wants to fetch detailed instructions to assist with the current task"
 	},
 	"fileOperations": {
-		"wantsToRead": "Agentica wants to read this file",
-		"wantsToReadMultiple": "Agentica wants to read multiple files",
-		"wantsToReadAndXMore": "Agentica wants to read this file and {{count}} more",
-		"wantsToReadOutsideWorkspace": "Agentica wants to read this file outside of the workspace",
-		"didRead": "Agentica read this file",
-		"wantsToEdit": "Agentica wants to edit this file",
-		"wantsToEditOutsideWorkspace": "Agentica wants to edit this file outside of the workspace",
-		"wantsToEditProtected": "Agentica wants to edit a protected configuration file",
-		"wantsToApplyBatchChanges": "Agentica wants to apply changes to multiple files",
-		"wantsToGenerateImage": "Agentica wants to generate an image",
-		"wantsToGenerateImageOutsideWorkspace": "Agentica wants to generate an image outside of the workspace",
-		"wantsToGenerateImageProtected": "Agentica wants to generate an image in a protected location",
-		"didGenerateImage": "Agentica generated an image",
-		"wantsToCreate": "Agentica wants to create a new file",
-		"wantsToInsert": "Agentica wants to insert content into this file",
-		"wantsToInsertWithLineNumber": "Agentica wants to insert content into this file at line {{lineNumber}}",
-		"wantsToInsertAtEnd": "Agentica wants to append content to the end of this file"
+
 	},
 	"directoryOperations": {
 		"wantsToViewTopLevel": "Agentica wants to view the top level files in this directory",
@@ -312,19 +302,18 @@
 			"goToSettingsButton": "Go to Settings"
 		},
 		"release": {
-			"heading": "New in the Extension:",
-			"openRouterEmbeddings": "Support for OpenRouter embedding models",
-			"chutesDynamic": "Chutes now loads the latest models dynamically",
-			"queuedMessagesFix": "Fixes for queued messages getting lost"
+			"heading": "What's New:",
+			"contextRewind": "Improved context condensing now lets you restore the full previous context when rewinding to a checkpoint",
+			"rooProvider": "Roo Code Cloud provider now preserves reasoning content and defaults to native tools for better performance"
 		},
 		"cloudAgents": {
 			"heading": "New in the Cloud:",
-			"prFixer": "Introducing the <bold>PR Fixer</bold> cloud agent to complement the PR Reviewer.",
-			"prFixerDescription": "The PR Fixer applies high-quality changes to your PRs, right from GitHub. Invoke via a PR comment and it will read the entire comment history to understand context, agreements, and tradeoffs - then implement the right fix.",
-			"tryPrFixerButton": "Try PR Fixer"
+			"specialized": "Introducing <bold>Explainer</bold>, <bold>Planner</bold>, and <bold>Coder</bold> - three specialized cloud agents to enhance your workflows.",
+			"description": "The agents work together in the cloud and can be triggered from the web or through Slack.",
+			"tryButton": "Try Cloud Agents"
 		},
 		"careers": "Also, <careersLink>we're hiring!</careersLink>",
-		"socialLinks": "Join us on <xLink>X</xLink>, <discordLink>Discord</discordLink>, or <redditLink>r/RooCode</redditLink> 🚀"
+		"socialLinks": "Join us on <xLink>X</xLink>, <discordLink>Discord</discordLink>, or <redditLink>r/KiloCode</redditLink> 🚀"
 	},
 	"reasoning": {
 		"thinking": "Thinking",
@@ -336,7 +325,7 @@
 		"countdownDisplay": "{{count}}s"
 	},
 	"browser": {
-		"rooWantsToUse": "Agentica wants to use the browser",
+
 		"consoleLogs": "Console Logs",
 		"noNewLogs": "(No new logs)",
 		"screenshot": "Browser screenshot",
@@ -348,12 +337,14 @@
 		},
 		"sessionStarted": "Browser Session Started",
 		"actions": {
-			"title": "Browse Action: ",
+			"title": "Browser Action: ",
 			"launch": "Launch browser at {{url}}",
 			"click": "Click ({{coordinate}})",
 			"type": "Type \"{{text}}\"",
+			"press": "Press {{key}}",
 			"scrollDown": "Scroll down",
 			"scrollUp": "Scroll up",
+			"hover": "Hover ({{coordinate}})",
 			"close": "Close browser"
 		}
 	},
@@ -431,5 +422,13 @@
 		"problems": "Problems",
 		"terminal": "Terminal",
 		"url": "Paste URL to fetch contents"
+	},
+	"todo": {
+		"partial": "{{completed}} of {{total}} to-dos done",
+		"complete": "{{total}} to-dos done",
+		"updated": "Updated the to-do list",
+		"completed": "Completed",
+		"started": "Started"
 	}
 }
+

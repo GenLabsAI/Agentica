@@ -26,7 +26,9 @@
 		"shareSuccessOrganization": "조직 링크가 클립보드에 복사되었습니다",
 		"shareSuccessPublic": "공개 링크가 클립보드에 복사되었습니다",
 		"openInCloud": "Roo Code Cloud에서 작업 열기",
-		"openInCloudIntro": "어디서나 Roo를 계속 모니터링하거나 상호작용할 수 있습니다. 스캔, 클릭 또는 복사하여 열기."
+		"openInCloudIntro": "어디서나 Roo를 계속 모니터링하거나 상호작용할 수 있습니다. 스캔, 클릭 또는 복사하여 열기.",
+		"openApiHistory": "API 기록 열기",
+		"openUiHistory": "UI 기록 열기"
 	},
 	"history": {
 		"title": "기록"
@@ -91,24 +93,15 @@
 		"tooltip": "현재 작업 취소"
 	},
 	"scrollToBottom": "채팅 하단으로 스크롤",
-	"about": "AI 지원으로 코드를 생성, 리팩터링 및 디버깅합니다. 자세한 내용은 <DocsLink>문서</DocsLink>를 확인하세요.",
-	"onboarding": "<strong>이 작업 공간의 작업 목록이 비어 있습니다.</strong> 아래에 작업을 입력하여 시작하세요. 어떻게 시작해야 할지 모르겠나요? Agentica가 무엇을 할 수 있는지 <DocsLink>문서</DocsLink>에서 자세히 알아보세요.",
+
 	"rooTips": {
-		"boomerangTasks": {
-			"title": "작업 오케스트레이션",
-			"description": "작업을 더 작고 관리하기 쉬운 부분으로 나눕니다."
-		},
-		"stickyModels": {
-			"title": "스티키 모드",
-			"description": "각 모드는 마지막으로 사용한 모델을 기억합니다."
-		},
-		"tools": {
-			"title": "도구",
-			"description": "AI가 웹 탐색, 명령 실행 등으로 문제를 해결하도록 허용합니다."
-		},
 		"customizableModes": {
-			"title": "사용자 정의 모드",
-			"description": "고유한 동작과 할당된 모델을 가진 전문 페르소나"
+			"title": "사용자 정의 가능한 모드",
+			"description": "작업에 집중하고 결과를 제공하는 전문화된 페르소나."
+		},
+		"modelAgnostic": {
+			"title": "자신만의 모델 가져오기",
+			"description": "자체 공급자 키를 사용하거나 로컬에서 추론을 실행하세요 — 마크업 없음, 종속 없음, 제한 없음"
 		}
 	},
 	"selectMode": "상호작용 모드 선택",
@@ -149,7 +142,18 @@
 		"failed": "API 요청 실패",
 		"streaming": "API 요청...",
 		"cancelled": "API 요청 취소됨",
-		"streamingFailed": "API 스트리밍 실패"
+		"streamingFailed": "API 스트리밍 실패",
+		"errorTitle": "API 오류 {{code}}",
+		"errorMessage": {
+			"docs": "문서",
+			"400": "공급자가 요청을 처리할 수 없습니다. 작업을 중지하고 다른 방법을 시도하세요.",
+			"401": "공급자로 인증할 수 없습니다. API 키 구성을 확인하세요.",
+			"402": "계정의 자금/크레딧이 부족한 것 같습니다. 공급자에게 가서 더 추가하세요.",
+			"403": "권한 없음. API 키는 유효하지만 공급자가 이 요청을 완료하기를 거부했습니다.",
+			"429": "너무 많은 요청입니다. 공급자에 의해 요청 제한이 적용되고 있습니다. 다음 API 호출 전에 잠깐 기다려주세요.",
+			"500": "공급자 서버 오류입니다. 공급자 쪽에 문제가 있으며 요청에는 문제가 없습니다.",
+			"unknown": "알 수 없는 API 오류입니다. Roo Code 지원팀에 문의하세요."
+		}
 	},
 	"checkpoint": {
 		"regular": "체크포인트",
@@ -174,25 +178,7 @@
 		"wantsToFetch": "Agentica는 현재 작업을 지원하기 위해 자세한 지침을 가져오려고 합니다"
 	},
 	"fileOperations": {
-		"wantsToRead": "Agentica가 이 파일을 읽고 싶어합니다",
-		"wantsToReadOutsideWorkspace": "Agentica가 워크스페이스 외부의 이 파일을 읽고 싶어합니다",
-		"didRead": "Agentica가 이 파일을 읽었습니다",
-		"wantsToEdit": "Agentica가 이 파일을 편집하고 싶어합니다",
-		"wantsToEditOutsideWorkspace": "Agentica가 워크스페이스 외부의 이 파일을 편집하고 싶어합니다",
-		"wantsToEditProtected": "Agentica가 보호된 설정 파일을 편집하고 싶어합니다",
-		"wantsToCreate": "Agentica가 새 파일을 만들고 싶어합니다",
-		"wantsToSearchReplace": "Agentica가 이 파일에서 검색 및 바꾸기를 수행하고 싶어합니다",
-		"didSearchReplace": "Agentica가 이 파일에서 검색 및 바꾸기를 수행했습니다",
-		"wantsToInsert": "Agentica가 이 파일에 내용을 삽입하고 싶어합니다",
-		"wantsToInsertWithLineNumber": "Agentica가 이 파일의 {{lineNumber}}번 줄에 내용을 삽입하고 싶어합니다",
-		"wantsToInsertAtEnd": "Agentica가 이 파일의 끝에 내용을 추가하고 싶어합니다",
-		"wantsToReadAndXMore": "Agentica가 이 파일과 {{count}}개의 파일을 더 읽으려고 합니다",
-		"wantsToReadMultiple": "Agentica가 여러 파일을 읽으려고 합니다",
-		"wantsToApplyBatchChanges": "Agentica가 여러 파일에 변경 사항을 적용하고 싶어합니다",
-		"wantsToGenerateImage": "Agentica가 이미지를 생성하고 싶어합니다",
-		"wantsToGenerateImageOutsideWorkspace": "Agentica가 워크스페이스 외부에서 이미지를 생성하고 싶어합니다",
-		"wantsToGenerateImageProtected": "Agentica가 보호된 위치에서 이미지를 생성하고 싶어합니다",
-		"didGenerateImage": "Agentica가 이미지를 생성했습니다"
+
 	},
 	"directoryOperations": {
 		"wantsToViewTopLevel": "Agentica가 이 디렉토리의 최상위 파일을 보고 싶어합니다",
@@ -306,22 +292,21 @@
 			"goToSettingsButton": "설정으로 이동"
 		},
 		"release": {
-			"heading": "확장 프로그램의 새로운 기능:",
-			"openRouterEmbeddings": "OpenRouter 임베딩 모델 지원",
-			"chutesDynamic": "Chutes가 이제 최신 모델을 동적으로 로드합니다",
-			"queuedMessagesFix": "대기 중인 메시지가 손실되는 문제 수정"
+			"heading": "이 버전의 새로운 기능:",
+			"contextRewind": "개선된 컨텍스트 압축을 통해 이제 체크포인트로 되감을 때 이전의 전체 컨텍스트를 복원할 수 있습니다",
+			"rooProvider": "Roo Code Cloud 제공자는 이제 추론 콘텐츠를 보존하고 더 나은 성능을 위해 기본적으로 네이티브 도구를 사용합니다"
 		},
 		"cloudAgents": {
 			"heading": "클라우드의 새로운 기능:",
-			"prFixer": "PR 리뷰어를 보완하는 <bold>PR Fixer</bold> 클라우드 에이전트를 소개합니다.",
-			"prFixerDescription": "Roo Code의 PR Fixer는 GitHub에서 직접 PR에 고품질 변경사항을 적용합니다. PR 댓글을 통해 호출하면 전체 댓글 기록을 읽어 컨텍스트, 합의사항 및 트레이드오프를 이해한 다음 올바른 수정을 구현합니다.",
-			"tryPrFixerButton": "PR Fixer 사용해보기"
+			"specialized": "<bold>Explainer</bold>, <bold>Planner</bold>, <bold>Coder</bold> 세 가지 전문 클라우드 에이전트를 소개합니다. 워크플로우를 향상시킵니다.",
+			"description": "에이전트는 클라우드에서 함께 작동하며 웹 또는 Slack을 통해 트리거할 수 있습니다.",
+			"tryButton": "클라우드 에이전트 사용해보기"
 		},
 		"careers": "그리고, <careersLink>채용 중입니다!</careersLink>",
-		"socialLinks": "<xLink>X</xLink>, <discordLink>Discord</discordLink>, 또는 <redditLink>r/RooCode</redditLink>에서 만나요 🚀"
+		"socialLinks": "<xLink>X</xLink>, <discordLink>Discord</discordLink>, 또는 <redditLink>r/KiloCode</redditLink>에서 만나요 🚀"
 	},
 	"browser": {
-		"rooWantsToUse": "Agentica가 브라우저를 사용하고 싶어합니다",
+
 		"consoleLogs": "콘솔 로그",
 		"noNewLogs": "(새 로그 없음)",
 		"screenshot": "브라우저 스크린샷",
@@ -337,8 +322,10 @@
 			"launch": "{{url}}에서 브라우저 실행",
 			"click": "클릭 ({{coordinate}})",
 			"type": "입력 \"{{text}}\"",
+			"press": "{{key}} 누르기",
 			"scrollDown": "아래로 스크롤",
 			"scrollUp": "위로 스크롤",
+			"hover": "가리키기 ({{coordinate}})",
 			"close": "브라우저 닫기"
 		}
 	},
@@ -437,7 +424,7 @@
 		"clickToEdit": "클릭하여 메시지 편집"
 	},
 	"slashCommand": {
-		"wantsToRun": "Agentica가 슬래시 명령어를 실행하려고 합니다",
-		"didRun": "Agentica가 슬래시 명령어를 실행했습니다"
+
 	}
 }
+

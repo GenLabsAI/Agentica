@@ -26,7 +26,9 @@
 		"shareSuccessOrganization": "組織連結已複製到剪貼簿",
 		"shareSuccessPublic": "公開連結已複製到剪貼簿",
 		"openInCloud": "在 Roo Code Cloud 中開啟工作",
-		"openInCloudIntro": "從任何地方繼續監控或與 Roo 互動。掃描、點擊或複製以開啟。"
+		"openInCloudIntro": "從任何地方繼續監控或與 Roo 互動。掃描、點擊或複製以開啟。",
+		"openApiHistory": "開啟 API 歷史紀錄",
+		"openUiHistory": "開啟 UI 歷史紀錄"
 	},
 	"history": {
 		"title": "歷史記錄"
@@ -102,24 +104,17 @@
 		"placeholder": "編輯您的訊息..."
 	},
 	"scrollToBottom": "捲動至聊天室底部",
-	"about": "利用 AI 輔助產生、重構和偵錯程式碼。請參閱我們的<DocsLink>說明文件</DocsLink>以瞭解更多資訊。",
+	"about": "透過 AI 輔助生成、重構和除錯程式碼。查看我們的 <DocsLink>說明文件</DocsLink> 以了解更多。",
+	"docs": "請參閱我們的<DocsLink>說明文件</DocsLink>以了解詳細資訊。",
 	"onboarding": "此工作區的工作清單是空的。",
 	"rooTips": {
-		"boomerangTasks": {
-			"title": "工作編排",
-			"description": "將工作拆分為更小、更易於管理的部分。"
-		},
-		"stickyModels": {
-			"title": "記憶模型",
-			"description": "每個模式都會記住您上次使用的模型"
-		},
-		"tools": {
-			"title": "工具",
-			"description": "允許 AI 透過瀏覽網路、執行命令等方式解決問題。"
-		},
 		"customizableModes": {
 			"title": "可自訂模式",
-			"description": "具有專屬行為和指定模型的特定角色"
+			"description": "專注於任務並交付成果的專業角色。"
+		},
+		"modelAgnostic": {
+			"title": "自備模型",
+			"description": "使用您自己的提供商金鑰，甚至可以執行本地推斷 — 無需加價，無鎖定，無限制"
 		}
 	},
 	"selectMode": "選擇互動模式",
@@ -155,7 +150,18 @@
 		"failed": "API 請求失敗",
 		"streaming": "正在處理 API 請求...",
 		"cancelled": "API 請求已取消",
-		"streamingFailed": "API 串流處理失敗"
+		"streamingFailed": "API 串流處理失敗",
+		"errorTitle": "API 錯誤 {{code}}",
+		"errorMessage": {
+			"docs": "文件",
+			"400": "提供商無法按照此方式處理請求。請停止工作並嘗試其他方法。",
+			"401": "無法向提供商進行身份驗證。請檢查您的 API 金鑰設定。",
+			"402": "您的帳戶資金/額度似乎已用盡。請前往提供商增加額度以繼續。",
+			"403": "無權存取。您的 API 金鑰有效，但提供商拒絕完成此請求。",
+			"429": "請求次數過多。提供商已對您的請求進行速率限制。請在下一次 API 呼叫前稍候。",
+			"500": "提供商伺服器錯誤。提供商端發生問題，您的請求沒有問題。",
+			"unknown": "未知 API 錯誤。請聯絡 Roo Code 支援。"
+		}
 	},
 	"checkpoint": {
 		"regular": "檢查點",
@@ -186,25 +192,7 @@
 		"wantsToFetch": "Agentica 想要取得詳細指示以協助目前工作"
 	},
 	"fileOperations": {
-		"wantsToRead": "Agentica 想要讀取此檔案",
-		"wantsToReadMultiple": "Agentica 想要讀取多個檔案",
-		"wantsToReadAndXMore": "Agentica 想要讀取此檔案以及另外 {{count}} 個檔案",
-		"wantsToReadOutsideWorkspace": "Agentica 想要讀取此工作區外的檔案",
-		"didRead": "Agentica 已讀取此檔案",
-		"wantsToEdit": "Agentica 想要編輯此檔案",
-		"wantsToEditOutsideWorkspace": "Agentica 想要編輯此工作區外的檔案",
-		"wantsToEditProtected": "Agentica 想要編輯受保護的設定檔案",
-		"wantsToApplyBatchChanges": "Agentica 想要對多個檔案套用變更",
-		"wantsToGenerateImage": "Agentica 想要產生圖片",
-		"wantsToGenerateImageOutsideWorkspace": "Agentica 想要在工作區外產生圖片",
-		"wantsToGenerateImageProtected": "Agentica 想要在受保護位置產生圖片",
-		"didGenerateImage": "Agentica 已產生圖片",
-		"wantsToCreate": "Agentica 想要建立新檔案",
-		"wantsToSearchReplace": "Agentica 想要在此檔案中搜尋和取代",
-		"didSearchReplace": "Agentica 已在此檔案執行搜尋和取代",
-		"wantsToInsert": "Agentica 想要在此檔案中插入內容",
-		"wantsToInsertWithLineNumber": "Agentica 想要在此檔案第 {{lineNumber}} 行插入內容",
-		"wantsToInsertAtEnd": "Agentica 想要在此檔案尾端新增內容"
+
 	},
 	"directoryOperations": {
 		"wantsToViewTopLevel": "Agentica 想要檢視此目錄中最上層的檔案",
@@ -316,19 +304,18 @@
 			"goToSettingsButton": "前往設定"
 		},
 		"release": {
-			"heading": "擴充功能的新功能：",
-			"openRouterEmbeddings": "支援 OpenRouter 嵌入模型",
-			"chutesDynamic": "Chutes 現在動態載入最新模型",
-			"queuedMessagesFix": "修復佇列訊息遺失問題"
+			"heading": "最新功能：",
+			"contextRewind": "改進的上下文壓縮現在允許您在回到存檔點時恢復完整的先前上下文",
+			"rooProvider": "Roo Code Cloud 提供商現在保留推理內容，並預設使用原生工具以獲得更佳效能"
 		},
 		"cloudAgents": {
 			"heading": "雲端的新功能：",
-			"prFixer": "推出 <bold>PR Fixer</bold> 雲端代理以補充 PR Reviewer。",
-			"prFixerDescription": "Roo Code 的 PR Fixer 直接從 GitHub 為您的 PR 套用高品質變更。透過 PR 留言呼叫，它會讀取整個留言歷史以理解內容、協議和權衡 - 然後實作正確的修復。",
-			"tryPrFixerButton": "試用 PR Fixer"
+			"specialized": "推出 <bold>Explainer</bold>、<bold>Planner</bold> 和 <bold>Coder</bold> - 三個專業雲端代理來增強你的工作流程。",
+			"description": "代理在雲端協同工作，可從網頁或透過 Slack 觸發。",
+			"tryButton": "試用雲端代理"
 		},
 		"careers": "此外，<careersLink>我們正在招募！</careersLink>",
-		"socialLinks": "在 <xLink>X</xLink>、<discordLink>Discord</discordLink> 或 <redditLink>r/RooCode</redditLink> 上關注我們 🚀"
+		"socialLinks": "在 <xLink>X</xLink>、<discordLink>Discord</discordLink> 或 <redditLink>r/KiloCode</redditLink> 上關注我們 🚀"
 	},
 	"reasoning": {
 		"thinking": "思考中",
@@ -340,7 +327,7 @@
 		"countdownDisplay": "{{count}} 秒"
 	},
 	"browser": {
-		"rooWantsToUse": "Agentica 想要使用瀏覽器",
+
 		"consoleLogs": "主控台記錄",
 		"noNewLogs": "（沒有新記錄）",
 		"screenshot": "瀏覽器螢幕擷圖",
@@ -352,12 +339,14 @@
 		},
 		"sessionStarted": "瀏覽器工作階段已啟動",
 		"actions": {
-			"title": "瀏覽器動作",
+			"title": "瀏覽器動作：",
 			"launch": "在 {{url}} 啟動瀏覽器",
 			"click": "點選 ({{coordinate}})",
 			"type": "輸入「{{text}}」",
+			"press": "按下 {{key}}",
 			"scrollDown": "向下捲動",
 			"scrollUp": "向上捲動",
+			"hover": "懸停 ({{coordinate}})",
 			"close": "關閉瀏覽器"
 		}
 	},
@@ -438,7 +427,7 @@
 		"clickToEdit": "點選以編輯訊息"
 	},
 	"slashCommand": {
-		"wantsToRun": "Agentica 想要執行斜線指令",
-		"didRun": "Agentica 執行了斜線指令"
+
 	}
 }
+

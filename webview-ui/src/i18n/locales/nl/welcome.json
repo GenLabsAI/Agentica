@@ -16,7 +16,7 @@
 			"incentive": "Probeer Roo gratis uit"
 		}
 	},
-	"chooseProvider": "Om zijn magie te doen, heeft Agentica een API-sleutel nodig.",
+
 	"startRouter": "We raden aan om een LLM-router te gebruiken:",
 	"startCustom": "Of je kunt je eigen API-sleutel gebruiken:",
 	"telemetry": {
@@ -25,3 +25,4 @@
 	},
 	"importSettings": "Instellingen importeren"
 }
+

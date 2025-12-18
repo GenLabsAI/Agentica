@@ -22,6 +22,8 @@
 	},
 	"sections": {
 		"providers": "प्रदाता",
+		"modes": "मोड",
+		"mcp": "एमसीपी सर्वर",
 		"autoApprove": "अनुमोदन",
 		"browser": "ब्राउज़र",
 		"checkpoints": "चेकपॉइंट",
@@ -36,6 +38,26 @@
 		"language": "भाषा",
 		"about": "परिचय",
 		"autoPurge": "स्वचालित सफाई"
+	},
+	"about": {
+		"bugReport": {
+			"label": "बग मिला?",
+			"link": "GitHub पर रिपोर्ट करें"
+		},
+		"featureRequest": {
+			"label": "कोई विचार है?",
+			"link": "हमारे साथ साझा करें"
+		},
+		"securityIssue": {
+			"label": "कोई कमजोरी खोजी?",
+			"link": "हमारी प्रकटीकरण प्रक्रिया का पालन करें"
+		},
+		"contact": {
+			"label": "हमसे बात करने की जरूरत है? लिखें"
+		},
+		"community": "सुझाव चाहिए या बस अन्य Kilo Code उपयोगकर्ताओं के साथ घूमना चाहते हैं? <redditLink>reddit.com/r/kilocode</redditLink> या <discordLink>kilo.ai/discord</discordLink> में शामिल हों",
+		"contactAndCommunity": "संपर्क और समुदाय",
+		"manageSettings": "सेटिंग्स प्रबंधित करें"
 	},
 	"slashCommands": {
 		"description": "कस्टम वर्कफ़्लो और क्रियाओं को तेज़ी से निष्पादित करने के लिए अपने स्लैश कमांड प्रबंधित करें। <DocsLink>और जानें</DocsLink>"
@@ -57,9 +79,17 @@
 		"vercelAiGatewayProvider": "Vercel AI Gateway",
 		"vercelAiGatewayApiKeyLabel": "API कुंजी",
 		"vercelAiGatewayApiKeyPlaceholder": "अपनी Vercel AI Gateway API कुंजी दर्ज करें",
+		"bedrockProvider": "Amazon Bedrock",
+		"bedrockRegionLabel": "AWS क्षेत्र",
+		"bedrockRegionPlaceholder": "us-east-1",
+		"bedrockProfileLabel": "AWS प्रोफ़ाइल",
+		"bedrockProfilePlaceholder": "default",
+		"bedrockProfileDescription": "~/.aws/credentials से AWS प्रोफ़ाइल नाम (आवश्यक)।",
 		"openRouterProvider": "ओपनराउटर",
 		"openRouterApiKeyLabel": "ओपनराउटर एपीआई कुंजी",
 		"openRouterApiKeyPlaceholder": "अपनी ओपनराउटर एपीआई कुंजी दर्ज करें",
+		"openRouterProviderRoutingLabel": "OpenRouter प्रदाता रूटिंग",
+		"openRouterProviderRoutingDescription": "OpenRouter आपके एम्बेडिंग मॉडल के लिए सर्वोत्तम उपलब्ध प्रदाताओं को अनुरोध भेजता है। डिफ़ॉल्ट रूप से, अपटाइम को अधिकतम करने के लिए अनुरोधों को शीर्ष प्रदाताओं के बीच संतुलित किया जाता है। हालांकि, आप इस मॉडल के लिए उपयोग करने के लिए एक विशिष्ट प्रदाता चुन सकते हैं।",
 		"mistralProvider": "Mistral",
 		"mistralApiKeyLabel": "API कुंजी:",
 		"mistralApiKeyPlaceholder": "अपनी मिस्ट्रल एपीआई कुंजी दर्ज करें",
@@ -95,8 +125,12 @@
 		"modelPlaceholder": "मॉडल नाम दर्ज करें",
 		"selectModel": "एक मॉडल चुनें",
 		"ollamaBaseUrlLabel": "Ollama आधार URL",
+		"vectorStoreProviderLabel": "वेक्टर स्टोर प्रदाता",
 		"qdrantApiKeyLabel": "Qdrant API कुंजी",
 		"qdrantApiKeyPlaceholder": "अपनी Qdrant API कुंजी दर्ज करें (वैकल्पिक)",
+		"lancedbVectorStoreDirectoryLabel": "LanceDB Vector Store पथ",
+		"lancedbVectorStoreDirectoryPlaceholder": "कस्टम वेक्टर स्टोर पथ दर्ज करें (वैकल्पिक)",
+		"lancedbVectorStoreDirectoryDescription": "LanceDB वेक्टर डेटाबेस संग्रहीत करने के लिए पथ। यदि खाली है, तो globalStorageUri/vector में डिफ़ॉल्ट स्थान का उपयोग किया जाएगा।",
 		"setupConfigLabel": "सेटअप",
 		"ollamaUrlPlaceholder": "http://localhost:11434",
 		"openAiCompatibleBaseUrlPlaceholder": "https://api.example.com",
@@ -127,11 +161,14 @@
 			"geminiApiKeyRequired": "Gemini API कुंजी आवश्यक है",
 			"mistralApiKeyRequired": "मिस्ट्रल एपीआई कुंजी आवश्यक है",
 			"vercelAiGatewayApiKeyRequired": "Vercel AI Gateway API कुंजी आवश्यक है",
+			"bedrockRegionRequired": "AWS क्षेत्र आवश्यक है",
+			"bedrockProfileRequired": "AWS प्रोफ़ाइल आवश्यक है",
 			"ollamaBaseUrlRequired": "Ollama आधार URL आवश्यक है",
 			"baseUrlRequired": "आधार URL आवश्यक है",
 			"modelDimensionMinValue": "मॉडल आयाम 0 से बड़ा होना चाहिए",
 			"openRouterApiKeyRequired": "OpenRouter API कुंजी आवश्यक है"
 		},
+		"optional": "वैकल्पिक",
 		"advancedConfigLabel": "उन्नत कॉन्फ़िगरेशन",
 		"searchMinScoreLabel": "खोज स्कोर थ्रेसहोल्ड",
 		"searchMinScoreDescription": "खोज परिणामों के लिए आवश्यक न्यूनतम समानता स्कोर (0.0-1.0)। कम मान अधिक परिणाम लौटाते हैं लेकिन कम प्रासंगिक हो सकते हैं। उच्च मान कम लेकिन अधिक प्रासंगिक परिणाम लौटाते हैं।",
@@ -168,6 +205,10 @@
 				"label": "संरक्षित फाइलें शामिल करें",
 				"description": "Agentica को अनुमोदन की आवश्यकता के बिना संरक्षित फाइलें (.kilocodeignore और .kilocode/ कॉन्फ़िगरेशन फाइलें जैसी) बनाने और संपादित करने की अनुमति दें।"
 			}
+		},
+		"delete": {
+			"label": "हटाएं",
+			"description": "अनुमोदन की आवश्यकता के बिना स्वचालित रूप से फाइलें और निर्देशिकाएं हटाएं"
 		},
 		"browser": {
 			"label": "ब्राउज़र",
@@ -259,6 +300,14 @@
 		"awsCustomArnDesc": "सुनिश्चित करें कि ARN में क्षेत्र ऊपर चयनित AWS क्षेत्र से मेल खाता है।",
 		"openRouterApiKey": "OpenRouter API कुंजी",
 		"getOpenRouterApiKey": "OpenRouter API कुंजी प्राप्त करें",
+		"nanoGptApiKey": "Nano-GPT API कुंजी",
+		"getNanoGptApiKey": "Nano-GPT API कुंजी प्राप्त करें",
+		"nanoGptModelList": "मॉडल सूची",
+		"nanoGptModelListOptions": {
+			"all": "सभी मॉडल",
+			"personalized": "व्यक्तिगत मॉडल",
+			"subscription": "सदस्यता मॉडल"
+		},
 		"vercelAiGatewayApiKey": "Vercel AI Gateway API कुंजी",
 		"getVercelAiGatewayApiKey": "Vercel AI Gateway API कुंजी प्राप्त करें",
 		"apiKeyStorageNotice": "API कुंजियाँ VSCode के सुरक्षित स्टोरेज में सुरक्षित रूप से संग्रहीत हैं",
@@ -289,8 +338,12 @@
 		"anthropicUseAuthToken": "X-Api-Key के बजाय Anthropic API कुंजी को Authorization हेडर के रूप में पास करें",
 		"anthropic1MContextBetaLabel": "1M संदर्भ विंडो सक्षम करें (बीटा)",
 		"anthropic1MContextBetaDescription": "Claude Sonnet 4 के लिए संदर्भ विंडो को 1 मिलियन टोकन तक बढ़ाता है",
+		"anthropicUseAzureDeployment": "Azure डिप्लॉयमेंट नाम का उपयोग करें",
+		"anthropicAzureDeploymentPlaceholder": "डिप्लॉयमेंट नाम दर्ज करें...",
 		"awsBedrock1MContextBetaLabel": "1M संदर्भ विंडो सक्षम करें (बीटा)",
 		"awsBedrock1MContextBetaDescription": "Claude Sonnet 4 के लिए संदर्भ विंडो को 1 मिलियन टोकन तक बढ़ाता है",
+		"basetenApiKey": "Baseten API कुंजी",
+		"getBasetenApiKey": "Baseten API कुंजी प्राप्त करें",
 		"cerebrasApiKey": "Cerebras API कुंजी",
 		"getCerebrasApiKey": "Cerebras API कुंजी प्राप्त करें",
 		"chutesApiKey": "Chutes API कुंजी",
@@ -340,6 +393,32 @@
 		"huggingFaceSelectProvider": "एक प्रदाता चुनें...",
 		"huggingFaceSearchProviders": "प्रदाता खोजें...",
 		"huggingFaceNoProvidersFound": "कोई प्रदाता नहीं मिला",
+		"sapAiCore": {
+			"serviceKey": "AI Core सर्विस कुंजी",
+			"serviceKeyJson": "सर्विस कुंजी JSON दर्ज करें...",
+			"resourceGroup": "AI Core रिसोर्स ग्रुप",
+			"credentialsNote": "ये क्रेडेंशियल्स स्थानीय रूप से संग्रहीत हैं और केवल इस एक्सटेंशन से API अनुरोध करने के लिए उपयोग की जाती हैं।",
+			"learnMore": "SAP AI Core API एक्सेस के बारे में अधिक जानकारी आप यहाँ पा सकते हैं।",
+			"orchestrationMode": "ऑर्केस्ट्रेशन मोड",
+			"orchestrationEnabledDesc": "सक्षम होने पर, व्यक्तिगत डिप्लॉयमेंट की आवश्यकता के बिना सभी उपलब्ध मॉडलों तक पहुंच प्रदान करता है।",
+			"orchestrationDisabledDesc": "अक्षम होने पर, केवल आपके AI Core सर्विस इंस्टेंस में डिप्लॉय किए गए फाउंडेशन मॉडल तक पहुंच प्रदान करता है।",
+			"modelDeploymentDesc": "आप केवल उपलब्ध डिप्लॉयमेंट वाले मॉडल चुन सकते हैं।",
+			"deployment": "डिप्लॉयमेंट",
+			"loading": "लोड हो रहा है...",
+			"modelsCount": "({{count}} मॉडल)",
+			"deploymentsCount": "({{count}} डिप्लॉयमेंट)",
+			"selectModel": "एक मॉडल चुनें...",
+			"selectDeployment": "एक डिप्लॉयमेंट चुनें...",
+			"searchModels": "मॉडल खोजें...",
+			"searchDeployments": "डिप्लॉयमेंट खोजें...",
+			"noModelsFound": "कोई मॉडल नहीं मिला",
+			"noDeploymentFound": "कोई डिप्लॉयमेंट नहीं मिला",
+			"getStarted": "SAP AI Core के साथ शुरू करें",
+			"supportedProviders": "समर्थित प्रदाता",
+			"supportedProvidersDesc1": "SAP AI Core प्रदाता वर्तमान में केवल निम्नलिखित LLM प्रदाताओं के लिए फाउंडेशन मॉडल का समर्थन करता है:",
+			"supportedProvidersDesc2": "अधिक मॉडलों तक पहुंच के लिए ऑर्केस्ट्रेशन मोड पर स्विच करने पर विचार करें।",
+			"supportedProvidersDesc3": "ऑर्केस्ट्रेशन मोड के बारे में अधिक जानें"
+		},
 		"getGeminiApiKey": "Gemini API कुंजी प्राप्त करें",
 		"openAiApiKey": "OpenAI API कुंजी",
 		"apiKey": "API कुंजी",
@@ -362,6 +441,7 @@
 		"awsSessionToken": "AWS सत्र टोकन",
 		"awsRegion": "AWS क्षेत्र",
 		"awsCrossRegion": "क्रॉस-क्षेत्र अनुमान का उपयोग करें",
+		"awsGlobalInference": "वैश्विक अनुमान का उपयोग करें (स्वचालित रूप से श्रेष्ठ AWS क्षेत्र चुनें)",
 		"awsBedrockVpc": {
 			"useCustomVpcEndpoint": "कस्टम VPC एंडपॉइंट का उपयोग करें",
 			"vpcEndpointUrlPlaceholder": "VPC एंडपॉइंट URL दर्ज करें (वैकल्पिक)",
@@ -484,7 +564,7 @@
 		},
 		"consecutiveMistakeLimit": {
 			"label": "त्रुटि और पुनरावृत्ति सीमा",
-			"description": "'रू को समस्या हो रही है' संवाद दिखाने से पहले लगातार त्रुटियों या दोहराए गए कार्यों की संख्या",
+			"description": "'रू को समस्या हो रही है' संवाद दिखाने से पहले लगातार त्रुटियों या दोहराए गए कार्यों की संख्या। इस सुरक्षा तंत्र को अक्षम करने के लिए 0 पर सेट करें (यह कभी ट्रिगर नहीं होगा)।",
 			"unlimitedDescription": "असीमित पुनः प्रयास सक्षम (स्वतः आगे बढ़ें)। संवाद कभी नहीं दिखाई देगा।",
 			"warning": "⚠️ 0 पर सेट करने से असीमित पुनः प्रयास की अनुमति मिलती है जिससे महत्वपूर्ण एपीआई उपयोग हो सकता है"
 		},
@@ -494,7 +574,8 @@
 			"minimal": "न्यूनतम (सबसे तेज़)",
 			"high": "उच्च",
 			"medium": "मध्यम",
-			"low": "निम्न"
+			"low": "निम्न",
+			"xhigh": "अत्यंत उच्च"
 		},
 		"verbosity": {
 			"label": "आउटपुट वर्बोसिटी",
@@ -532,6 +613,15 @@
 			"description": "यह प्रदाता Qwen सेवा से OAuth प्रमाणीकरण का उपयोग करता है और API कुंजियों की आवश्यकता नहीं है।",
 			"instructions": "कृपया प्राधिकरण फ़ाइल प्राप्त करने और इसे निर्दिष्ट पथ में रखने के लिए आधिकारिक दस्तावेज़ीकरण का पालन करें।",
 			"setupLink": "Qwen आधिकारिक दस्तावेज़ीकरण"
+		},
+		"profileName": "प्रोफ़ाइल नाम",
+		"profileType": "प्रोफ़ाइल प्रकार",
+		"profileTypeChat": "चैट",
+		"profileTypeAutocomplete": "ऑटोकम्पलीट",
+		"profileTypeDescription": "चैट प्रोफ़ाइल बातचीत के लिए उपयोग की जाती हैं। केवल एक ऑटोकम्पलीट प्रोफ़ाइल की अनुमति है।",
+		"autocompleteLabel": "(ऑटोकम्पलीट)",
+		"autocomplete": {
+			"onlyOneAllowed": "केवल एक ऑटोकम्पलीट प्रोफ़ाइल की अनुमति है। प्रोफ़ाइल \"{{existingName}}\" पहले से ही ऑटोकम्पलीट के लिए कॉन्फ़िगर है। कृपया पहले इसका प्रकार बदलें या इसे हटाएं।"
 		}
 	},
 	"browser": {
@@ -703,6 +793,10 @@
 		"includeCurrentCost": {
 			"label": "संदर्भ में वर्तमान लागत शामिल करें",
 			"description": "सक्षम होने पर, वर्तमान एपीआई उपयोग लागत सिस्टम प्रॉम्प्ट में शामिल की जाएगी। यदि मॉडल लागत संबंधी चिंताओं के कारण काम करना बंद कर देते हैं तो इसे अक्षम करें।"
+		},
+		"maxGitStatusFiles": {
+			"label": "गिट स्थिति अधिकतम फ़ाइलें",
+			"description": "गिट स्थिति संदर्भ में शामिल करने के लिए फ़ाइल प्रविष्टियों की अधिकतम संख्या। अक्षम करने के लिए 0 पर सेट करें। शाखा जानकारी और कमिट हमेशा दिखाए जाते हैं जब > 0 होता है।"
 		}
 	},
 	"terminal": {
@@ -766,6 +860,14 @@
 	"advancedSettings": {
 		"title": "उन्नत सेटिंग्स"
 	},
+	"toolProtocol": {
+		"label": "टूल कॉल प्रोटोकॉल",
+		"description": "चुनें कि रू एपीआई के साथ कैसे संचार करता है। नेटिव प्रदाता के फ़ंक्शन कॉलिंग एपीआई का उपयोग करता है, जबकि एक्सएमएल एक्सएमएल-स्वरूपित टूल परिभाषाओं का उपयोग करता है।",
+		"default": "डिफ़ॉल्ट",
+		"xml": "एक्सएमएल",
+		"native": "नेटिव",
+		"currentDefault": "डिफ़ॉल्ट: {{protocol}}"
+	},
 	"advanced": {
 		"diff": {
 			"label": "diffs के माध्यम से संपादन सक्षम करें",
@@ -824,9 +926,7 @@
 		},
 		"MORPH_FAST_APPLY": {
 			"name": "Fast Apply सक्षम करें",
-			"description": "जब सक्षम होता है, तो Agentica कोड संशोधनों के लिए अनुकूलित विशेष मॉडल के साथ Fast Apply का उपयोग करके फ़ाइलें संपादित कर सकता है। Kilo Gateway Provider, OpenRouter, या Morph API कुंजी की आवश्यकता है।",
-			"apiKey": "Morph API कुंजी (वैकल्पिक)",
-			"placeholder": "अपनी Morph API कुंजी दर्ज करें (वैकल्पिक)",
+
 			"modelLabel": "मॉडल चयन",
 			"modelDescription": "फ़ाइल संपादन के लिए किस Fast Apply मॉडल का उपयोग करना है चुनें",
 			"models": {
@@ -849,6 +949,8 @@
 			"description": "जब सक्षम किया जाता है, तो new_task टूल को todos पैरामीटर प्रदान करने की आवश्यकता होगी। यह सुनिश्चित करता है कि सभी नए कार्य स्पष्ट उद्देश्यों की सूची के साथ शुरू हों। जब अक्षम किया जाता है (डिफ़ॉल्ट), तो todos पैरामीटर पिछड़े संगतता के लिए वैकल्पिक रहता है।"
 		},
 		"IMAGE_GENERATION": {
+			"providerLabel": "प्रदाता",
+			"providerDescription": "छवि निर्माण के लिए प्रदाता चुनें।",
 			"name": "AI छवि निर्माण सक्षम करें",
 			"description": "जब सक्षम किया जाता है, तो Agentica टेक्स्ट प्रॉम्प्ट से छवियां उत्पन्न कर सकता है। Agentica या OpenRouter API कुंजी कॉन्फ़िगरेशन की आवश्यकता होती है।",
 			"apiProvider": "API प्रदाता",
@@ -869,7 +971,7 @@
 		},
 		"RUN_SLASH_COMMAND": {
 			"name": "मॉडल द्वारा शुरू किए गए स्लैश कमांड सक्षम करें",
-			"description": "जब सक्षम होता है, Agentica वर्कफ़्लो चलाने के लिए आपके स्लैश कमांड चला सकता है।"
+
 		}
 	},
 	"promptCaching": {
@@ -908,11 +1010,12 @@
 		"label": "मॉडल",
 		"searchPlaceholder": "खोजें",
 		"noMatchFound": "कोई मिलान नहीं मिला",
-		"useCustomModel": "कस्टम उपयोग करें: {{modelId}}"
+		"useCustomModel": "कस्टम उपयोग करें: {{modelId}}",
+		"simplifiedExplanation": "आप बाद में विस्तृत मॉडल सेटिंग्स समायोजित कर सकते हैं।"
 	},
 	"footer": {
-		"feedback": "यदि आपके कोई प्रश्न या प्रतिक्रिया है, तो <githubLink>github.com/Kilo-Org/kilocode</githubLink> पर एक मुद्दा खोलने या <redditLink>reddit.com/r/kilocode</redditLink> या <discordLink>kilocode.ai/discord</discordLink> में शामिल होने में संकोच न करें",
-		"support": "वित्तीय प्रश्नों के लिए, कृपया <supportLink>https://kilocode.ai/support</supportLink> पर ग्राहक सहायता से संपर्क करें",
+		"feedback": "यदि आपके कोई प्रश्न या प्रतिक्रिया है, तो <githubLink>github.com/Kilo-Org/kilocode</githubLink> पर एक मुद्दा खोलने या <redditLink>reddit.com/r/kilocode</redditLink> या <discordLink>kilo.ai/discord</discordLink> में शामिल होने में संकोच न करें",
+		"support": "वित्तीय प्रश्नों के लिए, कृपया <supportLink>https://kilo.ai/support</supportLink> पर ग्राहक सहायता से संपर्क करें",
 		"telemetry": {
 			"label": "त्रुटि और उपयोग रिपोर्टिंग की अनुमति दें",
 			"description": "उपयोग डेटा और त्रुटि रिपोर्ट भेजकर Agentica को बेहतर बनाने में मदद करें। कोड, प्रॉम्प्ट, या व्यक्तिगत जानकारी कभी भी नहीं भेजी जाती है। अधिक विवरण के लिए हमारी गोपनीयता नीति देखें।"
@@ -943,7 +1046,9 @@
 		"providerNotAllowed": "प्रदाता '{{provider}}' आपके संगठन द्वारा अनुमत नहीं है",
 		"modelNotAllowed": "मॉडल '{{model}}' प्रदाता '{{provider}}' के लिए आपके संगठन द्वारा अनुमत नहीं है",
 		"profileInvalid": "इस प्रोफ़ाइल में एक प्रदाता या मॉडल शामिल है जो आपके संगठन द्वारा अनुमत नहीं है",
-		"qwenCodeOauthPath": "आपको एक वैध OAuth क्रेडेंशियल पथ प्रदान करना होगा"
+		"qwenCodeOauthPath": "आपको एक वैध OAuth क्रेडेंशियल पथ प्रदान करना होगा",
+		"sapAiCore": "आपको एक वैध SAP AI Core सर्विस कुंजी प्रदान करनी होगी।",
+		"sapAiCoreDeploymentId": "आपको मॉडल '{{model}}' के लिए एक चल रहा डिप्लॉयमेंट चुनना होगा।"
 	},
 	"placeholders": {
 		"apiKey": "API कुंजी दर्ज करें...",
@@ -1030,3 +1135,4 @@
 		}
 	}
 }
+

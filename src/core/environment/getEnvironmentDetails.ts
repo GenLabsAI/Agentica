@@ -8,6 +8,7 @@ import delay from "delay"
 import type { ExperimentId } from "@roo-code/types"
 import { DEFAULT_TERMINAL_OUTPUT_CHARACTER_LIMIT } from "@roo-code/types"
 
+import { resolveToolProtocol } from "../../utils/resolveToolProtocol"
 import { EXPERIMENT_IDS, experiments as Experiments } from "../../shared/experiments"
 import { formatLanguage } from "../../shared/language"
 import { defaultModeSlug, getFullModeDetails, getModeBySlug, isToolAllowedForMode } from "../../shared/modes"
@@ -17,6 +18,7 @@ import { TerminalRegistry } from "../../integrations/terminal/TerminalRegistry"
 import { Terminal } from "../../integrations/terminal/Terminal"
 import { arePathsEqual } from "../../utils/path"
 import { formatResponse } from "../prompts/responses"
+import { getGitStatus } from "../../utils/git"
 
 import { Task } from "../task/Task"
 import { formatReminderSection } from "./reminder"
@@ -26,6 +28,30 @@ import { OpenRouterHandler } from "../../api/providers/openrouter"
 import { TelemetryService } from "@roo-code/telemetry"
 import { t } from "../../i18n"
 import { NativeOllamaHandler } from "../../api/providers/native-ollama"
+
+// Multiplier for fetching extra files when filtering is enabled to ensure enough non-ignored files; only applied when showRooIgnoredFiles is false.
+const FILE_LIST_OVER_FETCH_MULTIPLIER = 3
+
+function trimFileList(fileListStr: string, maxFiles: number) {
+	let lines = fileListStr.split("\n")
+	if (lines.length <= maxFiles) {
+		return fileListStr
+	}
+
+	const lastLine = lines[lines.length - 1]
+	if (lastLine.startsWith("(File list truncated.")) {
+		// Remove last 3 items from lines (two empty lines and truncation message)
+		lines = lines.slice(0, -3)
+	}
+
+	// Truncate lines to maxFiles
+	lines = lines.slice(0, maxFiles)
+
+	const truncationMsg =
+		"(File list truncated. Use list_files on specific subdirectories if you need to explore further.)"
+
+	return lines.join("\n") + "\n\n" + truncationMsg
+}
 // kilocode_change end
 
 export async function getEnvironmentDetails(cline: Task, includeFileDetails: boolean = false) {
@@ -41,8 +67,6 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 
 	// It could be useful for cline to know if the user went from one or no
 	// file to another between messages, so we always include this context.
-	details += "\n\n# VSCode Visible Files"
-
 	const visibleFilePaths = vscode.window.visibleTextEditors
 		?.map((editor) => editor.document?.uri?.fsPath)
 		.filter(Boolean)
@@ -55,12 +79,10 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 		: visibleFilePaths.map((p) => p.toPosix()).join("\n")
 
 	if (allowedVisibleFiles) {
+		details += "\n\n# VSCode Visible Files"
 		details += `\n${allowedVisibleFiles}`
-	} else {
-		details += "\n(No visible files)"
 	}
 
-	details += "\n\n# VSCode Open Tabs"
 	const { maxOpenTabsContext } = state ?? {}
 	const maxTabs = maxOpenTabsContext ?? 20
 	const openTabPaths = vscode.window.tabGroups.all
@@ -77,9 +99,8 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 		: openTabPaths.map((p) => p.toPosix()).join("\n")
 
 	if (allowedOpenTabs) {
+		details += "\n\n# VSCode Open Tabs"
 		details += `\n${allowedOpenTabs}`
-	} else {
-		details += "\n(No open tabs)"
 	}
 
 	// Get task-specific and background terminals.
@@ -198,7 +219,7 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 	}
 
 	// Get settings for time and cost display
-	const { includeCurrentTime = true, includeCurrentCost = true } = state ?? {}
+	const { includeCurrentTime = true, includeCurrentCost = true, maxGitStatusFiles = 0 } = state ?? {}
 
 	// Add current time information with timezone (if enabled).
 	if (includeCurrentTime) {
@@ -210,6 +231,14 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 		const timeZoneOffsetMinutes = Math.abs(Math.round((Math.abs(timeZoneOffset) - timeZoneOffsetHours) * 60))
 		const timeZoneOffsetStr = `${timeZoneOffset >= 0 ? "+" : "-"}${timeZoneOffsetHours}:${timeZoneOffsetMinutes.toString().padStart(2, "0")}`
 		details += `\n\n# Current Time\nCurrent time in ISO 8601 UTC format: ${now.toISOString()}\nUser time zone: ${timeZone}, UTC${timeZoneOffsetStr}`
+	}
+
+	// Add git status information (if enabled with maxGitStatusFiles > 0).
+	if (maxGitStatusFiles > 0) {
+		const gitStatus = await getGitStatus(cline.cwd, maxGitStatusFiles)
+		if (gitStatus) {
+			details += `\n\n# Git Status\n${gitStatus}`
+		}
 	}
 
 	// Add context tokens information (if enabled).
@@ -253,11 +282,15 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 	})
 
 	const currentMode = modeDetails.slug ?? mode // kilocode_change: don't try to use non-existent modes
+	// Resolve and add tool protocol information
+	const modelInfo = cline.api.getModel().info
+	const toolProtocol = resolveToolProtocol(state?.apiConfiguration ?? {}, modelInfo)
 
 	details += `\n\n# Current Mode\n`
 	details += `<slug>${currentMode}</slug>\n`
 	details += `<name>${modeDetails.name}</name>\n`
 	details += `<model>${modelId}</model>\n`
+	details += `<tool_format>${toolProtocol}</tool_format>\n`
 
 	if (Experiments.isEnabled(experiments ?? {}, EXPERIMENT_IDS.POWER_STEERING)) {
 		details += `<role>${modeDetails.roleDefinition}</role>\n`
@@ -265,6 +298,35 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 		if (modeDetails.customInstructions) {
 			details += `<custom_instructions>${modeDetails.customInstructions}</custom_instructions>\n`
 		}
+	}
+
+	// Add browser session status - Only show when active to prevent cluttering context
+	const isBrowserActive = cline.browserSession.isSessionActive()
+
+	if (isBrowserActive) {
+		// Build viewport info for status (prefer actual viewport if available, else fallback to configured setting)
+		const configuredViewport = (state?.browserViewportSize as string | undefined) ?? "900x600"
+		let configuredWidth: number | undefined
+		let configuredHeight: number | undefined
+		if (configuredViewport.includes("x")) {
+			const parts = configuredViewport.split("x").map((v) => Number(v))
+			configuredWidth = parts[0]
+			configuredHeight = parts[1]
+		}
+
+		let actualWidth: number | undefined
+		let actualHeight: number | undefined
+		const vp = cline.browserSession.getViewportSize?.()
+		if (vp) {
+			actualWidth = vp.width
+			actualHeight = vp.height
+		}
+
+		const width = actualWidth ?? configuredWidth
+		const height = actualHeight ?? configuredHeight
+		const viewportInfo = width && height ? `\nCurrent viewport size: ${width}x${height} pixels.` : ""
+
+		details += `\n# Browser Session Status\nActive - A browser session is currently open and ready for browser_action commands${viewportInfo}\n`
 	}
 
 	if (includeFileDetails) {
@@ -282,8 +344,14 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 			if (maxFiles === 0) {
 				details += "(Workspace files context disabled. Use list_files to explore if needed.)"
 			} else {
-				const [files, didHitLimit] = await listFiles(cline.cwd, true, maxFiles)
 				const { showRooIgnoredFiles = false } = state ?? {}
+
+				// kilocode_change start
+				// Only apply multiplier when filtering will remove files (showRooIgnoredFiles = false)
+				// When showRooIgnoredFiles = true, ignored files are just marked with lock symbol, not removed
+				const fetchLimit = showRooIgnoredFiles ? maxFiles : maxFiles * FILE_LIST_OVER_FETCH_MULTIPLIER
+				const [files, didHitLimit] = await listFiles(cline.cwd, true, fetchLimit)
+				// kilocode_change end
 
 				const result = formatResponse.formatFilesList(
 					cline.cwd,
@@ -293,7 +361,14 @@ export async function getEnvironmentDetails(cline: Task, includeFileDetails: boo
 					showRooIgnoredFiles,
 				)
 
-				details += result
+				// kilocode_change start
+				if (!showRooIgnoredFiles) {
+					// Trim because we over-fetched
+					details += trimFileList(result, maxFiles)
+				} else {
+					details += result
+				}
+				// kilocode_change end
 			}
 		}
 	}

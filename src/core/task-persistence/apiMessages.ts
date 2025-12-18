@@ -9,7 +9,30 @@ import { fileExistsAtPath } from "../../utils/fs"
 import { GlobalFileNames } from "../../shared/globalFileNames"
 import { getTaskDirectoryPath } from "../../utils/storage"
 
-export type ApiMessage = Anthropic.MessageParam & { ts?: number; isSummary?: boolean }
+export type ApiMessage = Anthropic.MessageParam & {
+	ts?: number
+	isSummary?: boolean
+	id?: string
+	// For reasoning items stored in API history
+	type?: "reasoning"
+	summary?: any[]
+	encrypted_content?: string
+	text?: string
+	// For OpenRouter reasoning_details array format (used by Gemini 3, etc.)
+	reasoning_details?: any[]
+	// For non-destructive condense: unique identifier for summary messages
+	condenseId?: string
+	// For non-destructive condense: points to the condenseId of the summary that replaces this message
+	// Messages with condenseParent are filtered out when sending to API if the summary exists
+	condenseParent?: string
+	// For non-destructive truncation: unique identifier for truncation marker messages
+	truncationId?: string
+	// For non-destructive truncation: points to the truncationId of the marker that hides this message
+	// Messages with truncationParent are filtered out when sending to API if the marker exists
+	truncationParent?: string
+	// Identifies a message as a truncation boundary marker
+	isTruncationMarker?: boolean
+}
 
 export async function readApiMessages({
 	taskId,

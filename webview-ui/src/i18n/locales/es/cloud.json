@@ -4,11 +4,13 @@
 	"logOut": "Cerrar sesión",
 	"testApiAuthentication": "Probar autenticación de API",
 	"signIn": "Conectar a Roo Code Cloud",
-	"connect": "Conectar ahora",
-	"cloudBenefitsTitle": "Conectar a Roo Code Cloud",
-	"cloudBenefitWalkaway": "Sigue y controla tareas desde cualquier lugar con Roomote Control",
-	"cloudBenefitSharing": "Comparte tareas con otros",
-	"cloudBenefitHistory": "Accede a tu historial de tareas",
+	"connect": "Empezar",
+	"cloudBenefitsTitle": "Prueba Roo Code Cloud",
+	"cloudBenefitProvider": "Accede a modelos gratuitos y de pago que funcionan genial con Roo",
+	"cloudBenefitCloudAgents": "Da tareas a agentes autónomos en la nube",
+	"cloudBenefitTriggers": "Obtén revisiones de código en Github, inicia tareas desde Slack y más",
+	"cloudBenefitWalkaway": "Sigue y controla tareas desde cualquier lugar (incluido tu teléfono)",
+	"cloudBenefitHistory": "Accede a tu historial de tareas desde cualquier lugar y compártelas con otros",
 	"cloudBenefitMetrics": "Obtén una visión holística de tu consumo de tokens",
 	"visitCloudWebsite": "Visitar Roo Code Cloud",
 	"taskSync": "Sincronización de tareas",
@@ -29,6 +31,7 @@
 	"upsell": {
 		"autoApprovePowerUser": "¿Dándole a Roo un poco de independencia? Contrólalo desde cualquier lugar con Roo Code Cloud. <learnMoreLink>Saber más</learnMoreLink>.",
 		"longRunningTask": "Esto podría tardar un poco. Continúa desde cualquier lugar con la Nube.",
-		"taskList": "Roo Code Cloud ya está aquí: sigue y controla tus tareas desde cualquier lugar. <learnMoreLink>Saber más</learnMoreLink>."
+		"taskList": "¿Disfrutando de Roo? Echa un vistazo a Roo Code Cloud: sigue y controla tus tareas desde cualquier lugar, ejecuta agentes de la Nube autónomos, obtén estadísticas de uso y más. <learnMoreLink>Aprende más</learnMoreLink>."
 	}
 }
+

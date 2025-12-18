@@ -26,7 +26,9 @@
 		"shareSuccessOrganization": "Organizasyon bağlantısı panoya kopyalandı",
 		"shareSuccessPublic": "Genel bağlantı panoya kopyalandı",
 		"openInCloud": "Görevi Roo Code Cloud'da aç",
-		"openInCloudIntro": "Roo'yu her yerden izlemeye veya etkileşime devam et. Açmak için tara, tıkla veya kopyala."
+		"openInCloudIntro": "Roo'yu her yerden izlemeye veya etkileşime devam et. Açmak için tara, tıkla veya kopyala.",
+		"openApiHistory": "API Geçmişini Aç",
+		"openUiHistory": "UI Geçmişini Aç"
 	},
 	"history": {
 		"title": "Geçmiş"
@@ -91,24 +93,15 @@
 		"tooltip": "Mevcut işlemi iptal et"
 	},
 	"scrollToBottom": "Sohbetin altına kaydır",
-	"about": "AI yardımıyla kod oluşturun, yeniden düzenleyin ve hatalarını ayıklayın. Daha fazla bilgi edinmek için <DocsLink>belgelerimize</DocsLink> göz atın.",
-	"onboarding": "<strong>Bu çalışma alanındaki görev listeniz boş.</strong> Aşağıya bir görev yazarak başlayın. Nasıl başlayacağınızdan emin değil misiniz? Agentica'nun sizin için neler yapabileceği hakkında daha fazla bilgiyi <DocsLink>belgelerde</DocsLink> okuyun.",
+
 	"rooTips": {
-		"boomerangTasks": {
-			"title": "Görev Orkestrasyonu",
-			"description": "Görevleri daha küçük, yönetilebilir parçalara ayırın."
-		},
-		"stickyModels": {
-			"title": "Yapışkan Modlar",
-			"description": "Her mod, en son kullandığınız modeli hatırlar"
-		},
-		"tools": {
-			"title": "Araçlar",
-			"description": "AI'nın web'e göz atarak, komutlar çalıştırarak ve daha fazlasını yaparak sorunları çözmesine izin verin."
-		},
 		"customizableModes": {
-			"title": "Özelleştirilebilir Modlar",
-			"description": "Kendi davranışları ve atanmış modelleri ile özelleştirilmiş kişilikler"
+			"title": "Özelleştirilebilir modlar",
+			"description": "Göreve odaklanan ve sonuç veren özel kişilikler."
+		},
+		"modelAgnostic": {
+			"title": "Kendi modelinizi getirin",
+			"description": "Kendi sağlayıcı anahtarınızı kullanın veya hatta yerel çıkarım yapın — ek ücret yok, kilitlenme yok, kısıtlama yok"
 		}
 	},
 	"selectMode": "Etkileşim modunu seçin",
@@ -149,7 +142,18 @@
 		"failed": "API İsteği Başarısız",
 		"streaming": "API İsteği...",
 		"cancelled": "API İsteği İptal Edildi",
-		"streamingFailed": "API Akışı Başarısız"
+		"streamingFailed": "API Akışı Başarısız",
+		"errorTitle": "API Hatası {{code}}",
+		"errorMessage": {
+			"docs": "Belgeler",
+			"400": "Sağlayıcı isteği bu şekilde işleyemedi. Görevi durdur ve farklı bir yaklaşım dene.",
+			"401": "Sağlayıcı ile kimlik doğrulaması yapılamadı. Lütfen API anahtarı yapılandırmanızı kontrol edin.",
+			"402": "Hesabınızda para/kredi bitti gibi görünüyor. Sağlayıcıya git ve devam etmek için daha fazla ekle.",
+			"403": "Yetkisiz. API anahtarınız geçerli ama sağlayıcı bu isteği tamamlamayı reddetti.",
+			"429": "Çok fazla istek. Sağlayıcı tarafından oran sınırlaması uygulanıyor. Lütfen sonraki API çağrısından önce biraz bekle.",
+			"500": "Sağlayıcı sunucu hatası. Sağlayıcı tarafında bir sorun var, isteğinizde sorun yok.",
+			"unknown": "Bilinmeyen API hatası. Lütfen Roo Code desteğiyle iletişime geç."
+		}
 	},
 	"checkpoint": {
 		"regular": "Kontrol Noktası",
@@ -174,25 +178,7 @@
 		"wantsToFetch": "Agentica mevcut göreve yardımcı olmak için ayrıntılı talimatlar almak istiyor"
 	},
 	"fileOperations": {
-		"wantsToRead": "Agentica bu dosyayı okumak istiyor",
-		"wantsToReadOutsideWorkspace": "Agentica çalışma alanı dışındaki bu dosyayı okumak istiyor",
-		"didRead": "Agentica bu dosyayı okudu",
-		"wantsToEdit": "Agentica bu dosyayı düzenlemek istiyor",
-		"wantsToEditOutsideWorkspace": "Agentica çalışma alanı dışındaki bu dosyayı düzenlemek istiyor",
-		"wantsToEditProtected": "Agentica korumalı bir yapılandırma dosyasını düzenlemek istiyor",
-		"wantsToCreate": "Agentica yeni bir dosya oluşturmak istiyor",
-		"wantsToSearchReplace": "Agentica bu dosyada arama ve değiştirme yapmak istiyor",
-		"didSearchReplace": "Agentica bu dosyada arama ve değiştirme yaptı",
-		"wantsToInsert": "Agentica bu dosyaya içerik eklemek istiyor",
-		"wantsToInsertWithLineNumber": "Agentica bu dosyanın {{lineNumber}}. satırına içerik eklemek istiyor",
-		"wantsToInsertAtEnd": "Agentica bu dosyanın sonuna içerik eklemek istiyor",
-		"wantsToReadAndXMore": "Agentica bu dosyayı ve {{count}} tane daha okumak istiyor",
-		"wantsToReadMultiple": "Agentica birden fazla dosya okumak istiyor",
-		"wantsToApplyBatchChanges": "Agentica birden fazla dosyaya değişiklik uygulamak istiyor",
-		"wantsToGenerateImage": "Agentica bir görsel oluşturmak istiyor",
-		"wantsToGenerateImageOutsideWorkspace": "Agentica çalışma alanının dışında bir görsel oluşturmak istiyor",
-		"wantsToGenerateImageProtected": "Agentica korumalı bir konumda görsel oluşturmak istiyor",
-		"didGenerateImage": "Agentica bir görsel oluşturdu"
+
 	},
 	"directoryOperations": {
 		"wantsToViewTopLevel": "Agentica bu dizindeki üst düzey dosyaları görüntülemek istiyor",
@@ -307,22 +293,21 @@
 			"goToSettingsButton": "Ayarlar'a Git"
 		},
 		"release": {
-			"heading": "Uzantıdaki yenilikler:",
-			"openRouterEmbeddings": "OpenRouter gömme modelleri desteği",
-			"chutesDynamic": "Chutes artık en son modelleri dinamik olarak yüklüyor",
-			"queuedMessagesFix": "Sıradaki mesajların kaybolması için düzeltmeler"
+			"heading": "Bu sürümdeki yenilikler:",
+			"contextRewind": "İyileştirilmiş bağlam sıkıştırması, artık bir kontrol noktasına geri sarma sırasında tam önceki bağlamı geri yüklemenizi sağlıyor",
+			"rooProvider": "Roo Code Cloud sağlayıcısı artık akıl yürütme içeriğini korur ve daha iyi performans için varsayılan olarak yerel araçları kullanır"
 		},
 		"cloudAgents": {
 			"heading": "Cloud'daki yenilikler:",
-			"prFixer": "PR Reviewer'ı tamamlamak için <bold>PR Fixer</bold> bulut ajanını tanıtıyoruz.",
-			"prFixerDescription": "Roo Code'un PR Fixer'ı, PR'larınıza doğrudan GitHub'dan yüksek kaliteli değişiklikler uygular. Bir PR yorumu aracılığıyla çağırın ve bağlamı, anlaşmaları ve ödünleri anlamak için tüm yorum geçmişini okuyacak - sonra doğru düzeltmeyi uygulayacaktır.",
-			"tryPrFixerButton": "PR Fixer'ı Dene"
+			"specialized": "<bold>Explainer</bold>, <bold>Planner</bold> ve <bold>Coder</bold> tanıtımı - iş akışlarını geliştirmek için üç özel bulut ajanı.",
+			"description": "Ajanlar bulutta birlikte çalışır ve web'den veya Slack üzerinden tetiklenebilir.",
+			"tryButton": "Bulut Ajanlarını Dene"
 		},
 		"careers": "Ayrıca, <careersLink>işe alım yapıyoruz!</careersLink>",
-		"socialLinks": "Bize <xLink>X</xLink>, <discordLink>Discord</discordLink>, veya <redditLink>r/RooCode</redditLink>'da katılın 🚀"
+		"socialLinks": "Bize <xLink>X</xLink>, <discordLink>Discord</discordLink>, veya <redditLink>r/KiloCode</redditLink>'da katılın 🚀"
 	},
 	"browser": {
-		"rooWantsToUse": "Agentica tarayıcıyı kullanmak istiyor",
+
 		"consoleLogs": "Konsol Kayıtları",
 		"noNewLogs": "(Yeni kayıt yok)",
 		"screenshot": "Tarayıcı ekran görüntüsü",
@@ -334,12 +319,14 @@
 		},
 		"sessionStarted": "Tarayıcı Oturumu Başlatıldı",
 		"actions": {
-			"title": "Tarayıcı İşlemi: ",
+			"title": "Tarayıcı Eylemi: ",
 			"launch": "{{url}} adresinde tarayıcı başlat",
 			"click": "Tıkla ({{coordinate}})",
 			"type": "Yaz \"{{text}}\"",
+			"press": "{{key}} tuşuna bas",
 			"scrollDown": "Aşağı kaydır",
 			"scrollUp": "Yukarı kaydır",
+			"hover": "Üzerine gel ({{coordinate}})",
 			"close": "Tarayıcıyı kapat"
 		}
 	},
@@ -438,7 +425,7 @@
 		"clickToEdit": "Mesajı düzenlemek için tıkla"
 	},
 	"slashCommand": {
-		"wantsToRun": "Agentica bir slash komutu çalıştırmak istiyor",
-		"didRun": "Agentica bir slash komutu çalıştırdı"
+
 	}
 }
+
