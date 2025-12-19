@@ -353,7 +353,6 @@ export interface ExtensionMessage {
 		}
 	}> // kilocode_change
 	review?: CodeReviewResult // For code review result messages
-	}> // kilocode_change end: Managed Indexer
 	browserSessionMessages?: ClineMessage[] // For browser session panel updates
 	isBrowserSessionActive?: boolean // For browser session panel updates
 	stepIndex?: number // For browserSessionNavigate: the target step index to display

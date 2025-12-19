@@ -456,7 +456,6 @@ const TaskHeader = ({
 								</tbody>
 							</table>
 						</div>
-<<<<<<< HEAD
 
 						{/* Footer with task management buttons */}
 						<div onClick={(e) => e.stopPropagation()}>
