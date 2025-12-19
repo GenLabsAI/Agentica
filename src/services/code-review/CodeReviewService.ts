@@ -3,23 +3,6 @@ import * as path from "path"
 import type { ClineMessage, CodeReviewResult, CodeReviewIssue } from "@roo-code/types"
 import { CloudService } from "@roo-code/cloud"
 import { AgenticaClient } from "../../../webview-ui/src/services/AgenticaClient"
-	improvements: Array<{
-		category: string
-		description: string
-		suggestion: string
-	}>
-	documentation: Array<{
-		type: 'missing' | 'inadequate' | 'outdated'
-		description: string
-		suggestion: string
-	}>
-	testing: Array<{
-		type: 'unit' | 'integration' | 'e2e'
-		description: string
-		suggestion: string
-	}>
-	summary: string
-}
 
 export class CodeReviewService {
 	private agenticaClient: AgenticaClient | null = null
