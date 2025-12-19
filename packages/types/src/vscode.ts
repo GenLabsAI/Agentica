@@ -47,6 +47,7 @@ export const commandIds = [
 	"popoutButtonClicked",
 	"cloudButtonClicked",
 	"settingsButtonClicked",
+	"upgradeButtonClicked",
 
 	"openInNewTab",
 	"agentManagerOpen", // kilocode_change

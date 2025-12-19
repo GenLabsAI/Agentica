@@ -161,7 +161,6 @@ export function getModelParams({
 			format,
 			...params,
 			reasoning: getOpenAiReasoning({ model, reasoningBudget, reasoningEffort, settings }),
-			tools: model.supportsNativeTools,
 		}
 	} else if (format === "gemini") {
 		return {

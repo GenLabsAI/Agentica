@@ -113,6 +113,7 @@ export interface ExtensionMessage {
 		| "exportModeResult"
 		| "importModeResult"
 		| "checkRulesDirectoryResult"
+		| "fileContentResponse"
 		| "startCodeReview"
 		| "codeReviewResult"
 		| "deleteCustomModeCheck"

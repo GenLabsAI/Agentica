@@ -1,20 +1,8 @@
 import * as fs from "fs/promises"
 import * as path from "path"
-import type { ClineMessage } from "@roo-code/types"
-import { CloudService } from "../../packages/cloud/src/CloudService"
+import type { ClineMessage, CodeReviewResult, CodeReviewIssue } from "@roo-code/types"
+import { CloudService } from "@roo-code/cloud"
 import { AgenticaClient } from "../../../webview-ui/src/services/AgenticaClient"
-
-
-export interface CodeReviewResult {
-	strengths: string[]
-	issues: Array<{
-		severity: 'low' | 'medium' | 'high' | 'critical'
-		category: string
-		description: string
-		suggestion?: string
-		file?: string
-		line?: number
-	}>
 	improvements: Array<{
 		category: string
 		description: string
@@ -196,7 +184,8 @@ Only return the JSON array, no other text.`
 			}
 
 			// Convert to the expected format
-			const formattedIssues = issues.map((issue: any) => ({
+			const formattedIssues: CodeReviewIssue[] = issues.map((issue: any) => ({
+				title: issue.title || issue.category || 'Code Issue',
 				severity: issue.severity || 'medium',
 				category: issue.category || 'quality',
 				description: issue.description || '',
@@ -260,26 +249,8 @@ Only return the JSON array, no other text.`
 	private async extractModifiedFiles(messages: ClineMessage[]): Promise<string[]> {
 		const modifiedFiles = new Set<string>()
 
-		for (const message of messages) {
-			// Look for file operations in tool calls
-			if (message.tool && message.tool.tool) {
-				const tool = message.tool
-
-				// Check for file edit operations
-				if (tool.tool === "edited_file") {
-					const filePath = tool.filePath || tool.relativePath
-					if (filePath) {
-						modifiedFiles.add(filePath)
-					}
-				}
-
-				// Check for terminal commands that might modify files
-				if (tool.tool === "ran_terminal_cmd") {
-					// This is more complex - we'd need to parse the command
-					// For now, we'll skip this
-				}
-			}
-		}
+		// TODO: Implement file modification extraction from messages
+		// The current message structure doesn't include tool information in the expected format
 
 		return Array.from(modifiedFiles)
 	}
@@ -337,39 +308,9 @@ Only return the JSON array, no other text.`
 
 
 	private async generateTaskDiff(messages: ClineMessage[]): Promise<string> {
-		// Generate a diff of all changes made during the task
-		let diffParts: string[] = []
-
-		for (const message of messages) {
-			// Look for tool messages that contain diffs
-			if (message.tool && typeof message.tool === 'object') {
-				const tool = message.tool as any
-
-				// Check for different ways diffs might be stored
-				if (tool.diff) {
-					// Direct diff property
-					const filePath = tool.filePath || tool.relativePath || 'unknown'
-					diffParts.push(`--- a/${filePath}\n+++ b/${filePath}\n${tool.diff}\n`)
-				} else if (tool.content && tool.filePath) {
-					// For file writes, create a simple diff
-					const filePath = tool.filePath
-					const content = tool.content
-					// This is a simplified diff - in a real implementation you'd compare with original
-					diffParts.push(`--- a/${filePath}\n+++ b/${filePath}\n@@ -0,0 +1,${content.split('\n').length} @@\n+${content.split('\n').map((line: string) => line || ' ').join('\n+')}\n`)
-				}
-			}
-
-			// Also check for say tool messages that might contain diffs
-			if (message.say === "tool" && message.tool && typeof message.tool === 'object') {
-				const toolData = message.tool as any
-				if (toolData.diff) {
-					const filePath = toolData.filePath || toolData.relativePath || 'unknown'
-					diffParts.push(`--- a/${filePath}\n+++ b/${filePath}\n${toolData.diff}\n`)
-				}
-			}
-		}
-
-		return diffParts.length > 0 ? diffParts.join('\n') : "No changes detected in task"
+		// TODO: Implement diff generation from messages
+		// The current message structure doesn't include tool information in the expected format
+		return "Diff generation not yet implemented"
 	}
 
 	private extractTaskMode(messages: ClineMessage[]): string {
@@ -483,7 +424,8 @@ Only return the JSON array of file paths, no other text. If no additional files 
 			// Validate the structure
 			return {
 				strengths: Array.isArray(parsed.strengths) ? parsed.strengths : [],
-				issues: Array.isArray(parsed.issues) ? parsed.issues.map((issue: any) => ({
+				issues: Array.isArray(parsed.issues) ? parsed.issues.map((issue: any): CodeReviewIssue => ({
+					title: issue.title || issue.category || 'Code Issue',
 					severity: issue.severity || 'medium',
 					category: issue.category || 'general',
 					description: issue.description || '',

@@ -94,8 +94,8 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 						type: "usage",
 						inputTokens: chunk.usage.prompt_tokens || 0,
 						outputTokens: chunk.usage.completion_tokens || 0,
-						cacheWriteTokens: chunk.usage.cache_write_input_tokens || 0,
-						cacheReadTokens: chunk.usage.cache_read_input_tokens || 0,
+						cacheWriteTokens: 0,
+						cacheReadTokens: 0,
 					}
 				}
 			}

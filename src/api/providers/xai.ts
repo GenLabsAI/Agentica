@@ -79,7 +79,7 @@ export class XAIHandler extends BaseProvider implements SingleCompletionHandler 
 		}
 
 		const toolCallAccumulator = new ToolCallAccumulator() // kilocode_change
-		for await (const chunk of stream) {
+		for await (const chunk of stream as AsyncIterable<OpenAI.Chat.Completions.ChatCompletionChunk>) {
 			verifyFinishReason(chunk.choices[0]) // kilocode_change
 			const delta = chunk.choices[0]?.delta
 

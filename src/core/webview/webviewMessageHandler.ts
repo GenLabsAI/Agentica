@@ -4184,7 +4184,7 @@ export const webviewMessageHandler = async (
 				const { taskId } = message
 
 				// Get the task messages
-				const task = provider.getTask(taskId)
+				const task = await provider.getTaskWithId(taskId)
 				if (!task) {
 					await provider.postMessageToWebview({
 						type: "codeReviewResult",
@@ -4203,7 +4203,7 @@ export const webviewMessageHandler = async (
 
 				// Extract task changes
 				const { directoryTree, diff, mode, taskDescription } = await codeReviewService.extractTaskChanges(
-					taskId,
+					taskId!,
 					task.messages
 				)
 
@@ -4292,7 +4292,7 @@ export const webviewMessageHandler = async (
 				const { CodeReviewService } = await import("../../services/code-review/CodeReviewService")
 
 				// Create service instance
-				const codeReviewService = new CodeReviewService(CloudService.instance!)
+				const codeReviewService = new CodeReviewService(CloudService.instance!, provider.cwd)
 
 				// Request file content
 				const content = await codeReviewService.requestFileContent(filePath)

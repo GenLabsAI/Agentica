@@ -100,6 +100,7 @@ export const xaiModels = {
 		contextWindow: 2_000_000,
 		supportsImages: true,
 		supportsPromptCache: true,
+		supportsNativeTools: true,
 		inputPrice: 0.4, // This is the pricing for prompts above 128K context
 		outputPrice: 1.0,
 		cacheReadsPrice: 0.05,

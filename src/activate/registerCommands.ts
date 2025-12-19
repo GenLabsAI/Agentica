@@ -91,7 +91,6 @@ export const registerCommands = (options: RegisterCommandOptions) => {
 }
 
 const getCommandsMap = ({ context, outputChannel }: RegisterCommandOptions): Record<CommandId, any> => ({
-	activationCompleted: () => { },
 	activationCompleted: () => {},
 	// kilocode_change start
 	agentManagerOpen: () => {
