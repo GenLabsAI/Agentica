@@ -27,7 +27,6 @@ import { cn } from "@src/lib/utils"
 import { StandardTooltip, Button } from "@src/components/ui"
 import { useExtensionState } from "@src/context/ExtensionStateContext"
 import { useSelectedModel } from "@/components/ui/hooks/useSelectedModel"
-import { vscode } from "@src/utils/vscode"
 
 import Thumbnails from "../common/Thumbnails"
 

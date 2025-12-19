@@ -57,19 +57,6 @@ export const xaiModels = {
 		description:
 			"xAI's Grok 4 Fast model with 2M context window, optimized for high-performance agentic tool calling with reasoning",
 	},
-	"grok-4-fast-non-reasoning": {
-		maxTokens: 65_536,
-		contextWindow: 2_000_000,
-		supportsImages: true,
-		supportsPromptCache: true,
-		supportsNativeTools: true,
-		inputPrice: 0.2,
-		outputPrice: 0.5,
-		cacheWritesPrice: 0.05,
-		cacheReadsPrice: 0.05,
-		description:
-			"xAI's Grok 4 Fast model with 2M context window, optimized for high-performance agentic tool calling",
-	},
 	"grok-4": {
 		maxTokens: 8192,
 		contextWindow: 256000,
@@ -131,7 +118,7 @@ export const xaiModels = {
 				cacheReadsPrice: 0.05,
 			},
 		],
-	}
+	},
 	// kilocode_change end
 	"grok-3": {
 		maxTokens: 8192,
