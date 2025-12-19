@@ -4301,6 +4301,15 @@ export const webviewMessageHandler = async (
 			try {
 				const { filePath } = message
 
+				if (!filePath) {
+					await provider.postMessageToWebview({
+						type: "fileContentResponse",
+						filePath: "",
+						error: "File path is required"
+					})
+					break
+				}
+
 				// Import the code review service
 				const { CodeReviewService } = await import("../../services/code-review/CodeReviewService")
 
