@@ -72,12 +72,13 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 		})
 
 		try {
+			const { tools, ...paramsWithoutTools } = modelParams
 			const stream = await this.client.chat.completions.create({
 				model: model.id,
 				max_tokens: model.maxTokens,
 				messages: [{ role: "system", content: systemPrompt }, ...messages],
 				stream: true,
-				...modelParams,
+				...paramsWithoutTools,
 			}) as AsyncIterable<OpenAI.Chat.Completions.ChatCompletionChunk>
 
 			for await (const chunk of stream) {

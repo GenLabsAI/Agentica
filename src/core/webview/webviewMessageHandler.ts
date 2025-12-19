@@ -4183,6 +4183,15 @@ export const webviewMessageHandler = async (
 			try {
 				const { taskId } = message
 
+				if (!taskId) {
+					await provider.postMessageToWebview({
+						type: "codeReviewResult",
+						success: false,
+						error: "Task ID is required"
+					})
+					break
+				}
+
 				// Get the task messages
 				const task = await provider.getTaskWithId(taskId)
 				if (!task) {
@@ -4194,6 +4203,10 @@ export const webviewMessageHandler = async (
 					break
 				}
 
+				// Load messages from file
+				const messagesContent = await fs.readFile(task.uiMessagesFilePath, "utf8")
+				const messages: ClineMessage[] = JSON.parse(messagesContent)
+
 				// Import the code review service
 				const { CodeReviewService } = await import("../../services/code-review/CodeReviewService")
 
@@ -4203,8 +4216,8 @@ export const webviewMessageHandler = async (
 
 				// Extract task changes
 				const { directoryTree, diff, mode, taskDescription } = await codeReviewService.extractTaskChanges(
-					taskId!,
-					task.messages
+					taskId,
+					messages
 				)
 
 				// Generate the review

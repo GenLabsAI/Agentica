@@ -354,6 +354,8 @@ export interface ExtensionMessage {
 		}
 	}> // kilocode_change
 	review?: CodeReviewResult // For code review result messages
+	filePath?: string // For fileContentResponse messages
+	content?: string // For fileContentResponse messages
 	browserSessionMessages?: ClineMessage[] // For browser session panel updates
 	isBrowserSessionActive?: boolean // For browser session panel updates
 	stepIndex?: number // For browserSessionNavigate: the target step index to display

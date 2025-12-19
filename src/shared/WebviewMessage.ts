@@ -365,6 +365,7 @@ export interface WebviewMessage {
 	list?: string[] // For dismissedUpsells response
 	organizationId?: string | null // For organization switching
 	taskId?: string // For code review messages
+	filePath?: string // For requestFileContent messages
 	useProviderSignup?: boolean // For rooCloudSignIn to use provider signup flow
 	historyItem?: HistoryItem // kilocode_change For addTaskToHistory
 	codeIndexSettings?: {
