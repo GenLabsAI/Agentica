@@ -1,28 +1,26 @@
 {
-	"greeting": "Hi, I'm Agentica!",
-	"introduction": "<strong>Agentica is the premiere autonomous coding agent.</strong> Get ready to architect, code, debug, and boost your productivity like you've never seen before. To continue, Agentica requires an API key.",
-	"notice": "To get started, this extension needs an API provider.",
-	"start": "Let's go!",
-	"routers": {
-		"requesty": {
-			"description": "Your optimized LLM router",
-			"incentive": "$1 free credit"
-		},
-		"openrouter": {
-			"description": "A unified interface for LLMs"
-		},
-		"roo": {
-			"description": "The best free models to get started",
-			"incentive": "Try Roo out for free"
-		}
-	},
-
-	"startRouter": "We recommend using an LLM Router:",
-	"startCustom": "Or you can bring your provider API key:",
-	"telemetry": {
-		"helpImprove": "Help Improve Agentica",
-		"helpImproveMessage": "Agentica collects error and usage data to help us fix bugs and improve the extension. This telemetry does not collect code, prompts or personal information. You can turn this off in <settingsLink>settings</settingsLink>."
-	},
-	"importSettings": "Import Settings"
+  "greeting": "Hi, I'm Agentica!",
+  "introduction": "<strong>Agentica is the premiere autonomous coding agent.</strong> Get ready to architect, code, debug, and boost your productivity like you've never seen before. To continue, Agentica requires an API key.",
+  "notice": "To get started, this extension needs an API provider.",
+  "start": "Let's go!",
+  "routers": {
+    "requesty": {
+      "description": "Your optimized LLM router",
+      "incentive": "$1 free credit"
+    },
+    "openrouter": {
+      "description": "A unified interface for LLMs"
+    },
+    "roo": {
+      "description": "The best free models to get started",
+      "incentive": "Try Roo out for free"
+    }
+  },
+  "startRouter": "We recommend using an LLM Router:",
+  "startCustom": "Or you can bring your provider API key:",
+  "telemetry": {
+    "helpImprove": "Help Improve Agentica",
+    "helpImproveMessage": "Agentica collects error and usage data to help us fix bugs and improve the extension. This telemetry does not collect code, prompts or personal information. You can turn this off in <settingsLink>settings</settingsLink>."
+  },
+  "importSettings": "Import Settings"
 }
-

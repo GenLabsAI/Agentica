@@ -1,28 +1,26 @@
 {
-	"greeting": "Salut, je suis Agentica !",
-	"introduction": "<strong>Agentica est l'agent de codage autonome de premier plan.</strong> Prépare-toi à architecturer, coder, déboguer et à augmenter ta productivité comme jamais auparavant. Pour continuer, Agentica nécessite une clé API.",
-	"notice": "Pour commencer, cette extension a besoin d'un fournisseur d'API.",
-	"start": "C'est parti !",
-	"routers": {
-		"requesty": {
-			"description": "Ton routeur LLM optimisé",
-			"incentive": "1$ de crédit gratuit"
-		},
-		"openrouter": {
-			"description": "Une interface unifiée pour les LLMs"
-		},
-		"roo": {
-			"description": "Les meilleurs modèles gratuits pour commencer",
-			"incentive": "Essayez Roo gratuitement"
-		}
-	},
-
-	"startRouter": "Nous recommandons d'utiliser un routeur LLM :",
-	"startCustom": "Ou tu peux apporter ta propre clé API :",
-	"telemetry": {
-		"helpImprove": "Aide à améliorer Agentica",
-		"helpImproveMessage": "Agentica collecte des données d'erreurs et d'utilisation pour nous aider à corriger les bugs et améliorer l'extension. Cette télémétrie ne collecte pas de code, de prompts ou d'informations personnelles. Tu peux désactiver cela dans les <settingsLink>paramètres</settingsLink>."
-	},
-	"importSettings": "Importer les paramètres"
+  "greeting": "Salut, je suis Agentica !",
+  "introduction": "<strong>Agentica est l'agent de codage autonome de premier plan.</strong> Prépare-toi à architecturer, coder, déboguer et à augmenter ta productivité comme jamais auparavant. Pour continuer, Agentica nécessite une clé API.",
+  "notice": "Pour commencer, cette extension a besoin d'un fournisseur d'API.",
+  "start": "C'est parti !",
+  "routers": {
+    "requesty": {
+      "description": "Ton routeur LLM optimisé",
+      "incentive": "1$ de crédit gratuit"
+    },
+    "openrouter": {
+      "description": "Une interface unifiée pour les LLMs"
+    },
+    "roo": {
+      "description": "Les meilleurs modèles gratuits pour commencer",
+      "incentive": "Essayez Roo gratuitement"
+    }
+  },
+  "startRouter": "Nous recommandons d'utiliser un routeur LLM :",
+  "startCustom": "Ou tu peux apporter ta propre clé API :",
+  "telemetry": {
+    "helpImprove": "Aide à améliorer Agentica",
+    "helpImproveMessage": "Agentica collecte des données d'erreurs et d'utilisation pour nous aider à corriger les bugs et améliorer l'extension. Cette télémétrie ne collecte pas de code, de prompts ou d'informations personnelles. Tu peux désactiver cela dans les <settingsLink>paramètres</settingsLink>."
+  },
+  "importSettings": "Importer les paramètres"
 }
-

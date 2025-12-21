@@ -1,40 +1,36 @@
 {
-	"greeting": "Ahoj, jsem Agentica!",
-	"introduction": "<strong>Agentica je přední autonomní agent pro kódování.</strong> Připrav se na architekturu, kódování, ladění a zvýšení své produktivity jako nikdy předtím. Pro pokračování Agentica vyžaduje API klíč.",
-	"notice": "Pro začátek toto rozšíření potřebuje poskytovatele API.",
-	"start": "Pojďme na to!",
-	"routers": {
-		"requesty": {
-			"description": "Tvůj optimalizovaný LLM router",
-			"incentive": "$1 kredit zdarma"
-		},
-		"openrouter": {
-			"description": "Jednotné rozhraní pro LLM"
-		},
-		"roo": {
-			"description": "Nejlepší bezplatné modely na začátek",
-			"incentive": "Vyzkoušej Roo zdarma"
-		}
-	},
-
-	"startRouter": "Doporučujeme použít LLM Router:",
-	"startCustom": "Nebo můžeš přinést svůj vlastní API klíč poskytovatele:",
-	"rooCloudProviderHeading": "Roo Code Cloud Provider",
-	"rooCloudProviderBody": "Nejjednodušší způsob začátku s kurátorovanými modely",
-	"rooCloudProviderSignUp": "Registrovat se do cloudu",
-	"rooCloudProviderSignUpDesc": "Vytvořte si účet pro přístup ke cloudovým modelům",
-	"rooCloudProviderAuthButtonText": "Připojit se ke cloudu",
-	"rooCloudProviderPaidModelAnnouncement": "Nové placené modely nyní dostupné",
-	"rooCloudProviderPaidModelAnnouncementDesc": "Přístup k nejnovějším modelům s vylepšenými funkcemi",
-	"rooCloudProviderExplainer": "Explainer Agent",
-	"rooCloudProviderExplainerDesc": "Specializovaný agent pro vysvětlování kódu a konceptů",
-	"rooCloudProviderPlanner": "Planner Agent",
-	"rooCloudProviderPlannerDesc": "Agent pro plánování a architekturu projektů",
-	"rooCloudProviderCoder": "Coder Agent",
-	"rooCloudProviderCoderDesc": "Specializovaný agent pro psaní a refaktoring kódu",
-	"telemetry": {
-
-	},
-	"importSettings": "Importovat Nastavení"
+  "greeting": "Ahoj, jsem Agentica!",
+  "introduction": "<strong>Agentica je přední autonomní agent pro kódování.</strong> Připrav se na architekturu, kódování, ladění a zvýšení své produktivity jako nikdy předtím. Pro pokračování Agentica vyžaduje API klíč.",
+  "notice": "Pro začátek toto rozšíření potřebuje poskytovatele API.",
+  "start": "Pojďme na to!",
+  "routers": {
+    "requesty": {
+      "description": "Tvůj optimalizovaný LLM router",
+      "incentive": "$1 kredit zdarma"
+    },
+    "openrouter": {
+      "description": "Jednotné rozhraní pro LLM"
+    },
+    "roo": {
+      "description": "Nejlepší bezplatné modely na začátek",
+      "incentive": "Vyzkoušej Roo zdarma"
+    }
+  },
+  "startRouter": "Doporučujeme použít LLM Router:",
+  "startCustom": "Nebo můžeš přinést svůj vlastní API klíč poskytovatele:",
+  "rooCloudProviderHeading": "Roo Code Cloud Provider",
+  "rooCloudProviderBody": "Nejjednodušší způsob začátku s kurátorovanými modely",
+  "rooCloudProviderSignUp": "Registrovat se do cloudu",
+  "rooCloudProviderSignUpDesc": "Vytvořte si účet pro přístup ke cloudovým modelům",
+  "rooCloudProviderAuthButtonText": "Připojit se ke cloudu",
+  "rooCloudProviderPaidModelAnnouncement": "Nové placené modely nyní dostupné",
+  "rooCloudProviderPaidModelAnnouncementDesc": "Přístup k nejnovějším modelům s vylepšenými funkcemi",
+  "rooCloudProviderExplainer": "Explainer Agent",
+  "rooCloudProviderExplainerDesc": "Specializovaný agent pro vysvětlování kódu a konceptů",
+  "rooCloudProviderPlanner": "Planner Agent",
+  "rooCloudProviderPlannerDesc": "Agent pro plánování a architekturu projektů",
+  "rooCloudProviderCoder": "Coder Agent",
+  "rooCloudProviderCoderDesc": "Specializovaný agent pro psaní a refaktoring kódu",
+  "telemetry": {},
+  "importSettings": "Importovat Nastavení"
 }
-
