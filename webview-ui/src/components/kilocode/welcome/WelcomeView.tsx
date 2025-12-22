@@ -82,10 +82,45 @@ const WelcomeView = () => {
 						) : (
 							<ButtonPrimary onClick={handleSubmit}>{t("welcome:start")}</ButtonPrimary>
 						)}
+						{/* Add prominent sign up link */}
+						<div style={{ marginTop: "16px", textAlign: "center" }}>
+							<a
+								href="https://genlabs.dev/signup"
+								target="_blank"
+								rel="noopener noreferrer"
+								style={{
+									color: "var(--vscode-textLink-foreground)",
+									textDecoration: "underline",
+									fontSize: "14px",
+									fontWeight: "500"
+								}}>
+								{t("kilocode:welcome.signupPrompt", { defaultValue: "New to GenLabs? Create your free account" })}
+							</a>
+						</div>
 					</>
 				) : (
 					<div className="bg-vscode-sideBar-background p-4">
 						<KiloCodeAuth onManualConfigClick={() => setManualConfig(true)} />
+						{/* Add Get Started button that links to Sign in with GenLabs */}
+						<div style={{ marginTop: "20px", textAlign: "center" }}>
+							<ButtonPrimary onClick={() => setManualConfig(true)}>
+								{t("welcome:getStarted", { defaultValue: "Get Started" })}
+							</ButtonPrimary>
+							<div style={{ marginTop: "16px" }}>
+								<a
+									href="https://genlabs.dev/signup"
+									target="_blank"
+									rel="noopener noreferrer"
+									style={{
+										color: "var(--vscode-textLink-foreground)",
+										textDecoration: "underline",
+										fontSize: "14px",
+										fontWeight: "500"
+									}}>
+									{t("kilocode:welcome.signupPrompt", { defaultValue: "New to GenLabs? Create your free account" })}
+								</a>
+							</div>
+						</div>
 					</div>
 				)}
 			</TabContent>

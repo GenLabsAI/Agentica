@@ -18,6 +18,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, pla
     const [error, setError] = useState<string | null>(null)
     const [userCredits, setUserCredits] = useState<number | null>(null)
     const [creditsLoading, setCreditsLoading] = useState(false)
+    const [showConfetti, setShowConfetti] = useState(false)
 
     const planCost =
         planId === "plus" ? 20000 : planId === "pro" ? 50000 : planId === "max" ? 200000 : 0
@@ -32,6 +33,8 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, pla
                 //.catch((err) => console.error("Failed to fetch credits", err))
                 // Catching here might swallow errors important for debugging, will log but optional
                 .finally(() => setCreditsLoading(false))
+            setShowConfetti(false)
+            setError(null)
         }
     }, [isOpen, client])
 
@@ -42,8 +45,12 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, pla
         setError(null)
         try {
             const result = await client.upgradeSubscription(planId)
-            onSuccess(result)
-            onClose()
+            setShowConfetti(true)
+            // Show confetti for 3 seconds before closing
+            setTimeout(() => {
+                onSuccess(result)
+                onClose()
+            }, 3000)
         } catch (err: any) {
             console.error("Upgrade failed", err)
             setError(err.response?.data?.message || err.message || "Failed to upgrade subscription")
@@ -176,6 +183,48 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, pla
                         {loading ? <VSCodeProgressRing style={{ height: "16px" }} /> : "Confirm"}
                     </VSCodeButton>
                 </div>
+
+                {/* Confetti Animation */}
+                {showConfetti && (
+                    <div style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        pointerEvents: "none",
+                        overflow: "hidden"
+                    }}>
+                        {/* Simple confetti effect using CSS animations */}
+                        {[...Array(20)].map((_, i) => (
+                            <div
+                                key={i}
+                                style={{
+                                    position: "absolute",
+                                    width: "10px",
+                                    height: "10px",
+                                    backgroundColor: ["#ff6b6b", "#4ecdc4", "#45b7d1", "#96ceb4", "#feca57"][i % 5],
+                                    top: "-10px",
+                                    left: `${Math.random() * 100}%`,
+                                    animation: `confetti-fall 3s linear ${i * 0.1}s`,
+                                    transform: `rotate(${Math.random() * 360}deg)`
+                                }}
+                            />
+                        ))}
+                        <style>{`
+                            @keyframes confetti-fall {
+                                0% {
+                                    transform: translateY(-100vh) rotate(0deg);
+                                    opacity: 1;
+                                }
+                                100% {
+                                    transform: translateY(100vh) rotate(720deg);
+                                    opacity: 0;
+                                }
+                            }
+                        `}</style>
+                    </div>
+                )}
             </div>
         </div>
     )

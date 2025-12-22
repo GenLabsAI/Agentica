@@ -4345,6 +4345,62 @@ export const webviewMessageHandler = async (
 			break
 		}
 		// kilocode_change end
+
+		// Secure password storage handlers
+		case "storeSecurePassword": {
+			try {
+				const { key, password } = message
+				if (key && password) {
+					// Import the secure password storage utility
+					const { SecurePasswordStorage } = await import("../../utils/securePasswordStorage")
+					await SecurePasswordStorage.storePasswordForService("agentica", key, password)
+				}
+			} catch (error) {
+				provider.log(`Error storing secure password: ${error instanceof Error ? error.message : String(error)}`)
+			}
+			break
+		}
+		case "getSecurePassword": {
+			try {
+				const { key } = message
+				if (key) {
+					// Import the secure password storage utility
+					const { SecurePasswordStorage } = await import("../../utils/securePasswordStorage")
+					const password = await SecurePasswordStorage.getPasswordForService("agentica", key)
+					
+					// Send the password back to the webview
+					await provider.postMessageToWebview({
+						type: "securePasswordRetrieved",
+						key,
+						password
+					})
+				}
+			} catch (error) {
+				provider.log(`Error retrieving secure password: ${error instanceof Error ? error.message : String(error)}`)
+				
+				// Send error response
+				await provider.postMessageToWebview({
+					type: "securePasswordRetrieved",
+					key: message.key,
+					password: null,
+					error: error instanceof Error ? error.message : String(error)
+				})
+			}
+			break
+		}
+		case "clearSecurePassword": {
+			try {
+				const { key } = message
+				if (key) {
+					// Import the secure password storage utility
+					const { SecurePasswordStorage } = await import("../../utils/securePasswordStorage")
+					await SecurePasswordStorage.clearPasswordForService("agentica", key)
+				}
+			} catch (error) {
+				provider.log(`Error clearing secure password: ${error instanceof Error ? error.message : String(error)}`)
+			}
+			break
+		}
 		default: {
 			// console.log(`Unhandled message type: ${message.type}`)
 			//

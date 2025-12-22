@@ -44,6 +44,10 @@ const PlansView: React.FC<PlansViewProps> = ({ onDone }) => {
         }
     }
 
+    const handleRefresh = () => {
+        fetchSubscription()
+    }
+
     useEffect(() => {
         fetchSubscription()
     }, [])
@@ -120,9 +124,14 @@ const PlansView: React.FC<PlansViewProps> = ({ onDone }) => {
                     marginBottom: "20px",
                 }}>
                 <h2 style={{ margin: 0 }}>Plans & Subscription</h2>
-                <VSCodeButton appearance="icon" onClick={onDone}>
-                    <span className="codicon codicon-close" />
-                </VSCodeButton>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                    <VSCodeButton appearance="icon" onClick={handleRefresh} title="Refresh">
+                        <span className="codicon codicon-refresh" />
+                    </VSCodeButton>
+                    <VSCodeButton appearance="icon" onClick={onDone}>
+                        <span className="codicon codicon-close" />
+                    </VSCodeButton>
+                </div>
             </div>
 
             <div style={{ flex: 1, overflowY: "auto", paddingRight: "20px", paddingBottom: "20px" }}>
@@ -131,9 +140,10 @@ const PlansView: React.FC<PlansViewProps> = ({ onDone }) => {
                     <UsageStats
                         dailyCreditsRemaining={subscription.data.daily_credits_remaining}
                         dailyLimit={subscription.limits.daily_credits}
-                        dailyRequests={0}
+                        dailyRequests={(subscription.data as any).daily_requests_used || 0}
                         dailyRequestsLimit={subscription.limits.daily_requests}
                         monthlyCostCredits={subscription.limits.monthly_cost_credits}
+                        currentPlan={subscription.data.plan_tier}
                     />
                 </div>
 

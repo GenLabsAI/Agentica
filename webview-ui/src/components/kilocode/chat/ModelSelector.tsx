@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { SelectDropdown, DropdownOptionType } from "@/components/ui"
 import { OPENROUTER_DEFAULT_PROVIDER_NAME, type ProviderSettings } from "@roo-code/types"
 import { vscode } from "@src/utils/vscode"
@@ -12,11 +12,16 @@ import { AgenticaClient } from "@/services/AgenticaClient"
 import { UpgradeModal } from "@/components/settings/UpgradeModal"
 
 // Helper function to format cost for Agentica models
-const formatAgenticaCost = (modelInfo?: any): string => {
+const formatAgenticaCost = (modelInfo?: any, userHasSubscription?: boolean): string => {
 	if (!modelInfo) return "Free"
 
 	// Check if model requires paid plan (paid-free models)
 	if (modelInfo.requiresPaidPlan) {
+		// For specific models, show "Free with plan" unless user already has subscription
+		if (!userHasSubscription &&
+		    (modelInfo.id?.includes("glm-4.6") || modelInfo.id?.includes("kimi-k2-thinking"))) {
+			return "Free with plan"
+		}
 		return "Free"
 	}
 
@@ -56,6 +61,7 @@ export const ModelSelector = ({
 	const [upgradeModalOpen, setUpgradeModalOpen] = useState(false)
 	const [selectedPlanId, setSelectedPlanId] = useState("")
 	const [checkingSubscription, setCheckingSubscription] = useState(false)
+	const [userSubscription, setUserSubscription] = useState<any>(null)
 	const { provider, providerModels, providerDefaultModel, isLoading, isError } = useProviderModels(apiConfiguration)
 	const selectedModelId = getSelectedModelId({
 		provider,
@@ -65,17 +71,47 @@ export const ModelSelector = ({
 	const modelIdKey = getModelIdKey({ provider })
 	const isAutocomplete = apiConfiguration.profileType === "autocomplete"
 
+	// Fetch user subscription status for Agentica
+	useEffect(() => {
+		if (provider === "agentica" && apiConfiguration.agenticaEmail && apiConfiguration.agenticaPassword) {
+			const fetchSubscription = async () => {
+				try {
+					const client = new AgenticaClient(
+						`${apiConfiguration.agenticaEmail}|${apiConfiguration.agenticaPassword}`,
+						apiConfiguration.agenticaBaseUrl
+					)
+					const subscription = await client.getSubscription()
+					setUserSubscription(subscription)
+				} catch (error) {
+					console.error("Failed to fetch subscription for model selector:", error)
+				}
+			}
+			fetchSubscription()
+		}
+	}, [provider, apiConfiguration.agenticaEmail, apiConfiguration.agenticaPassword, apiConfiguration.agenticaBaseUrl])
+
 	const modelsIds = usePreferredModels(providerModels)
 	const options = useMemo(() => {
 		const missingModelIds = modelsIds.indexOf(selectedModelId) >= 0 ? [] : [selectedModelId]
-		return missingModelIds.concat(modelsIds).map((modelId) => {
+		
+		// Sort models to ensure Deca is always at the top for Agentica
+		const sortedModelIds = provider === "agentica"
+			? missingModelIds.concat(modelsIds).sort((a, b) => {
+					// Put Deca models at the top
+					if (a.toLowerCase().includes("deca")) return -1
+					if (b.toLowerCase().includes("deca")) return 1
+					return 0
+				})
+			: missingModelIds.concat(modelsIds)
+		
+		return sortedModelIds.map((modelId) => {
 			const modelInfo = providerModels[modelId]
 			const modelName = modelInfo?.displayName ?? prettyModelName(modelId)
 			
 			// Add cost information for Agentica models
 			let label = modelName
 			if (provider === "agentica" && modelInfo) {
-				const cost = formatAgenticaCost(modelInfo)
+				const cost = formatAgenticaCost(modelInfo, userSubscription?.data?.plan_tier !== "free")
 				label = `${modelName} (${cost})`
 			}
 			
@@ -85,7 +121,7 @@ export const ModelSelector = ({
 				type: DropdownOptionType.ITEM,
 			}
 		})
-	}, [modelsIds, providerModels, selectedModelId, provider])
+	}, [modelsIds, providerModels, selectedModelId, provider, userSubscription])
 
 	const disabled = isLoading || isError || isAutocomplete
 
