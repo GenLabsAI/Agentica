@@ -400,6 +400,15 @@ export interface WebviewMessage {
 			codebaseIndexScannerMaxBatchRetries?: number
 			// kilocode_change end
 			codebaseIndexOpenRouterSpecificProvider?: string // OpenRouter provider routing
+	
+			// Secret settings
+			codeIndexOpenAiKey?: string
+			codeIndexQdrantApiKey?: string
+			codebaseIndexOpenAiCompatibleApiKey?: string
+			codebaseIndexGeminiApiKey?: string
+			codebaseIndexMistralApiKey?: string
+			codebaseIndexVercelAiGatewayApiKey?: string
+			codebaseIndexOpenRouterApiKey?: string
 	// kilocode_change begin
 	notificationOptions?: {
 		title?: string
@@ -495,7 +504,7 @@ export interface WebviewMessage {
 		codebaseIndexMistralApiKey?: string
 		codebaseIndexVercelAiGatewayApiKey?: string
 		codebaseIndexOpenRouterApiKey?: string
-	}
+		}	}
 	updatedSettings?: RooCodeSettings
 }
 

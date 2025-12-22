@@ -48,11 +48,11 @@ import { getKiloCodeWrapperProperties } from "./core/kilocode/wrapper" // kiloco
 import { checkAnthropicApiKeyConflict } from "./utils/anthropicApiKeyWarning" // kilocode_change
 import { SettingsSyncService } from "./services/settings-sync/SettingsSyncService" // kilocode_change
 import { ManagedIndexer } from "./services/code-index/managed/ManagedIndexer" // kilocode_change
-import { updateCodeIndexWithKiloProps } from "./services/code-index/managed/webview" // kilocode_change
 import { getCommand } from "./utils/commands"
 import { initializeSavingsTracker } from "./features/savings/agenticaSavings"
 import { registerSimpleSavingsCommands } from "./features/savings/simpleCommands"
 import { flushModels, getModels, initializeModelCacheRefresh } from "./api/providers/fetchers/modelCache"
+import { SecurePasswordStorage } from "./utils/securePasswordStorage" // kilocode_change
 import { kilo_initializeSessionManager } from "./shared/kilocode/cli-sessions/extension/session-manager-utils" // kilocode_change
 
 // kilocode_change start
@@ -162,6 +162,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	}
 
 	const contextProxy = await ContextProxy.getInstance(context)
+
+	// Initialize secure password storage
+	SecurePasswordStorage.initialize(context)
 
 	// Initialize code index managers for all workspace folders.
 	const codeIndexManagers: CodeIndexManager[] = []

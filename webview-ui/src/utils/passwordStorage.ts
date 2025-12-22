@@ -18,7 +18,7 @@ interface SecurePasswordMessage {
 /**
  * Type for pending request callbacks
  */
-type RequestCallbacks = {
+type PromiseCallbacks = {
     resolve: (value: string | null) => void
     reject: (reason: any) => void
 }
@@ -27,10 +27,9 @@ type RequestCallbacks = {
  * Promise-based wrapper for secure password operations
  */
 class SecurePasswordManager {
-    private pendingRequests: Record<string, RequestCallbacks>
+    private pendingRequests = new Map<string, PromiseCallbacks>()
     
     constructor() {
-        this.pendingRequests = {}
         // Listen for responses from the extension
         if (typeof window !== 'undefined' && (window as any).vscode) {
             window.addEventListener('message', this.handleMessage.bind(this))
@@ -41,9 +40,10 @@ class SecurePasswordManager {
         const message: SecurePasswordMessage = event.data
         
         if (message.type === 'securePasswordRetrieved') {
-            const request = this.pendingRequests[message.key]
+            const mapInstance = this.pendingRequests as any
+            const request = mapInstance.get(message.key)
             if (request) {
-                delete this.pendingRequests[message.key]
+                mapInstance.delete(message.key)
                 if (message.error) {
                     request.reject(new Error(message.error))
                 } else {
@@ -79,9 +79,12 @@ class SecurePasswordManager {
     async getPassword(key: string): Promise<string | null> {
         if (typeof window !== 'undefined' && (window as any).vscode) {
             return new Promise((resolve, reject) => {
-                // Store the promise callbacks
-                const request: RequestCallbacks = { resolve, reject }
-                ;(this.pendingRequests as any)[key] = request
+                // Create callbacks object
+                const callbacks: PromiseCallbacks = { resolve, reject }
+                
+                // Store callbacks using explicit any casting
+                const mapInstance = this.pendingRequests as any
+                mapInstance.set(key, callbacks)
                 
                 // Send request to extension
                 (window as any).vscode.postMessage({
@@ -91,8 +94,8 @@ class SecurePasswordManager {
                 
                 // Set timeout for request
                 setTimeout(() => {
-                    if ((this.pendingRequests as any)[key]) {
-                        delete (this.pendingRequests as any)[key]
+                    if (mapInstance.has(key)) {
+                        mapInstance.delete(key)
                         reject(new Error('Password retrieval timeout'))
                     }
                 }, 5000)

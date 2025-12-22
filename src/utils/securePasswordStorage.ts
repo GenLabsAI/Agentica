@@ -1,21 +1,39 @@
-import { setPassword, getPassword, deletePassword } from 'keytar'
+import * as vscode from 'vscode'
 
 /**
- * Secure password storage using keytar
- * This provides OS-level secure storage for passwords
+ * Secure password storage using VS Code's ExtensionContext.secrets
+ * This provides secure storage that works with VS Code's built-in secret management
  */
 
 export class SecurePasswordStorage {
-	private static readonly SERVICE_NAME = 'agentica'
-	private static readonly ACCOUNT_NAME = 'agentica_password'
+	private static secrets: vscode.SecretStorage | null = null
 
 	/**
-	 * Store password securely using keytar
+	 * Initialize the secrets API
+	 * This should be called once when the extension starts
+	 */
+	static initialize(context: vscode.ExtensionContext): void {
+		this.secrets = context.secrets
+	}
+
+	/**
+	 * Get the secrets API (for internal use)
+	 */
+	private static getSecrets(): vscode.SecretStorage {
+		if (!this.secrets) {
+			throw new Error('SecurePasswordStorage not initialized. Call initialize(context) first.')
+		}
+		return this.secrets
+	}
+
+	/**
+	 * Store password securely using VS Code's secrets API
 	 * @param password - The password to store
 	 */
 	static async storePassword(password: string): Promise<void> {
 		try {
-			await setPassword(this.SERVICE_NAME, this.ACCOUNT_NAME, password)
+			const secrets = this.getSecrets()
+			await secrets.store('agentica_password', password)
 		} catch (error) {
 			console.error('Failed to store password securely:', error)
 			throw new Error('Failed to store password securely')
@@ -28,7 +46,8 @@ export class SecurePasswordStorage {
 	 */
 	static async getPassword(): Promise<string | null> {
 		try {
-			return await getPassword(this.SERVICE_NAME, this.ACCOUNT_NAME)
+			const secrets = this.getSecrets()
+			return await secrets.get('agentica_password') || null
 		} catch (error) {
 			console.error('Failed to retrieve password from secure storage:', error)
 			return null
@@ -40,7 +59,8 @@ export class SecurePasswordStorage {
 	 */
 	static async clearPassword(): Promise<void> {
 		try {
-			await deletePassword(this.SERVICE_NAME, this.ACCOUNT_NAME)
+			const secrets = this.getSecrets()
+			await secrets.delete('agentica_password')
 		} catch (error) {
 			console.error('Failed to clear password from secure storage:', error)
 		}
@@ -68,7 +88,9 @@ export class SecurePasswordStorage {
 	 */
 	static async storePasswordForService(serviceName: string, accountName: string, password: string): Promise<void> {
 		try {
-			await setPassword(serviceName, accountName, password)
+			const secrets = this.getSecrets()
+			const key = `${serviceName}_${accountName}`
+			await secrets.store(key, password)
 		} catch (error) {
 			console.error(`Failed to store password for ${serviceName}/${accountName}:`, error)
 			throw new Error(`Failed to store password for ${serviceName}/${accountName}`)
@@ -83,7 +105,9 @@ export class SecurePasswordStorage {
 	 */
 	static async getPasswordForService(serviceName: string, accountName: string): Promise<string | null> {
 		try {
-			return await getPassword(serviceName, accountName)
+			const secrets = this.getSecrets()
+			const key = `${serviceName}_${accountName}`
+			return await secrets.get(key) || null
 		} catch (error) {
 			console.error(`Failed to retrieve password for ${serviceName}/${accountName}:`, error)
 			return null
@@ -97,7 +121,9 @@ export class SecurePasswordStorage {
 	 */
 	static async clearPasswordForService(serviceName: string, accountName: string): Promise<void> {
 		try {
-			await deletePassword(serviceName, accountName)
+			const secrets = this.getSecrets()
+			const key = `${serviceName}_${accountName}`
+			await secrets.delete(key)
 		} catch (error) {
 			console.error(`Failed to clear password for ${serviceName}/${accountName}:`, error)
 		}
@@ -105,13 +131,13 @@ export class SecurePasswordStorage {
 
 	/**
 	 * List all stored credentials (service names and account names)
-	 * Note: This is a simplified version as keytar doesn't provide a direct way to list credentials
+	 * Note: VS Code's secrets API doesn't provide a direct way to list credentials
 	 * In a real implementation, you might want to maintain an index of stored credentials
 	 */
 	static async listCredentials(): Promise<Array<{ service: string; account: string }>> {
 		// This is a placeholder implementation
 		// In a real implementation, you would need to maintain your own index
-		// or use platform-specific APIs to enumerate stored credentials
+		// or use VS Code's workspace state to track stored credentials
 		return []
 	}
 }
