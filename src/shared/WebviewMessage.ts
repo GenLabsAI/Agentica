@@ -290,26 +290,116 @@ export interface WebviewMessage {
 		| "cancelDeviceAuth" // kilocode_change: Cancel device auth flow
 		| "deviceAuthCompleteWithProfile" // kilocode_change: Device auth complete with specific profile
 		| "requestChatCompletion" // kilocode_change: Request FIM completion for chat text area
-	text?: string
-	completionRequestId?: string // kilocode_change
-	shareId?: string // kilocode_change - for sessionFork
-	sessionId?: string // kilocode_change - for sessionSelect
-	editedMessageContent?: string
-	action?: string
-	tab?: "settings" | "history" | "mcp" | "modes" | "chat" | "marketplace" | "cloud" | "plans" | "auth" // kilocode_change
-	disabled?: boolean
-	context?: string
-	dataUri?: string
-	askResponse?: ClineAskResponse
-	apiConfiguration?: ProviderSettings
-	images?: string[]
-	bool?: boolean
-	value?: number
-	stepIndex?: number
-	isLaunchAction?: boolean
-	forceShow?: boolean
-	commands?: string[]
-	audioType?: AudioType
+		| "storeSecurePassword" // Store password securely
+		| "getSecurePassword" // Retrieve password securely
+		| "clearSecurePassword" // Clear password securely
+		text?: string
+		completionRequestId?: string // kilocode_change
+		shareId?: string // kilocode_change - for sessionFork
+		sessionId?: string // kilocode_change - for sessionSelect
+		editedMessageContent?: string
+		action?: string
+		tab?: "settings" | "history" | "mcp" | "modes" | "chat" | "marketplace" | "cloud" | "plans" | "auth" // kilocode_change
+		disabled?: boolean
+		context?: string
+		dataUri?: string
+		askResponse?: ClineAskResponse
+		apiConfiguration?: ProviderSettings
+		images?: string[]
+		bool?: boolean
+		value?: number
+		stepIndex?: number
+		isLaunchAction?: boolean
+		forceShow?: boolean
+		commands?: string[]
+		audioType?: AudioType
+		// kilocode_change begin
+		notificationOptions?: {
+			title?: string
+			subtitle?: string
+			message: string
+		}
+		mcpId?: string
+		toolNames?: string[]
+		autoApprove?: boolean
+		workflowPath?: string // kilocode_change
+		enabled?: boolean // kilocode_change
+		rulePath?: string // kilocode_change
+		isGlobal?: boolean // kilocode_change
+		filename?: string // kilocode_change
+		ruleType?: string // kilocode_change
+		notificationId?: string // kilocode_change
+		commandIds?: string[] // kilocode_change: For getKeybindings
+		key?: string
+		password?: string
+		serverName?: string
+		toolName?: string
+		alwaysAllow?: boolean
+		isEnabled?: boolean
+		mode?: Mode
+		promptMode?: PromptMode
+		customPrompt?: PromptComponent
+		dataUrls?: string[]
+		values?: Record<string, any>
+		query?: string
+		setting?: string
+		slug?: string
+		language?: string // User's language for speech transcription (STT)
+		modeConfig?: ModeConfig
+		timeout?: number
+		payload?: WebViewMessagePayload
+		source?: "global" | "project"
+		requestId?: string
+		ids?: string[]
+		hasSystemPromptOverride?: boolean
+		terminalOperation?: "continue" | "abort"
+		messageTs?: number
+		restoreCheckpoint?: boolean
+		historyPreviewCollapsed?: boolean
+		filters?: { type?: string; search?: string; tags?: string[] }
+		settings?: any
+		url?: string // For openExternal
+		mpItem?: MarketplaceItem
+		mpInstallOptions?: InstallMarketplaceItemOptions
+		config?: Record<string, any> // Add config to the payload
+		visibility?: ShareVisibility // For share visibility
+		hasContent?: boolean // For checkRulesDirectoryResult
+		checkOnly?: boolean // For deleteCustomMode check
+		upsellId?: string // For dismissUpsell
+		list?: string[] // For dismissedUpsells response
+		organizationId?: string | null // For organization switching
+		taskId?: string // For code review messages
+		filePath?: string // For requestFileContent messages
+		useProviderSignup?: boolean // For rooCloudSignIn to use provider signup flow
+		historyItem?: HistoryItem // kilocode_change For addTaskToHistory
+		codeIndexSettings?: {
+			// Global state settings
+			codebaseIndexEnabled: boolean
+			codebaseIndexQdrantUrl: string
+			codebaseIndexEmbedderProvider:
+				| "openai"
+				| "ollama"
+				| "openai-compatible"
+				| "gemini"
+				| "mistral"
+				| "vercel-ai-gateway"
+				| "bedrock"
+				| "openrouter"
+			codebaseIndexVectorStoreProvider?: "lancedb" | "qdrant" // kilocode_change
+			codebaseIndexLancedbVectorStoreDirectory?: string // kilocode_change
+			codebaseIndexEmbedderBaseUrl?: string
+			codebaseIndexEmbedderModelId: string
+			codebaseIndexEmbedderModelDimension?: number // Generic dimension for all providers
+			codebaseIndexOpenAiCompatibleBaseUrl?: string
+			codebaseIndexBedrockRegion?: string
+			codebaseIndexBedrockProfile?: string
+			codebaseIndexSearchMaxResults?: number
+			codebaseIndexSearchMinScore?: number
+			// kilocode_change start
+			codebaseIndexEmbeddingBatchSize?: number
+			codebaseIndexScannerMaxBatchRetries?: number
+			// kilocode_change end
+			codebaseIndexOpenRouterSpecificProvider?: string // OpenRouter provider routing
 	// kilocode_change begin
 	notificationOptions?: {
 		title?: string

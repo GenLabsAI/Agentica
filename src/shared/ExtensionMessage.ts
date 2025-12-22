@@ -197,26 +197,24 @@ export interface ExtensionMessage {
 		| "deviceAuthFailed" // kilocode_change: Device auth failed
 		| "deviceAuthCancelled" // kilocode_change: Device auth cancelled
 		| "chatCompletionResult" // kilocode_change: FIM completion result for chat text area
-		| "deviceAuthFailed" // kilocode_change: Device auth failed
-		| "deviceAuthCancelled" // kilocode_change: Device auth cancelled
-		| "chatCompletionResult" // kilocode_change: FIM completion result for chat text area
-	text?: string
-	// kilocode_change start
-	completionRequestId?: string // Correlation ID from request
-	completionText?: string // The completed text
-	completionError?: string // Error message if failed
-	payload?:
-		| ProfileDataResponsePayload
-		| BalanceDataResponsePayload
-		| TasksByIdResponsePayload
-		| TaskHistoryResponsePayload
-		| [string, string] // For file save events [taskId, filePath]
-	// kilocode_change end
-	// Checkpoint warning message
-	checkpointWarning?: {
-		type: "WAIT_TIMEOUT" | "INIT_TIMEOUT"
-		timeout: number
-	}
+		| "securePasswordRetrieved" // Secure password retrieval response
+		text?: string
+		// kilocode_change start
+		completionRequestId?: string // Correlation ID from request
+		completionText?: string // The completed text
+		completionError?: string // Error message if failed
+		payload?:
+			| ProfileDataResponsePayload
+			| BalanceDataResponsePayload
+			| TasksByIdResponsePayload
+			| TaskHistoryResponsePayload
+			| [string, string] // For file save events [taskId, filePath]
+		// kilocode_change end
+		// Checkpoint warning message
+		checkpointWarning?: {
+			type: "WAIT_TIMEOUT" | "INIT_TIMEOUT"
+			timeout: number
+		}
 	action?:
 		| "chatButtonClicked"
 		| "mcpButtonClicked"
@@ -368,6 +366,9 @@ export interface ExtensionMessage {
 	deviceAuthUserEmail?: string
 	deviceAuthError?: string
 	// kilocode_change end: Device auth data
+	// Secure password data
+	key?: string
+	password?: string | null
 }
 
 export type ExtensionState = Pick<
