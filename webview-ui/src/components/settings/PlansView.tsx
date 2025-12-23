@@ -135,6 +135,41 @@ const PlansView: React.FC<PlansViewProps> = ({ onDone }) => {
             </div>
 
             <div style={{ flex: 1, overflowY: "auto", paddingRight: "20px", paddingBottom: "20px" }}>
+                {/* Pending Downgrade Banner */}
+                {subscription.data.scheduled_downgrade_plan && (
+                    <div style={{
+                        background: "var(--vscode-editor-inactiveSelectionBackground)",
+                        border: "1px solid var(--vscode-charts-yellow)",
+                        borderRadius: "6px",
+                        padding: "16px",
+                        marginBottom: "24px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px"
+                    }}>
+                        <span className="codicon codicon-info" style={{
+                            color: "var(--vscode-charts-yellow)",
+                            fontSize: "20px",
+                            flexShrink: 0
+                        }}></span>
+                        <div style={{ flex: 1 }}>
+                            <strong style={{ color: "var(--vscode-foreground)", display: "block", marginBottom: "4px" }}>
+                                Downgrade Scheduled
+                            </strong>
+                            <p style={{
+                                margin: 0,
+                                color: "var(--vscode-descriptionForeground)",
+                                fontSize: "0.9em"
+                            }}>
+                                You'll be downgraded to <strong>{subscription.data.scheduled_downgrade_plan}</strong> on{" "}
+                                {subscription.data.renewal_date
+                                    ? new Date(subscription.data.renewal_date).toLocaleDateString()
+                                    : "your next billing date"}
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 <div style={{ marginBottom: "24px" }}>
                     <h3 style={{ marginBottom: "12px" }}>Usage & Limits</h3>
                     <UsageStats

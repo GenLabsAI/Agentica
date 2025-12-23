@@ -45,12 +45,16 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, pla
         setError(null)
         try {
             const result = await client.upgradeSubscription(planId)
-            setShowConfetti(true)
-            // Show confetti for 3 seconds before closing
+            // Only show confetti for upgrades, not downgrades
+            if (!isDowngrade) {
+                setShowConfetti(true)
+            }
+            // Show confetti for 3 seconds before closing (only for upgrades)
+            const delay = isDowngrade ? 0 : 3000
             setTimeout(() => {
                 onSuccess(result)
                 onClose()
-            }, 3000)
+            }, delay)
         } catch (err: any) {
             console.error("Upgrade failed", err)
             setError(err.response?.data?.message || err.message || "Failed to upgrade subscription")
