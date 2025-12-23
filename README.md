@@ -21,9 +21,7 @@ Get $45 in API credits + 1000 daily open source requests for $20. Works in VS Co
 3. Sign in on the IDE
 4. Start coding at [agentica.genlabs.dev](https://agentica.genlabs.dev)
 
-## Why This Exists
 
-We buy AI subscriptions in bulk and pass the savings to you. Simple arbitrage, real savings.
 
 ---
 
