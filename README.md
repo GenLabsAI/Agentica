@@ -19,10 +19,8 @@ Get $45 in API credits + 1000 daily open source requests for $20. Works in VS Co
 1. Install from extension marketplace
 2. Sign up at [genlabs.dev](https://auth.genlabs.dev/onboarding)
 3. Sign in on the IDE
-4. Start coding at [agentica.genlabs.dev](https://agentica.genlabs.dev)
-
-
+4. Start coding!
 
 ---
 
-*Beta - things might break. [Report issues](https://github.com/yourusername/agentica)*
+*Beta - things might break. [Report issues](https://github.com/genlasai/agentica/issues)*
