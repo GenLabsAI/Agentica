@@ -23,4 +23,4 @@ Get $45 in API credits + 1000 daily open source requests for $20. Works in VS Co
 
 ---
 
-*Beta - things might break. [Report issues](https://github.com/genlasai/agentica/issues)*
+*Beta - things might break. [Report issues](https://github.com/genlabsai/agentica/issues)*
