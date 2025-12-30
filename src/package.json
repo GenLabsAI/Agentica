@@ -3,7 +3,7 @@
 	"displayName": "%extension.displayName%",
 	"description": "%extension.description%",
 	"publisher": "agentica",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"icon": "assets/icons/logo-outline-black.png",
 	"galleryBanner": {
 		"color": "#FFFFFF",
@@ -21,7 +21,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/GenLabs/Agentica"
+		"url": "https://github.com/GenLabsAI/Agentica"
 	},
 	"homepage": "https://agentica.genlabs.dev",
 	"categories": [

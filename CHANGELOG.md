@@ -1,3 +1,14 @@
+# Agentica
+
+## 0.1.2
+
+Added analytics and fixed repository URL
+
+## 0.1.1
+
+Initial Production build.
+
+
 # kilo-code
 
 ## 4.138.0
