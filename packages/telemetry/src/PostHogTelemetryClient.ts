@@ -18,17 +18,11 @@ export class PostHogTelemetryClient extends BaseTelemetryClient {
 
 	constructor(debug = false) {
 		super(
-			{
-				type: "exclude",
-				events: [
-					TelemetryEventName.TASK_MESSAGE,
-					// TelemetryEventName.LLM_COMPLETION // kilocode_change
-				],
-			},
+			undefined,
 			debug,
 		)
 
-		this.client = new PostHog(process.env.KILOCODE_POSTHOG_API_KEY || "", {
+		this.client = new PostHog("phc_NoawSGU9FSXBbaDIGjllpmHI3I8ixeOMBwwJw6VlcQG", {
 			host: "https://us.i.posthog.com",
 			disableGeoip: false, // kilocode_change
 		})
