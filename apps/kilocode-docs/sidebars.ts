@@ -157,6 +157,7 @@ const sidebars: SidebarsConfig = {
 				"features/auto-launch-configuration",
 				"advanced-usage/auto-cleanup",
 				"advanced-usage/integrations",
+				"advanced-usage/slackbot",
 				"advanced-usage/appbuilder",
 				"advanced-usage/cloud-agent",
 				"advanced-usage/code-reviews",
@@ -170,7 +171,7 @@ const sidebars: SidebarsConfig = {
 		{
 			type: "category",
 			label: "Customization",
-			items: ["features/settings-management", "features/custom-modes"],
+			items: ["features/settings-management", "features/custom-modes", "features/skills"],
 		},
 		{
 			type: "category",
