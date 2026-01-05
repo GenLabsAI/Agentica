@@ -59,7 +59,7 @@ const UsageQuotaBanner = memo(({ requestsUsed, requestsLimit }: UsageQuotaBanner
 		})
 
 		vscode.postMessage({
-			type: "openUrl",
+			type: "openExternal",
 			url: "https://upgrade.example.com",
 		})
 	}

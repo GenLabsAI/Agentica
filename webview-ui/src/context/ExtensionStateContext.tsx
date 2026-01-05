@@ -266,6 +266,7 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 		fuzzyMatchThreshold: 1.0,
 		language: "en", // Default language code
 		writeDelayMs: 1000,
+		requestsUsed: 0,
 		browserViewportSize: "900x600",
 		screenshotQuality: 75,
 		terminalOutputLineLimit: 500,
@@ -484,6 +485,12 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 						}
 						return prevState
 					})
+					break
+				}
+				case "usageDataResponse": {
+					if (message.values?.day?.requests !== undefined) {
+						setState((prevState) => ({ ...prevState, requestsUsed: message.values?.day?.requests ?? 0 }))
+					}
 					break
 				}
 				case "mcpServers": {

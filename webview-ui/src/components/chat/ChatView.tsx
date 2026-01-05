@@ -58,6 +58,8 @@ import { QueuedMessages } from "./QueuedMessages"
 import { CodeReviewDialog } from "./CodeReviewDialog"
 import type { CodeReviewIssue, CodeReviewResult } from "@roo-code/types"
 import { buildDocLink } from "@/utils/docLinks"
+import UsageQuotaBanner from "../common/UsageQuotaBanner"
+import { AgenticaClient } from "@/services/AgenticaClient"
 // import DismissibleUpsell from "../common/DismissibleUpsell" // kilocode_change: unused
 // import { useCloudUpsell } from "@src/hooks/useCloudUpsell" // kilocode_change: unused
 // import { Cloud } from "lucide-react" // kilocode_change: unused
@@ -115,7 +117,39 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 		messageQueue = [],
 		sendMessageOnEnter, // kilocode_change
 		isBrowserSessionActive,
+		allowedMaxRequests,
+		requestsUsed,
 	} = useExtensionState()
+
+	const [quotaUsed, setQuotaUsed] = useState<number | null>(null)
+	const [quotaLimit, setQuotaLimit] = useState<number | null>(null)
+
+	// Fetch daily request usage from Agentica (same source as PlansView)
+	useEffect(() => {
+		const email = apiConfiguration?.agenticaEmail || ""
+		const password = apiConfiguration?.agenticaPassword || ""
+		const baseUrl = apiConfiguration?.agenticaBaseUrl
+
+		if (!email || !password) {
+			return
+		}
+
+		const client = new AgenticaClient(`${email}|${password}`, baseUrl)
+		client
+			.getSubscription()
+			.then((data) => {
+				const dailyUsed = (data.data as any).daily_requests_used ?? 0
+				const dailyLimit = data.limits?.daily_requests ?? allowedMaxRequests ?? null
+				setQuotaUsed(dailyUsed)
+				setQuotaLimit(dailyLimit ?? null)
+			})
+			.catch(() => {
+				// Silent fail; banner simply won't show
+			})
+	}, [apiConfiguration?.agenticaEmail, apiConfiguration?.agenticaPassword, apiConfiguration?.agenticaBaseUrl, allowedMaxRequests])
+
+	const effectiveLimit = quotaLimit ?? allowedMaxRequests ?? null
+	const effectiveUsed = quotaUsed ?? requestsUsed ?? 0
 
 	const messagesRef = useRef(messages)
 
@@ -1704,10 +1738,14 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 					<AutoApproveMenu />
 				</div>
 			)}
-
 			{task && (
 				<>
-					<div className="grow flex flex-col min-h-0" ref={scrollContainerRef}>
+					{effectiveLimit && effectiveLimit > 0 && (
+						<div className="mb-2">
+							<UsageQuotaBanner requestsUsed={effectiveUsed} requestsLimit={effectiveLimit} />
+						</div>
+					)}
+					<div className="grow flex flex-col min-h-0">
 						<div className="flex-auto min-h-0">
 							<Virtuoso
 								ref={virtuosoRef}

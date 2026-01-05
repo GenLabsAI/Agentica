@@ -388,6 +388,7 @@ export type ExtensionState = Pick<
 	| "alwaysAllowDelete" // kilocode_change
 	| "alwaysAllowBrowser"
 	| "alwaysApproveResubmit"
+	| "requestsUsed" // Track number of requests used for quota
 	| "alwaysAllowMcp"
 	| "alwaysAllowModeSwitch"
 	| "alwaysAllowSubtasks"
