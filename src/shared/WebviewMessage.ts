@@ -56,6 +56,7 @@ export interface WebviewMessage {
 		| "deleteApiConfiguration"
 		| "loadApiConfiguration"
 		| "loadApiConfigurationById"
+		| "githubSignIn"
 		| "getProfileConfigurationForEditing" // kilocode_change: Request to get profile config without activating
 		| "renameApiConfiguration"
 		| "getListApiConfiguration"

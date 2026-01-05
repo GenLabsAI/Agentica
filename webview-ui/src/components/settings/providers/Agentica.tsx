@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { VSCodeTextField, VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import type { ProviderSettings } from "@roo-code/types"
+import { vscode } from "@/utils/vscode"
 import { AgenticaClient } from "@/services/AgenticaClient"
 import { securePasswordStorage } from "@/utils/passwordStorage"
 
@@ -90,6 +91,35 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 					Enter your GenLabs account credentials to use Agentica's models.
 				</p>
 			</div>
+			{/* GitHub Sign‑In Button */}
+			<VSCodeButton
+			    onClick={() => vscode.postMessage({ type: "githubSignIn" })}
+			    style={{
+			        width: "100%",
+			        marginBottom: "8px",
+			        backgroundColor: "#333",
+			        color: "white",
+			        border: "1px solid #555",
+			        padding: "10px",
+			        borderRadius: "5px",
+			        display: "flex",
+			        alignItems: "center",
+			        justifyContent: "center",
+			        cursor: "pointer",
+			    }}
+			>
+			    <img
+			        src="https://simpleicons.org/icons/github.svg"
+			        alt="GitHub"
+			        style={{
+			            filter: "invert(1)",
+			            marginRight: "8px",
+			            width: "20px",
+			            height: "20px",
+			        }}
+			    />
+			    <span>Continue with GitHub</span>
+			</VSCodeButton>
 
 			<div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
 				<VSCodeTextField

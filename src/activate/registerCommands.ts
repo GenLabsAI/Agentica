@@ -190,9 +190,14 @@ const getCommandsMap = ({ context, outputChannel }: RegisterCommandOptions): Rec
 		visibleProvider.postMessageToWebview({ type: "action", action: "upgradeButtonClicked" })
 	},
 	helpButtonClicked: () => {
-		vscode.env.openExternal(vscode.Uri.parse(getAppUrl()))
+	  vscode.env.openExternal(vscode.Uri.parse(getAppUrl()))
 	},
 	// kilocode_change end
+	// <<< NEW: GitHub Sign‑In command >>>
+	githubSignIn: () => {
+	  const oauthUrl = "https://api.genlabs.dev/auth/github"
+	  vscode.env.openExternal(vscode.Uri.parse(oauthUrl))
+	},
 	marketplaceButtonClicked: () => {
 		const visibleProvider = getVisibleProviderOrLog(outputChannel)
 		if (!visibleProvider) return
