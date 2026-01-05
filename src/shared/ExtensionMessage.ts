@@ -388,7 +388,6 @@ export type ExtensionState = Pick<
 	| "alwaysAllowDelete" // kilocode_change
 	| "alwaysAllowBrowser"
 	| "alwaysApproveResubmit"
-	| "requestsUsed" // Track number of requests used for quota
 	| "alwaysAllowMcp"
 	| "alwaysAllowModeSwitch"
 	| "alwaysAllowSubtasks"
@@ -402,8 +401,8 @@ export type ExtensionState = Pick<
 	| "allowedMaxCost"
 	| "browserToolEnabled"
 	| "browserViewportSize"
-	| "showAutoApproveMenu" // kilocode_change
-	| "hideCostBelowThreshold" // kilocode_change
+	| "showAutoApproveMenu" // kilicode_change
+	| "hideCostBelowThreshold" // kilicode_change
 	| "screenshotQuality"
 	| "remoteBrowserEnabled"
 	| "cachedChromeHostUrl"
@@ -431,33 +430,32 @@ export type ExtensionState = Pick<
 	| "morphApiKey" // kilocode_change: Morph fast apply - global setting
 	| "fastApplyModel" // kilocode_change: Fast Apply model selection
 	| "fastApplyApiProvider" // kilocode_change: Fast Apply model api base url
-	// | "experiments" // Optional in GlobalSettings, required here.
 	| "language"
 	| "modeApiConfigs"
 	| "customModePrompts"
 	| "customSupportPrompts"
 	| "enhancementApiConfigId"
-	| "localWorkflowToggles" // kilocode_change
-	| "globalRulesToggles" // kilocode_change
-	| "localRulesToggles" // kilocode_change
-	| "globalWorkflowToggles" // kilocode_change
-	| "commitMessageApiConfigId" // kilocode_change
-	| "terminalCommandApiConfigId" // kilocode_change
-	| "dismissedNotificationIds" // kilocode_change
-	| "ghostServiceSettings" // kilocode_change
-	| "autoPurgeEnabled" // kilocode_change
-	| "autoPurgeDefaultRetentionDays" // kilocode_change
-	| "autoPurgeFavoritedTaskRetentionDays" // kilocode_change
-	| "autoPurgeCompletedTaskRetentionDays" // kilocode_change
-	| "autoPurgeIncompleteTaskRetentionDays" // kilocode_change
-	| "autoPurgeLastRunTimestamp" // kilocode_change
+	| "localWorkflowToggles" // kilicode_change
+	| "globalRulesToggles" // kilicode_change
+	| "localRulesToggles" // kilicode_change
+	| "globalWorkflowToggles" // kilicode_change
+	| "commitMessageApiConfigId" // kilicode_change
+	| "terminalCommandApiConfigId" // kilicode_change
+	| "dismissedNotificationIds" // kilicode_change
+	| "ghostServiceSettings" // kilicode_change
+	| "autoPurgeEnabled" // kilicode_change
+	| "autoPurgeDefaultRetentionDays" // kilicode_change
+	| "autoPurgeFavoritedTaskRetentionDays" // kilicode_change
+	| "autoPurgeCompletedTaskRetentionDays" // kilicode_change
+	| "autoPurgeIncompleteTaskRetentionDays" // kilicode_change
+	| "autoPurgeLastRunTimestamp" // kilicode_change
 	| "condensingApiConfigId"
 	| "customCondensingPrompt"
 	| "yoloGatekeeperApiConfigId" // kilocode_change: AI gatekeeper for YOLO mode
 	| "codebaseIndexConfig"
 	| "codebaseIndexModels"
 	| "profileThresholds"
-	| "systemNotificationsEnabled" // kilocode_change
+	| "systemNotificationsEnabled"
 	| "includeDiagnosticMessages"
 	| "maxDiagnosticMessages"
 	| "imageGenerationProvider"
@@ -468,13 +466,15 @@ export type ExtensionState = Pick<
 	| "includeCurrentCost"
 	| "maxGitStatusFiles"
 > & {
+	requestsUsed?: number // Track number of requests used for quota
+} & {
 	version: string
 	clineMessages: ClineMessage[]
 	currentTaskItem?: HistoryItem
 	currentTaskTodos?: TodoItem[] // Initial todos for the current task
 	apiConfiguration: ProviderSettings
 	uriScheme?: string
-	uiKind?: string // kilocode_change
+	uiKind?: string // kilicode_change
 
 	kiloCodeWrapperProperties?: KiloCodeWrapperProperties // kilocode_change: Wrapper information
 
@@ -493,7 +493,7 @@ export type ExtensionState = Pick<
 	maxWorkspaceFiles: number // Maximum number of files to include in current working directory details (0-500)
 	showRooIgnoredFiles: boolean // Whether to show .kilocodeignore'd files in listings
 	maxReadFileLine: number // Maximum number of lines to read from a file before truncating
-	showAutoApproveMenu: boolean // kilocode_change: Whether to show the auto-approve menu in the chat view
+	showAutoApproveMenu: boolean // kilicode_change: Whether to show the auto-approve menu in the chat view
 	maxImageFileSize: number // Maximum size of image files to process in MB
 	maxTotalImageSize: number // Maximum total size for all images in a single read operation in MB
 
@@ -511,12 +511,12 @@ export type ExtensionState = Pick<
 	telemetryKey?: string
 	machineId?: string
 
-	renderContext: "sidebar" | "editor"
+	renderContext: "sidebar" | "assistant" | "notebook"
 	settingsImportedAt?: number
 	historyPreviewCollapsed?: boolean
 	showTaskTimeline?: boolean // kilocode_change
-	sendMessageOnEnter?: boolean // kilocode_change
-	hideCostBelowThreshold?: number // kilocode_change
+	sendMessageOnEnter?: boolean // kilicode_change
+	hideCostBelowThreshold?: number // kilicode_change
 
 	cloudUserInfo: CloudUserInfo | null
 	cloudIsAuthenticated: boolean
@@ -546,10 +546,10 @@ export type ExtensionState = Pick<
 	remoteControlEnabled: boolean
 	taskSyncEnabled: boolean
 	featureRoomoteControlEnabled: boolean
-	virtualQuotaActiveModel?: { id: string; info: ModelInfo } // kilocode_change: Add virtual quota active model for UI display
-	showTimestamps?: boolean // kilocode_change: Show timestamps in chat messages
+	virtualQuotaActiveModel?: { id: string; info: ModelInfo } // kilicode_change: Add virtual quota active model for UI display
+	showTimestamps?: boolean // kilicode_change: Show timestamps in chat messages
 	debug?: boolean
-	speechToTextStatus?: { available: boolean; reason?: "openaiKeyMissing" | "ffmpegNotInstalled" } // kilocode_change: Speech-to-text availability status with failure reason
+	speechToTextStatus?: { available: boolean; reason?: "openaiKeyMissing" | "ffmpegNotInstalled" } // kilicode_change: Speech-to-text availability status with failure reason
 }
 
 export interface ClineSayTool {
