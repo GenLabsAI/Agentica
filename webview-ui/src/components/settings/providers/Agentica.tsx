@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { VSCodeTextField, VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import type { ProviderSettings } from "@roo-code/types"
 import { vscode } from "@/utils/vscode"
 import { AgenticaClient } from "@/services/AgenticaClient"
 import { securePasswordStorage } from "@/utils/passwordStorage"
+
+const GITHUB_OAUTH_URL = "https://api.genlabs.dev/auth/github"
 
 type AgenticaProps = {
 	apiConfiguration: ProviderSettings
@@ -57,6 +59,17 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 		}
 	}
 
+	const handleGithubSignIn = useCallback(() => {
+		const opened =
+			typeof window !== "undefined"
+				? window.open(GITHUB_OAUTH_URL, "_blank", "noopener,noreferrer")
+				: null
+
+		if (!opened) {
+			vscode.postMessage({ type: "githubSignIn" })
+		}
+	}, [])
+
 	const handleLogin = async () => {
 		if (!apiConfiguration.agenticaEmail || !apiConfiguration.agenticaPassword) {
 			setError("Please enter both email and password")
@@ -93,9 +106,10 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 			</div>
 			{/* GitHub Sign‑In Button */}
 			<VSCodeButton
-				onClick={() => vscode.postMessage({ type: "githubSignIn" })}
-				style={{ width: "100%", marginBottom: "8px" }}>
-				Continue with GitHub
+				onClick={handleGithubSignIn}
+				style={{ width: "100%", marginBottom: "8px", display: "flex", gap: "8px", alignItems: "center", justifyContent: "center" }}>
+				<span className="codicon codicon-github" style={{ fontSize: "16px" }} aria-hidden="true"></span>
+				<span>Continue with GitHub</span>
 			</VSCodeButton>
 
 			<div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
