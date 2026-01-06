@@ -511,7 +511,7 @@ export type ExtensionState = Pick<
 	telemetryKey?: string
 	machineId?: string
 
-	renderContext: "sidebar" | "editor" | "notebook"
+	renderContext: "sidebar" | "assistant" | "notebook" | "editor"
 	settingsImportedAt?: number
 	historyPreviewCollapsed?: boolean
 	showTaskTimeline?: boolean // kilocode_change

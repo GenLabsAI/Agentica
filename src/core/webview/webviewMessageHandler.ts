@@ -2946,6 +2946,11 @@ export const webviewMessageHandler = async (
 			provider.postMessageToWebview({ type: "action", action: "cloudButtonClicked" })
 			break
 		}
+		case "githubSignIn": {
+			// Trigger the GitHub OAuth flow via the registered command
+			vscode.commands.executeCommand("githubSignIn")
+			break
+		}
 		case "rooCloudSignIn": {
 			try {
 				TelemetryService.instance.captureEvent(TelemetryEventName.AUTHENTICATION_INITIATED)

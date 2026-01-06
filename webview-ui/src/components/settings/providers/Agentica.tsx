@@ -93,32 +93,9 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 			</div>
 			{/* GitHub Sign‑In Button */}
 			<VSCodeButton
-			    onClick={() => vscode.postMessage({ type: "githubSignIn" })}
-			    style={{
-			        width: "100%",
-			        marginBottom: "8px",
-			        backgroundColor: "#333",
-			        color: "white",
-			        border: "1px solid #555",
-			        padding: "10px",
-			        borderRadius: "5px",
-			        display: "flex",
-			        alignItems: "center",
-			        justifyContent: "center",
-			        cursor: "pointer",
-			    }}
-			>
-			    <img
-			        src="https://simpleicons.org/icons/github.svg"
-			        alt="GitHub"
-			        style={{
-			            filter: "invert(1)",
-			            marginRight: "8px",
-			            width: "20px",
-			            height: "20px",
-			        }}
-			    />
-			    <span>Continue with GitHub</span>
+				onClick={() => vscode.postMessage({ type: "githubSignIn" })}
+				style={{ width: "100%", marginBottom: "8px" }}>
+				Continue with GitHub
 			</VSCodeButton>
 
 			<div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
