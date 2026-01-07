@@ -4,7 +4,6 @@ import type { ProviderSettings } from "@roo-code/types"
 import { vscode } from "@/utils/vscode"
 import { AgenticaClient } from "@/services/AgenticaClient"
 import { securePasswordStorage } from "@/utils/passwordStorage"
-import { getAgenticaGithubAuthUrl } from "@/oauth/urls"
 
 type AgenticaProps = {
 	apiConfiguration: ProviderSettings
@@ -45,6 +44,7 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 			const message = event.data
 			switch (message.type) {
 				case "agenticaDeviceAuthStarted":
+					console.log("[Agentica] Device auth started", message)
 					setDeviceAuthStatus("pending")
 					setDeviceAuthCode(message.deviceAuthCode)
 					setDeviceAuthVerificationUrl(message.deviceAuthVerificationUrl)
@@ -55,6 +55,7 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 					setDeviceAuthTimeRemaining(message.deviceAuthTimeRemaining)
 					break
 				case "agenticaDeviceAuthComplete":
+					console.log("[Agentica] Device auth complete", message)
 					setDeviceAuthStatus("success")
 					setDeviceAuthError(undefined)
 					// Reset after a moment
@@ -63,6 +64,7 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 					}, 2000)
 					break
 				case "agenticaDeviceAuthFailed":
+					console.error("[Agentica] Device auth failed", message)
 					setDeviceAuthStatus("error")
 					setDeviceAuthError(message.deviceAuthError || "Authentication failed")
 					break
@@ -122,17 +124,6 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 		}
 	}
 
-	const handleGithubSignIn = useCallback(() => {
-		const githubAuthUrl = getAgenticaGithubAuthUrl(uriScheme)
-		const opened =
-			typeof window !== "undefined"
-				? window.open(githubAuthUrl, "_blank", "noopener,noreferrer")
-				: null
-
-		if (!opened) {
-			vscode.postMessage({ type: "githubSignIn" })
-		}
-	}, [uriScheme])
 
 	const handleDeviceAuth = useCallback(() => {
 		setDeviceAuthStatus("pending")
@@ -269,16 +260,6 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 				)}
 			</div>
 
-			{/* Legacy OAuth Button (hidden when device flow is active) */}
-			{deviceAuthStatus === "idle" && (
-				<VSCodeButton
-					onClick={handleGithubSignIn}
-					appearance="secondary"
-					style={{ width: "100%", marginBottom: "16px", display: "flex", gap: "8px", alignItems: "center", justifyContent: "center" }}>
-					<span className="codicon codicon-github" style={{ fontSize: "16px" }} aria-hidden="true"></span>
-					<span>Continue with GitHub (OAuth Redirect)</span>
-				</VSCodeButton>
-			)}
 
 			{/* Show API Key if authenticated via GitHub */}
 			{apiConfiguration.agenticaApiKey && (

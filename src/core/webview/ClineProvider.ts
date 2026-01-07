@@ -1836,7 +1836,12 @@ ${prompt}
 			agenticaModelId: apiConfiguration?.agenticaModelId || agenticaDefaultModelId,
 		}
 
+		// Use upsertProviderProfile which handles state updates properly
 		await this.upsertProviderProfile(currentApiConfigName, newConfiguration)
+		
+		// Post state update to webview to refresh UI
+		await this.postStateToWebview()
+		
 		vscode.window.showInformationMessage("Successfully authenticated with Agentica via GitHub!")
 	}
 
@@ -1844,85 +1849,97 @@ ${prompt}
 	 * Start Agentica GitHub device authorization flow
 	 */
 	async startAgenticaDeviceAuth(): Promise<void> {
-		try {
-			// Clean up any existing device auth service
-			if (this.agenticaDeviceAuthService) {
-				this.agenticaDeviceAuthService.dispose()
-			}
+		// Prevent multiple simultaneous auth flows
+		if (this.agenticaDeviceAuthService) {
+			this.log("Agentica device auth already in progress, cleaning up previous instance")
+			this.agenticaDeviceAuthService.dispose()
+			this.agenticaDeviceAuthService = undefined
+		}
 
+		try {
 			this.agenticaDeviceAuthService = new GithubDeviceAuthService()
 
-			// Set up event listeners
-			this.agenticaDeviceAuthService.on("started", (data: { userCode: string; verificationUrl: string; expiresIn: number }) => {
-				this.postMessageToWebview({
-					type: "agenticaDeviceAuthStarted",
-					deviceAuthCode: data.userCode,
-					deviceAuthVerificationUrl: data.verificationUrl,
-					deviceAuthExpiresIn: data.expiresIn,
-				})
-				// Open browser automatically
-				vscode.env.openExternal(vscode.Uri.parse(data.verificationUrl))
-			})
-
-			this.agenticaDeviceAuthService.on("polling", (timeRemaining: number) => {
-				this.postMessageToWebview({
-					type: "agenticaDeviceAuthPolling",
-					deviceAuthTimeRemaining: timeRemaining,
-				})
-			})
-
-			this.agenticaDeviceAuthService.on("success", async (accessToken: string) => {
-				await this.handleAgenticaDeviceAuth(accessToken)
-				this.postMessageToWebview({
-					type: "agenticaDeviceAuthComplete",
-					deviceAuthToken: accessToken,
+			// Set up event listeners (only once per service instance)
+			const setupListeners = () => {
+				this.agenticaDeviceAuthService!.on("started", (data: { userCode: string; verificationUrl: string; expiresIn: number }) => {
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthStarted",
+						deviceAuthCode: data.userCode,
+						deviceAuthVerificationUrl: data.verificationUrl,
+						deviceAuthExpiresIn: data.expiresIn,
+					})
+					// Open browser automatically
+					vscode.env.openExternal(vscode.Uri.parse(data.verificationUrl))
 				})
 
-				// Clean up
-				this.agenticaDeviceAuthService?.dispose()
-				this.agenticaDeviceAuthService = undefined
-			})
-
-			this.agenticaDeviceAuthService.on("denied", () => {
-				this.postMessageToWebview({
-					type: "agenticaDeviceAuthFailed",
-					deviceAuthError: "Authorization was denied",
+				this.agenticaDeviceAuthService!.on("polling", (timeRemaining: number) => {
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthPolling",
+						deviceAuthTimeRemaining: timeRemaining,
+					})
 				})
 
-				this.agenticaDeviceAuthService?.dispose()
-				this.agenticaDeviceAuthService = undefined
-			})
-
-			this.agenticaDeviceAuthService.on("expired", () => {
-				this.postMessageToWebview({
-					type: "agenticaDeviceAuthFailed",
-					deviceAuthError: "Authorization code expired. Please try again.",
+				this.agenticaDeviceAuthService!.on("success", async (accessToken: string) => {
+					try {
+						await this.handleAgenticaDeviceAuth(accessToken)
+						this.postMessageToWebview({
+							type: "agenticaDeviceAuthComplete",
+							deviceAuthToken: accessToken,
+						})
+					} catch (error) {
+						const errorMessage = error instanceof Error ? error.message : String(error)
+						this.log(`Error in handleAgenticaDeviceAuth: ${errorMessage}`)
+						this.postMessageToWebview({
+							type: "agenticaDeviceAuthFailed",
+							deviceAuthError: errorMessage,
+						})
+					} finally {
+						// Clean up
+						this.agenticaDeviceAuthService?.dispose()
+						this.agenticaDeviceAuthService = undefined
+					}
 				})
 
-				this.agenticaDeviceAuthService?.dispose()
-				this.agenticaDeviceAuthService = undefined
-			})
-
-			this.agenticaDeviceAuthService.on("error", (error: Error) => {
-				this.postMessageToWebview({
-					type: "agenticaDeviceAuthFailed",
-					deviceAuthError: error.message || "An error occurred during authentication",
+				this.agenticaDeviceAuthService!.on("denied", () => {
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthFailed",
+						deviceAuthError: "Authorization was denied",
+					})
+					this.agenticaDeviceAuthService?.dispose()
+					this.agenticaDeviceAuthService = undefined
 				})
 
-				vscode.window.showErrorMessage(`Agentica GitHub authentication error: ${error.message}`)
-				this.agenticaDeviceAuthService?.dispose()
-				this.agenticaDeviceAuthService = undefined
-			})
-
-			this.agenticaDeviceAuthService.on("cancelled", () => {
-				this.postMessageToWebview({
-					type: "agenticaDeviceAuthFailed",
-					deviceAuthError: "Authentication was cancelled",
+				this.agenticaDeviceAuthService!.on("expired", () => {
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthFailed",
+						deviceAuthError: "Authorization code expired. Please try again.",
+					})
+					this.agenticaDeviceAuthService?.dispose()
+					this.agenticaDeviceAuthService = undefined
 				})
 
-				this.agenticaDeviceAuthService?.dispose()
-				this.agenticaDeviceAuthService = undefined
-			})
+				this.agenticaDeviceAuthService!.on("error", (error: Error) => {
+					this.log(`Agentica device auth error: ${error.message}`)
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthFailed",
+						deviceAuthError: error.message || "An error occurred during authentication",
+					})
+					vscode.window.showErrorMessage(`Agentica GitHub authentication error: ${error.message}`)
+					this.agenticaDeviceAuthService?.dispose()
+					this.agenticaDeviceAuthService = undefined
+				})
+
+				this.agenticaDeviceAuthService!.on("cancelled", () => {
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthFailed",
+						deviceAuthError: "Authentication was cancelled",
+					})
+					this.agenticaDeviceAuthService?.dispose()
+					this.agenticaDeviceAuthService = undefined
+				})
+			}
+
+			setupListeners()
 
 			// Start the device auth flow
 			await this.agenticaDeviceAuthService.initiate()
@@ -1936,8 +1953,10 @@ ${prompt}
 				deviceAuthError: errorMessage,
 			})
 
-			this.agenticaDeviceAuthService?.dispose()
-			this.agenticaDeviceAuthService = undefined
+			if (this.agenticaDeviceAuthService) {
+				this.agenticaDeviceAuthService.dispose()
+				this.agenticaDeviceAuthService = undefined
+			}
 		}
 	}
 

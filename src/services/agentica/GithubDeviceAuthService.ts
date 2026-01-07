@@ -120,13 +120,18 @@ export class GithubDeviceAuthService extends EventEmitter<DeviceAuthServiceEvent
 				},
 			)
 
-			if (response.data.access_token) {
+			if (response.data && response.data.access_token) {
 				// Success - user has authorized
 				this.stopPolling()
 				this.emit("success", response.data.access_token)
 				return
 			}
 		} catch (error: any) {
+			// Check if aborted before processing error
+			if (this.aborted) {
+				return
+			}
+
 			if (error.response) {
 				const errorType = error.response.data?.error
 
@@ -143,7 +148,24 @@ export class GithubDeviceAuthService extends EventEmitter<DeviceAuthServiceEvent
 				if (errorType === "slow_down") {
 					// GitHub is asking us to slow down - increase poll interval
 					if (this.pollInterval) {
-						this.pollInterval = Math.min(this.pollInterval * 1.5, 60000) // Max 60 seconds
+						const newInterval = Math.min(this.pollInterval * 1.5, 60000) // Max 60 seconds
+						// Update interval and restart with new timing
+						this.stopPolling()
+						this.pollInterval = newInterval
+						// Restart polling with new interval (will be called from the interval callback)
+						const interval = this.pollInterval
+						this.pollIntervalId = setInterval(() => {
+							if (this.aborted || !this.deviceCode) {
+								this.stopPolling()
+								return
+							}
+							this.poll().catch((err) => {
+								if (!this.aborted) {
+									const error = err instanceof Error ? err : new Error(String(err))
+									this.emit("error", error)
+								}
+							})
+						}, interval)
 					}
 					return
 				}
@@ -161,9 +183,11 @@ export class GithubDeviceAuthService extends EventEmitter<DeviceAuthServiceEvent
 				}
 			}
 
-			// Other errors
-			const err = error instanceof Error ? error : new Error(String(error))
-			this.emit("error", err)
+			// Only emit error for unexpected errors, not for expected ones like authorization_pending
+			if (!error.response || error.response.status >= 500) {
+				const err = error instanceof Error ? error : new Error(String(error))
+				this.emit("error", err)
+			}
 		}
 	}
 
@@ -175,13 +199,29 @@ export class GithubDeviceAuthService extends EventEmitter<DeviceAuthServiceEvent
 			clearInterval(this.pollIntervalId)
 		}
 
-		// Poll immediately
-		this.poll()
+		// Poll immediately (don't await to avoid blocking)
+		this.poll().catch((err) => {
+			// Only emit error if not aborted and it's a real error
+			if (!this.aborted) {
+				const error = err instanceof Error ? err : new Error(String(err))
+				this.emit("error", error)
+			}
+		})
 
 		// Then poll at the specified interval
 		const interval = this.pollInterval || POLL_INTERVAL_MS
 		this.pollIntervalId = setInterval(() => {
-			this.poll()
+			if (this.aborted || !this.deviceCode) {
+				this.stopPolling()
+				return
+			}
+			this.poll().catch((err) => {
+				// Only emit error if not aborted and it's a real error
+				if (!this.aborted) {
+					const error = err instanceof Error ? err : new Error(String(err))
+					this.emit("error", error)
+				}
+			})
 		}, interval)
 	}
 
