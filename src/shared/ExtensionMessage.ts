@@ -196,6 +196,10 @@ export interface ExtensionMessage {
 		| "deviceAuthComplete" // kilocode_change: Device auth successful
 		| "deviceAuthFailed" // kilocode_change: Device auth failed
 		| "deviceAuthCancelled" // kilocode_change: Device auth cancelled
+		| "agenticaDeviceAuthStarted" // Agentica GitHub device auth initiated
+		| "agenticaDeviceAuthPolling" // Agentica GitHub device auth polling update
+		| "agenticaDeviceAuthComplete" // Agentica GitHub device auth successful
+		| "agenticaDeviceAuthFailed" // Agentica GitHub device auth failed
 		| "chatCompletionResult" // kilocode_change: FIM completion result for chat text area
 		| "securePasswordRetrieved" // Secure password retrieval response
 		text?: string
@@ -365,6 +369,13 @@ export interface ExtensionMessage {
 	deviceAuthToken?: string
 	deviceAuthUserEmail?: string
 	deviceAuthError?: string
+	// Agentica device auth data
+	agenticaDeviceAuthCode?: string
+	agenticaDeviceAuthVerificationUrl?: string
+	agenticaDeviceAuthExpiresIn?: number
+	agenticaDeviceAuthTimeRemaining?: number
+	agenticaDeviceAuthToken?: string
+	agenticaDeviceAuthError?: string
 	// kilocode_change end: Device auth data
 	// Secure password data
 	key?: string

@@ -660,7 +660,11 @@ const ApiOptions = ({
 			)}
 
 			{selectedProvider === "agentica" && (
-				<Agentica apiConfiguration={apiConfiguration} setApiConfigurationField={setApiConfigurationField} />
+				<Agentica
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					uriScheme={uriScheme}
+				/>
 			)}
 
 			{selectedProvider === "claude-code" && (

@@ -70,6 +70,13 @@ export const handleUri = async (uri: vscode.Uri) => {
 			}
 			break
 		}
+		case "/agentica": {
+			const code = query.get("code")
+			if (code) {
+				await visibleProvider.handleAgenticaCallback(code)
+			}
+			break
+		}
 		case "/auth/clerk/callback": {
 			const code = query.get("code")
 			const state = query.get("state")

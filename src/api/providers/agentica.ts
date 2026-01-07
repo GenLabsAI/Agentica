@@ -46,6 +46,11 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 	}
 
 	private generateApiKey(): string {
+		// Prefer API key from GitHub OAuth if available
+		if (this.options.agenticaApiKey) {
+			return this.options.agenticaApiKey
+		}
+
 		const email = this.options.agenticaEmail || ""
 		const password = this.options.agenticaPassword || ""
 

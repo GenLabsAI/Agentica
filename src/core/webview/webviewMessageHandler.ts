@@ -2951,6 +2951,14 @@ export const webviewMessageHandler = async (
 			vscode.commands.executeCommand("githubSignIn")
 			break
 		}
+		case "startAgenticaDeviceAuth": {
+			await provider.startAgenticaDeviceAuth()
+			break
+		}
+		case "cancelAgenticaDeviceAuth": {
+			provider.cancelAgenticaDeviceAuth()
+			break
+		}
 		case "rooCloudSignIn": {
 			try {
 				TelemetryService.instance.captureEvent(TelemetryEventName.AUTHENTICATION_INITIATED)
