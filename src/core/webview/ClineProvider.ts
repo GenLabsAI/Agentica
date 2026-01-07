@@ -1803,21 +1803,34 @@ ${prompt}
 		let apiKey: string
 		let userEmail: string | undefined
 
+		this.log(`Exchanging GitHub access token for Agentica API key...`)
 		try {
 			const baseUrl = "https://api.genlabs.dev/agentica/v1"
-			// Try to exchange GitHub access token for Agentica API key
-			// If backend doesn't support this yet, we can modify the endpoint to accept access_token
-			const response = await axios.post(`${baseUrl}/auth/github`, { access_token: githubAccessToken })
+			// Exchange GitHub access token for Agentica API key
+			const response = await axios.post(
+				`${baseUrl}/auth/github`,
+				{ access_token: githubAccessToken },
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			)
+
+			this.log(`Agentica API response status: ${response.status}`)
+			this.log(`Agentica API response data: ${JSON.stringify(response.data)}`)
 
 			if (response.data && response.data.api_key) {
 				apiKey = response.data.api_key
 				userEmail = response.data.user?.email
+				this.log(`Successfully received API key and user email: ${userEmail}`)
 			} else {
-				throw new Error("Invalid response from Agentica API")
+				this.log(`Invalid response structure: ${JSON.stringify(response.data)}`)
+				throw new Error("Invalid response from Agentica API - missing api_key")
 			}
 		} catch (error: any) {
 			this.log(
-				`Error exchanging GitHub access token for Agentica API key: ${JSON.stringify(error, Object.getOwnPropertyNames(error), 2)}`,
+				`Error exchanging token: ${error.response?.status} ${error.response?.statusText} - ${JSON.stringify(error.response?.data)}`,
 			)
 
 			const errorMessage = error.response?.data?.error || error.message || "Failed to authenticate with GitHub"
@@ -1879,26 +1892,29 @@ ${prompt}
 					})
 				})
 
-				this.agenticaDeviceAuthService!.on("success", async (accessToken: string) => {
-					try {
-						await this.handleAgenticaDeviceAuth(accessToken)
-						this.postMessageToWebview({
-							type: "agenticaDeviceAuthComplete",
-							deviceAuthToken: accessToken,
-						})
-					} catch (error) {
-						const errorMessage = error instanceof Error ? error.message : String(error)
-						this.log(`Error in handleAgenticaDeviceAuth: ${errorMessage}`)
-						this.postMessageToWebview({
-							type: "agenticaDeviceAuthFailed",
-							deviceAuthError: errorMessage,
-						})
-					} finally {
-						// Clean up
-						this.agenticaDeviceAuthService?.dispose()
-						this.agenticaDeviceAuthService = undefined
-					}
-				})
+			this.agenticaDeviceAuthService!.on("success", async (accessToken: string) => {
+				this.log(`Agentica device auth success - received access token`)
+				try {
+					await this.handleAgenticaDeviceAuth(accessToken)
+					this.log("Agentica device auth - successfully exchanged token for API key")
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthComplete",
+						deviceAuthToken: accessToken,
+					})
+				} catch (error) {
+					const errorMessage = error instanceof Error ? error.message : String(error)
+					this.log(`Error in handleAgenticaDeviceAuth: ${errorMessage}`)
+					vscode.window.showErrorMessage(`Failed to exchange GitHub token: ${errorMessage}`)
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthFailed",
+						deviceAuthError: errorMessage,
+					})
+				} finally {
+					// Clean up
+					this.agenticaDeviceAuthService?.dispose()
+					this.agenticaDeviceAuthService = undefined
+				}
+			})
 
 				this.agenticaDeviceAuthService!.on("denied", () => {
 					this.postMessageToWebview({
@@ -1930,10 +1946,7 @@ ${prompt}
 				})
 
 				this.agenticaDeviceAuthService!.on("cancelled", () => {
-					this.postMessageToWebview({
-						type: "agenticaDeviceAuthFailed",
-						deviceAuthError: "Authentication was cancelled",
-					})
+					// Don't send message here - cancelAgenticaDeviceAuth handles UI reset
 					this.agenticaDeviceAuthService?.dispose()
 					this.agenticaDeviceAuthService = undefined
 				})
@@ -1964,9 +1977,12 @@ ${prompt}
 	 * Cancel Agentica device authorization flow
 	 */
 	cancelAgenticaDeviceAuth(): void {
-		this.agenticaDeviceAuthService?.cancel()
-		this.agenticaDeviceAuthService?.dispose()
-		this.agenticaDeviceAuthService = undefined
+		if (this.agenticaDeviceAuthService) {
+			this.agenticaDeviceAuthService.cancel()
+			this.agenticaDeviceAuthService.dispose()
+			this.agenticaDeviceAuthService = undefined
+			// Frontend handles UI reset directly in handleCancelDeviceAuth
+		}
 	}
 
 	// kilocode_change start

@@ -52,7 +52,10 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 					setDeviceAuthError(undefined)
 					break
 				case "agenticaDeviceAuthPolling":
-					setDeviceAuthTimeRemaining(message.deviceAuthTimeRemaining)
+					// Update timer - continue even if it reaches 0 (GitHub will tell us when expired)
+					if (message.deviceAuthTimeRemaining !== undefined) {
+						setDeviceAuthTimeRemaining(message.deviceAuthTimeRemaining)
+					}
 					break
 				case "agenticaDeviceAuthComplete":
 					console.log("[Agentica] Device auth complete", message)
@@ -67,6 +70,10 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 					console.error("[Agentica] Device auth failed", message)
 					setDeviceAuthStatus("error")
 					setDeviceAuthError(message.deviceAuthError || "Authentication failed")
+					// Clear the auth code and URL
+					setDeviceAuthCode(undefined)
+					setDeviceAuthVerificationUrl(undefined)
+					setDeviceAuthTimeRemaining(undefined)
 					break
 			}
 		}
@@ -133,6 +140,7 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 
 	const handleCancelDeviceAuth = useCallback(() => {
 		vscode.postMessage({ type: "cancelAgenticaDeviceAuth" })
+		// Reset state immediately for better UX
 		setDeviceAuthStatus("idle")
 		setDeviceAuthCode(undefined)
 		setDeviceAuthVerificationUrl(undefined)
@@ -218,9 +226,14 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 						<div style={{ fontSize: "11px", color: "var(--vscode-descriptionForeground)", marginBottom: "8px", textAlign: "center" }}>
 							Visit: <a href={deviceAuthVerificationUrl} target="_blank" rel="noopener noreferrer" style={{ color: "var(--vscode-textLink-foreground)" }}>{deviceAuthVerificationUrl}</a>
 						</div>
-						{deviceAuthTimeRemaining !== undefined && (
+						{deviceAuthTimeRemaining !== undefined && deviceAuthTimeRemaining > 0 && (
 							<div style={{ fontSize: "11px", color: "var(--vscode-descriptionForeground)", textAlign: "center", marginBottom: "8px" }}>
 								Time remaining: {formatTimeRemaining(deviceAuthTimeRemaining)}
+							</div>
+						)}
+						{deviceAuthTimeRemaining !== undefined && deviceAuthTimeRemaining <= 0 && (
+							<div style={{ fontSize: "11px", color: "var(--vscode-descriptionForeground)", textAlign: "center", marginBottom: "8px" }}>
+								Waiting for authorization... (code may have expired)
 							</div>
 						)}
 						<VSCodeButton

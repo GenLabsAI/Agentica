@@ -104,6 +104,9 @@ export class GithubDeviceAuthService extends EventEmitter<DeviceAuthServiceEvent
 			return
 		}
 
+		// Don't check expiration here - let GitHub tell us via expired_token error
+		// This ensures we continue polling even if timer reaches 0
+
 		try {
 			const response = await axios.post<GithubTokenResponse>(
 				GITHUB_TOKEN_URL,
@@ -122,9 +125,12 @@ export class GithubDeviceAuthService extends EventEmitter<DeviceAuthServiceEvent
 
 			if (response.data && response.data.access_token) {
 				// Success - user has authorized
+				console.log("[GithubDeviceAuthService] Successfully received access token from GitHub")
 				this.stopPolling()
 				this.emit("success", response.data.access_token)
 				return
+			} else {
+				console.warn("[GithubDeviceAuthService] Unexpected response structure:", response.data)
 			}
 		} catch (error: any) {
 			// Check if aborted before processing error
@@ -136,12 +142,16 @@ export class GithubDeviceAuthService extends EventEmitter<DeviceAuthServiceEvent
 				const errorType = error.response.data?.error
 
 				if (errorType === "authorization_pending") {
-					// Still pending - emit time remaining
+					// Still pending - emit time remaining and continue polling
+					// Always emit time remaining, even if it's 0 or negative
+					// Continue polling until GitHub explicitly returns expired_token
 					if (this.startTime && this.expiresIn) {
 						const elapsed = Date.now() - this.startTime
-						const timeRemaining = Math.max(0, this.expiresIn * 1000 - elapsed)
-						this.emit("polling", timeRemaining)
+						const timeRemaining = this.expiresIn * 1000 - elapsed
+						// Emit actual time remaining (can be negative) - frontend will handle display
+						this.emit("polling", Math.max(0, timeRemaining))
 					}
+					// Continue polling - don't stop until GitHub returns expired_token
 					return
 				}
 
@@ -215,6 +225,11 @@ export class GithubDeviceAuthService extends EventEmitter<DeviceAuthServiceEvent
 				this.stopPolling()
 				return
 			}
+			
+			// Don't check expiration here - let GitHub's API tell us via expired_token error
+			// This ensures we continue polling even if timer reaches 0
+			// The poll() method will handle expired_token response from GitHub
+			
 			this.poll().catch((err) => {
 				// Only emit error if not aborted and it's a real error
 				if (!this.aborted) {
