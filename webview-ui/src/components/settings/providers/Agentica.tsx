@@ -185,20 +185,20 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 				<h3 style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600", color: "var(--vscode-foreground)" }}>
 					Sign in with GenLabs
 				</h3>
-				<p style={{ margin: "0 0 12px 0", fontSize: "12px", color: "var(--vscode-descriptionForeground)", lineHeight: "1.4" }}>
+				{/* <p style={{ margin: "0 0 12px 0", fontSize: "12px", color: "var(--vscode-descriptionForeground)", lineHeight: "1.4" }}>
 					Sign in with GitHub or enter your GenLabs account credentials to use Agentica's models.
-				</p>
+				</p> */}
 			</div>
 			
 			{/* GitHub Sign‑In Buttons */}
 			<div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
-				<VSCodeButton
+				{/* <VSCodeButton
 					onClick={handleDeviceAuth}
 					disabled={deviceAuthStatus === "pending"}
 					style={{ width: "100%", display: "flex", gap: "8px", alignItems: "center", justifyContent: "center" }}>
 					<span className="codicon codicon-github" style={{ fontSize: "16px" }} aria-hidden="true"></span>
 					<span>{deviceAuthStatus === "pending" ? "Authenticating..." : "Continue with GitHub (Device Flow)"}</span>
-				</VSCodeButton>
+				</VSCodeButton> */}
 				
 				{deviceAuthStatus === "pending" && deviceAuthCode && deviceAuthVerificationUrl && (
 					<div style={{
