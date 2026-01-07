@@ -291,14 +291,14 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 				</div>
 			)}
 
-			{/* Divider */}
+			{/* Divider
 			{!apiConfiguration.agenticaApiKey && (
 				<div style={{ display: "flex", alignItems: "center", marginBottom: "16px" }}>
 					<div style={{ flex: 1, height: "1px", backgroundColor: "var(--vscode-panel-border)" }}></div>
 					<span style={{ margin: "0 12px", fontSize: "12px", color: "var(--vscode-descriptionForeground)" }}>OR</span>
 					<div style={{ flex: 1, height: "1px", backgroundColor: "var(--vscode-panel-border)" }}></div>
 				</div>
-			)}
+			)} */}
 
 			{/* Email/Password Login (only show if not using API key) */}
 			{!apiConfiguration.agenticaApiKey && (
