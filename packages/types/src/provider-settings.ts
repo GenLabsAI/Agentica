@@ -523,6 +523,7 @@ const agenticaSchema = apiModelIdProviderModelSchema.extend({
 	agenticaEmail: z.string().optional(),
 	agenticaPassword: z.string().optional(),
 	agenticaApiKey: z.string().optional(),
+	agenticaModelId: z.string().optional(),
 })
 
 const vercelAiGatewaySchema = baseProviderSettingsSchema.extend({

@@ -1853,7 +1853,7 @@ ${prompt}
 			this.agenticaDeviceAuthService = new GithubDeviceAuthService()
 
 			// Set up event listeners
-			this.agenticaDeviceAuthService.on("started", (data) => {
+			this.agenticaDeviceAuthService.on("started", (data: { userCode: string; verificationUrl: string; expiresIn: number }) => {
 				this.postMessageToWebview({
 					type: "agenticaDeviceAuthStarted",
 					deviceAuthCode: data.userCode,
@@ -1864,14 +1864,14 @@ ${prompt}
 				vscode.env.openExternal(vscode.Uri.parse(data.verificationUrl))
 			})
 
-			this.agenticaDeviceAuthService.on("polling", (timeRemaining) => {
+			this.agenticaDeviceAuthService.on("polling", (timeRemaining: number) => {
 				this.postMessageToWebview({
 					type: "agenticaDeviceAuthPolling",
 					deviceAuthTimeRemaining: timeRemaining,
 				})
 			})
 
-			this.agenticaDeviceAuthService.on("success", async (accessToken) => {
+			this.agenticaDeviceAuthService.on("success", async (accessToken: string) => {
 				await this.handleAgenticaDeviceAuth(accessToken)
 				this.postMessageToWebview({
 					type: "agenticaDeviceAuthComplete",
@@ -1903,7 +1903,7 @@ ${prompt}
 				this.agenticaDeviceAuthService = undefined
 			})
 
-			this.agenticaDeviceAuthService.on("error", (error) => {
+			this.agenticaDeviceAuthService.on("error", (error: Error) => {
 				this.postMessageToWebview({
 					type: "agenticaDeviceAuthFailed",
 					deviceAuthError: error.message || "An error occurred during authentication",
