@@ -58,13 +58,13 @@ export class GithubDeviceAuthService extends EventEmitter<DeviceAuthServiceEvent
 		try {
 			const response = await axios.post<GithubDeviceAuthResponse>(
 				GITHUB_DEVICE_CODE_URL,
-				{
+				new URLSearchParams({
 					client_id: this.clientId,
 					scope: "user:email",
-				},
+				}),
 				{
 					headers: {
-						"Content-Type": "application/json",
+						"Content-Type": "application/x-www-form-urlencoded",
 						Accept: "application/json",
 					},
 				},
@@ -110,14 +110,14 @@ export class GithubDeviceAuthService extends EventEmitter<DeviceAuthServiceEvent
 		try {
 			const response = await axios.post<GithubTokenResponse>(
 				GITHUB_TOKEN_URL,
-				{
+				new URLSearchParams({
 					client_id: this.clientId,
 					device_code: this.deviceCode,
 					grant_type: "urn:ietf:params:oauth:grant-type:device_code",
-				},
+				}),
 				{
 					headers: {
-						"Content-Type": "application/json",
+						"Content-Type": "application/x-www-form-urlencoded",
 						Accept: "application/json",
 					},
 				},

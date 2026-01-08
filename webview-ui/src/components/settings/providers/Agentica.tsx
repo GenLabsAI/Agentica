@@ -36,7 +36,7 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 			}
 		}
 		loadStoredPassword()
-	}, [])
+	}, [apiConfiguration.agenticaPassword, setApiConfigurationField])
 
 	// Listen for device auth messages from extension
 	useEffect(() => {
@@ -192,13 +192,13 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 			
 			{/* GitHub Sign‑In Buttons */}
 			<div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
-				{/* <VSCodeButton
+				<VSCodeButton
 					onClick={handleDeviceAuth}
 					disabled={deviceAuthStatus === "pending"}
 					style={{ width: "100%", display: "flex", gap: "8px", alignItems: "center", justifyContent: "center" }}>
 					<span className="codicon codicon-github" style={{ fontSize: "16px" }} aria-hidden="true"></span>
 					<span>{deviceAuthStatus === "pending" ? "Authenticating..." : "Continue with GitHub (Device Flow)"}</span>
-				</VSCodeButton> */}
+				</VSCodeButton>
 				
 				{deviceAuthStatus === "pending" && deviceAuthCode && deviceAuthVerificationUrl && (
 					<div style={{
