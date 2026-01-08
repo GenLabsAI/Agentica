@@ -3657,15 +3657,19 @@ export const webviewMessageHandler = async (
 			}
 			break
 		}
+		// kilocode_change end: Type-safe global state handler
 		// kilocode_change start: STT (Speech-to-Text) handlers
 		case "stt:start":
 		case "stt:stop":
-		case "stt:cancel": {
+		case "stt:cancel":
+		case "stt:listDevices":
+		case "stt:selectDevice":
+		case "stt:checkAvailability": {
 			const { handleSTTCommand } = await import("./sttHandlers")
 			await handleSTTCommand(provider, message as any)
 			break
 		}
-		// kilocode_change end: Type-safe global state handler
+		// kilocode_change end: STT (Speech-to-Text) handlers
 		case "insertTextToChatArea":
 			provider.postMessageToWebview({ type: "insertTextToChatArea", text: message.text })
 			break
