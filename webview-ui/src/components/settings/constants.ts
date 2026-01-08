@@ -24,10 +24,12 @@ import {
 	rooModels,
 	featherlessModels,
 	minimaxModels,
+	agenticaModels,
 	basetenModels,
 } from "@roo-code/types"
 
 export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, ModelInfo>>> = {
+	agentica: agenticaModels,
 	anthropic: anthropicModels,
 	"claude-code": claudeCodeModels,
 	bedrock: bedrockModels,
@@ -56,18 +58,16 @@ export const MODELS_BY_PROVIDER: Partial<Record<ProviderName, Record<string, Mod
 }
 
 export const PROVIDERS = [
+	{ value: "agentica", label: "Agentica" },
 	{ value: "openrouter", label: "OpenRouter" },
 	{ value: "deepinfra", label: "DeepInfra" },
 	{ value: "anthropic", label: "Anthropic" },
 	{ value: "claude-code", label: "Claude Code" },
 	{ value: "cerebras", label: "Cerebras" },
 	{ value: "gemini", label: "Google Gemini" },
-	{ value: "doubao", label: "Doubao" },
 	// kilocode_change start
 	{ value: "inception", label: "Inception" },
 	{ value: "gemini-cli", label: "Gemini CLI" },
-	{ value: "virtual-quota-fallback", label: "Virtual Quota Fallback" },
-	{ value: "synthetic", label: "Synthetic" },
 	{ value: "ovhcloud", label: "OVHcloud AI Endpoints" },
 	{ value: "sap-ai-core", label: "SAP AI Core" },
 	// kilocode_change end
@@ -84,9 +84,7 @@ export const PROVIDERS = [
 	{ value: "mistral", label: "Mistral" },
 	{ value: "lmstudio", label: "LM Studio" },
 	{ value: "ollama", label: "Ollama" },
-	{ value: "unbound", label: "Unbound" },
 	{ value: "requesty", label: "Requesty" },
-	{ value: "human-relay", label: "Human Relay" },
 	{ value: "xai", label: "xAI (Grok)" },
 	{ value: "groq", label: "Groq" },
 	{ value: "huggingface", label: "Hugging Face" },
@@ -96,7 +94,6 @@ export const PROVIDERS = [
 	{ value: "zai", label: "Z.ai" },
 	{ value: "fireworks", label: "Fireworks AI" },
 	{ value: "featherless", label: "Featherless AI" },
-	{ value: "io-intelligence", label: "IO Intelligence" },
 	// kilocode_change start
 	// { value: "roo", label: "Roo Code Cloud" },
 	// kilocode_change end

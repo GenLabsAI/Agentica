@@ -107,6 +107,7 @@ export const modelInfoSchema = z.object({
 	// kilocode_change start
 	displayName: z.string().nullish(),
 	preferredIndex: z.number().nullish(),
+	creditsMultiplier: z.number().optional(),
 	// kilocode_change end
 	// Flag to indicate if the model is deprecated and should not be used
 	deprecated: z.boolean().optional(),
@@ -114,6 +115,8 @@ export const modelInfoSchema = z.object({
 	isStealthModel: z.boolean().optional(),
 	// Flag to indicate if the model is free (no cost)
 	isFree: z.boolean().optional(),
+	// Flag to indicate if the model requires a paid plan (even if no cost)
+	requiresPaidPlan: z.boolean().optional(),
 	// Flag to indicate if the model supports native tool calling (OpenAI-style function calling)
 	supportsNativeTools: z.boolean().optional(),
 	// Default tool protocol preferred by this model (if not specified, falls back to capability/provider defaults)

@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { SelectDropdown, DropdownOptionType } from "@/components/ui"
 import { OPENROUTER_DEFAULT_PROVIDER_NAME, type ProviderSettings } from "@roo-code/types"
 import { vscode } from "@src/utils/vscode"
@@ -8,6 +8,41 @@ import { prettyModelName } from "../../../utils/prettyModelName"
 import { useProviderModels } from "../hooks/useProviderModels"
 import { getModelIdKey, getSelectedModelId } from "../hooks/useSelectedModel"
 import { usePreferredModels } from "@/components/ui/hooks/kilocode/usePreferredModels"
+import { AgenticaClient } from "@/services/AgenticaClient"
+import { UpgradeModal } from "@/components/settings/UpgradeModal"
+
+// Helper function to format cost for Agentica models
+const formatAgenticaCost = (modelInfo?: any, userHasSubscription?: boolean): string => {
+	if (!modelInfo) return "Free"
+
+	// Check if model requires paid plan (paid-free models)
+	if (modelInfo.requiresPaidPlan) {
+		// For specific models, show "Free with plan" unless user already has subscription
+		if (!userHasSubscription &&
+		    (modelInfo.id?.includes("glm-4.6") || modelInfo.id?.includes("kimi-k2-thinking"))) {
+			return "Free with plan"
+		}
+		return "Free"
+	}
+
+	// Check if model has token-based pricing (premium models)
+	if (modelInfo.inputPrice !== undefined && modelInfo.outputPrice !== undefined &&
+	    (modelInfo.inputPrice > 0 || modelInfo.outputPrice > 0)) {
+		// For premium models, show a generic "Premium" label since token costs vary
+		return "Premium"
+	}
+
+	// Check if model has credit-based pricing (free models)
+	if (modelInfo.creditsMultiplier !== undefined) {
+		if (modelInfo.creditsMultiplier === 0) {
+			return "Free"
+		}
+		const cost = modelInfo.creditsMultiplier * 0.001
+	return `$${cost.toFixed(3)}`
+	}
+
+	return "Free"
+}
 
 interface ModelSelectorProps {
 	currentApiConfigName?: string
@@ -23,6 +58,10 @@ export const ModelSelector = ({
 	virtualQuotaActiveModel, //kilocode_change
 }: ModelSelectorProps) => {
 	const { t } = useAppTranslation()
+	const [upgradeModalOpen, setUpgradeModalOpen] = useState(false)
+	const [selectedPlanId, setSelectedPlanId] = useState("")
+	const [checkingSubscription, setCheckingSubscription] = useState(false)
+	const [userSubscription, setUserSubscription] = useState<any>(null)
 	const { provider, providerModels, providerDefaultModel, isLoading, isError } = useProviderModels(apiConfiguration)
 	const selectedModelId = getSelectedModelId({
 		provider,
@@ -32,19 +71,61 @@ export const ModelSelector = ({
 	const modelIdKey = getModelIdKey({ provider })
 	const isAutocomplete = apiConfiguration.profileType === "autocomplete"
 
+	// Fetch user subscription status for Agentica
+	useEffect(() => {
+		if (provider === "agentica" && apiConfiguration.agenticaEmail && apiConfiguration.agenticaPassword) {
+			const fetchSubscription = async () => {
+				try {
+					const client = new AgenticaClient(
+						`${apiConfiguration.agenticaEmail}|${apiConfiguration.agenticaPassword}`,
+						apiConfiguration.agenticaBaseUrl
+					)
+					const subscription = await client.getSubscription()
+					setUserSubscription(subscription)
+				} catch (error) {
+					console.error("Failed to fetch subscription for model selector:", error)
+				}
+			}
+			fetchSubscription()
+		}
+	}, [provider, apiConfiguration.agenticaEmail, apiConfiguration.agenticaPassword, apiConfiguration.agenticaBaseUrl])
+
 	const modelsIds = usePreferredModels(providerModels)
 	const options = useMemo(() => {
 		const missingModelIds = modelsIds.indexOf(selectedModelId) >= 0 ? [] : [selectedModelId]
-		return missingModelIds.concat(modelsIds).map((modelId) => ({
-			value: modelId,
-			label: providerModels[modelId]?.displayName ?? prettyModelName(modelId),
-			type: DropdownOptionType.ITEM,
-		}))
-	}, [modelsIds, providerModels, selectedModelId])
+		
+		// Sort models to ensure Deca is always at the top for Agentica
+		const sortedModelIds = provider === "agentica"
+			? missingModelIds.concat(modelsIds).sort((a, b) => {
+					// Put Deca models at the top
+					if (a.toLowerCase().includes("deca")) return -1
+					if (b.toLowerCase().includes("deca")) return 1
+					return 0
+				})
+			: missingModelIds.concat(modelsIds)
+		
+		return sortedModelIds.map((modelId) => {
+			const modelInfo = providerModels[modelId]
+			const modelName = modelInfo?.displayName ?? prettyModelName(modelId)
+			
+			// Add cost information for Agentica models
+			let label = modelName
+			if (provider === "agentica" && modelInfo) {
+				const cost = formatAgenticaCost(modelInfo, userSubscription?.data?.plan_tier !== "free")
+				label = `${modelName} (${cost})`
+			}
+			
+			return {
+				value: modelId,
+				label,
+				type: DropdownOptionType.ITEM,
+			}
+		})
+	}, [modelsIds, providerModels, selectedModelId, provider, userSubscription])
 
 	const disabled = isLoading || isError || isAutocomplete
 
-	const onChange = (value: string) => {
+	const onChange = async (value: string) => {
 		if (!currentApiConfigName) {
 			return
 		}
@@ -52,6 +133,36 @@ export const ModelSelector = ({
 			// don't reset openRouterSpecificProvider
 			return
 		}
+
+		// Check if this is a premium/paid Agentica model and user needs to upgrade
+		const modelInfo = providerModels[value]
+		if (provider === "agentica" && modelInfo &&
+		    (modelInfo.requiresPaidPlan ||
+		     (modelInfo.inputPrice && modelInfo.inputPrice > 0) ||
+		     (modelInfo.outputPrice && modelInfo.outputPrice > 0))) {
+			try {
+				setCheckingSubscription(true)
+				const client = new AgenticaClient(
+					`${apiConfiguration?.agenticaEmail || ""}|${apiConfiguration?.agenticaPassword || ""}`,
+					apiConfiguration?.agenticaBaseUrl,
+				)
+				const subscription = await client.getSubscription()
+
+				// If user doesn't have premium access, show upgrade modal
+				if (!subscription.limits.allow_premium) {
+					setSelectedPlanId("plus") // Default to plus plan for upgrade
+					setUpgradeModalOpen(true)
+					setCheckingSubscription(false)
+					return
+				}
+			} catch (error) {
+				console.error("Failed to check Agentica subscription:", error)
+				// If we can't check subscription, allow the change (fail open)
+			} finally {
+				setCheckingSubscription(false)
+			}
+		}
+
 		vscode.postMessage({
 			type: "upsertApiConfiguration",
 			text: currentApiConfigName,
@@ -63,7 +174,7 @@ export const ModelSelector = ({
 		})
 	}
 
-	if (isLoading) {
+	if (isLoading || checkingSubscription) {
 		return null
 	}
 
@@ -81,20 +192,40 @@ export const ModelSelector = ({
 		return <span className="text-xs text-vscode-descriptionForeground opacity-70 truncate">{fallbackText}</span>
 	}
 
+	const handleUpgradeSuccess = () => {
+		setUpgradeModalOpen(false)
+		// After successful upgrade, the user can try selecting the model again
+	}
+
 	return (
-		<SelectDropdown
-			value={selectedModelId}
-			disabled={disabled}
-			title={t("chat:selectApiConfig")}
-			options={options}
-			onChange={onChange}
-			contentClassName="max-h-[300px] overflow-y-auto"
-			triggerClassName={cn(
-				"w-full text-ellipsis overflow-hidden p-0",
-				"bg-transparent border-transparent hover:bg-transparent hover:border-transparent",
+		<>
+			<SelectDropdown
+				value={selectedModelId}
+				disabled={disabled}
+				title={t("chat:selectApiConfig")}
+				options={options}
+				onChange={onChange}
+				contentClassName="max-h-[300px] overflow-y-auto"
+				triggerClassName={cn(
+					"w-full text-ellipsis overflow-hidden p-0",
+					"bg-transparent border-transparent hover:bg-transparent hover:border-transparent",
+				)}
+				triggerIcon={false}
+				itemClassName="group"
+			/>
+			{upgradeModalOpen && (
+				<UpgradeModal
+					isOpen={upgradeModalOpen}
+					onClose={() => setUpgradeModalOpen(false)}
+					planId={selectedPlanId}
+					isDowngrade={false}
+					client={new AgenticaClient(
+						`${apiConfiguration?.agenticaEmail || ""}|${apiConfiguration?.agenticaPassword || ""}`,
+						apiConfiguration?.agenticaBaseUrl
+					)}
+					onSuccess={handleUpgradeSuccess}
+				/>
 			)}
-			triggerIcon={false}
-			itemClassName="group"
-		/>
+		</>
 	)
 }

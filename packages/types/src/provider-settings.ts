@@ -29,6 +29,7 @@ import {
 	xaiModels,
 	internationalZAiModels,
 	minimaxModels,
+	agenticaModels,
 } from "./providers/index.js"
 
 /**
@@ -162,6 +163,7 @@ export const providerNames = [
 	"vertex",
 	"xai",
 	"zai",
+	"agentica",
 ] as const
 
 export const providerNamesSchema = z.enum(providerNames)
@@ -516,6 +518,14 @@ const rooSchema = apiModelIdProviderModelSchema.extend({
 	// No additional fields needed - uses cloud authentication.
 })
 
+const agenticaSchema = apiModelIdProviderModelSchema.extend({
+	agenticaBaseUrl: z.string().optional(),
+	agenticaEmail: z.string().optional(),
+	agenticaPassword: z.string().optional(),
+	agenticaApiKey: z.string().optional(),
+	agenticaModelId: z.string().optional(),
+})
+
 const vercelAiGatewaySchema = baseProviderSettingsSchema.extend({
 	vercelAiGatewayApiKey: z.string().optional(),
 	vercelAiGatewayModelId: z.string().optional(),
@@ -586,6 +596,7 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	ioIntelligenceSchema.merge(z.object({ apiProvider: z.literal("io-intelligence") })),
 	qwenCodeSchema.merge(z.object({ apiProvider: z.literal("qwen-code") })),
 	rooSchema.merge(z.object({ apiProvider: z.literal("roo") })),
+	agenticaSchema.merge(z.object({ apiProvider: z.literal("agentica") })),
 	vercelAiGatewaySchema.merge(z.object({ apiProvider: z.literal("vercel-ai-gateway") })),
 	sapAiCoreSchema.merge(z.object({ apiProvider: z.literal("sap-ai-core") })), // kilocode_change
 	defaultSchema,
@@ -638,6 +649,7 @@ export const providerSettingsSchema = z.object({
 	...ioIntelligenceSchema.shape,
 	...qwenCodeSchema.shape,
 	...rooSchema.shape,
+	...agenticaSchema.shape,
 	...vercelAiGatewaySchema.shape,
 	...sapAiCoreSchema.shape, // kilocode_change
 	...codebaseIndexProviderSchema.shape,
@@ -698,6 +710,7 @@ export const isTypicalProvider = (key: unknown): key is TypicalProvider =>
 	isProviderName(key) && !isInternalProvider(key) && !isCustomProvider(key) && !isFauxProvider(key)
 
 export const modelIdKeysByProvider: Record<TypicalProvider, ModelIdKey> = {
+	agentica: "apiModelId",
 	anthropic: "apiModelId",
 	"claude-code": "apiModelId",
 	glama: "glamaModelId", // kilocode_change
@@ -870,6 +883,7 @@ export const MODELS_BY_PROVIDER: Record<
 	xai: { id: "xai", label: "xAI (Grok)", models: Object.keys(xaiModels) },
 	zai: { id: "zai", label: "Z.ai", models: Object.keys(internationalZAiModels) },
 	baseten: { id: "baseten", label: "Baseten", models: Object.keys(basetenModels) },
+	agentica: { id: "agentica", label: "Agentica", models: Object.keys(agenticaModels) },
 
 	// Dynamic providers; models pulled from remote APIs.
 	glama: { id: "glama", label: "Glama", models: [] }, // kilocode_change

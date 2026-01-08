@@ -1,0 +1,91 @@
+name: VSCode Release Workflow
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - bin/** # Only trigger if something changes in the .bin folder
+  workflow_dispatch: # Manual trigger for the workflow
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Install dependencies (jq and vsce)
+      - name: Install dependencies
+        run: |
+          # Install jq for JSON parsing
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+          # Install vsce for uploading to the VSCode Marketplace
+          npm install -g vsce
+
+      # Step 3: Find the .vsix file and extract version
+      - name: Find the .vsix file and extract version
+        id: find_version
+        run: |
+          # Find the .vsix file in the .bin folder
+          vsix_file=$(find ./bin -name '*.vsix' -print -quit)
+          if [ -z "$vsix_file" ]; then
+            echo "No .vsix file found in bin"
+            exit 1
+          fi
+
+          # Extract the version number from the file name
+          version=$(basename "$vsix_file" | sed -E 's/agentica-(.*)\.vsix/\1/')
+          echo "Found version: $version"
+
+          # Save version for later steps
+          echo "version=$version" >> $GITHUB_ENV
+
+      # Step 4: Check if the release already exists
+      - name: Check if release exists
+        id: release_check
+        run: |
+          # Use the GitHub API to check for an existing release
+          response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/$version")
+          
+          if [[ "$response" == *"Not Found"* ]]; then
+            echo "Release not found for version $version"
+            echo "release_exists=false" >> $GITHUB_ENV
+          else
+            echo "Release already exists for version $version"
+            echo "release_exists=true" >> $GITHUB_ENV
+          fi
+
+      # Step 5: Create release if it doesn't exist
+      - name: Create a release if it doesnt exist
+        if: env.release_exists == 'false'
+        run: |
+          # Create a GitHub release using the GitHub API
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -d '{"tag_name": "$version", "name": "Release $version", "body": "Release for version $version", "draft": false, "prerelease": false}' \
+            "https://api.github.com/repos/${{ github.repository }}/releases"
+
+      # Step 6: Upload .vsix to the release
+      - name: Upload .vsix to release
+        if: env.release_exists == 'false'
+        run: |
+          # Upload the .vsix file to the newly created release
+          upload_url=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/$version" | jq -r .upload_url | sed -e "s/{?name,label}//")
+
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/octet-stream" \
+            --data-binary "@$vsix_file" \
+            "$upload_url?name=$(basename "$vsix_file")"
+
+      # Step 7: Upload to VSCode Marketplace
+      - name: Upload to VSCode Marketplace
+        if: env.release_exists == 'false'
+        run: |
+          # Publish the extension to the VSCode marketplace using vsce
+          vsce publish $version --pat ${{ secrets.VSCODE_MARKETPLACE_PAT }}

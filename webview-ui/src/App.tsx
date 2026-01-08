@@ -21,6 +21,7 @@ import AuthView from "./components/kilocode/auth/AuthView" // kilocode_change
 import { MarketplaceView } from "./components/marketplace/MarketplaceView"
 import { HumanRelayDialog } from "./components/human-relay/HumanRelayDialog"
 import BottomControls from "./components/kilocode/BottomControls" // kilocode_change
+import PlansView from "./components/settings/PlansView" // kilocode_change
 import { MemoryService } from "./services/MemoryService" // kilocode_change
 import { CheckpointRestoreDialog } from "./components/chat/CheckpointRestoreDialog"
 import { DeleteMessageDialog, EditMessageDialog } from "./components/chat/MessageModificationConfirmationDialog"
@@ -33,7 +34,7 @@ import { STANDARD_TOOLTIP_DELAY } from "./components/ui/standard-tooltip"
 import { useKiloIdentity } from "./utils/kilocode/useKiloIdentity"
 import { MemoryWarningBanner } from "./kilocode/MemoryWarningBanner"
 
-type Tab = "settings" | "history" | "mcp" | "modes" | "chat" | "marketplace" | "account" | "cloud" | "profile" | "auth" // kilocode_change: add "profile" and "auth"
+type Tab = "settings" | "history" | "mcp" | "modes" | "chat" | "marketplace" | "account" | "cloud" | "profile" | "plans" | "auth" // kilocode_change: add "profile", "plans", and "auth"
 
 interface HumanRelayDialogState {
 	isOpen: boolean
@@ -70,6 +71,7 @@ const tabsByMessageAction: Partial<Record<NonNullable<ExtensionMessage["action"]
 	promptsButtonClicked: "settings", // kilocode_change: Navigate to settings with modes section
 	mcpButtonClicked: "mcp", // kilocode_change
 	// cloudButtonClicked: "cloud", // kilocode_change: no cloud
+	upgradeButtonClicked: "plans", // kilocode_change
 }
 
 // kilocode_change start: Map certain actions to a default section when navigating to settings
@@ -342,6 +344,7 @@ const App = () => {
 			)}
 			{/* kilocode_change: add profileview and authview */}
 			{tab === "profile" && <ProfileView onDone={() => switchTab("chat")} />}
+			{tab === "plans" && <PlansView onDone={() => switchTab("chat")} />}
 			{tab === "auth" && <AuthView returnTo={authReturnTo} profileName={authProfileName} />}
 			{tab === "marketplace" && (
 				<MarketplaceView

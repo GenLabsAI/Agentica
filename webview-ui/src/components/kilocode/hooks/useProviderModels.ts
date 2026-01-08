@@ -58,6 +58,8 @@ import {
 	internationalZAiDefaultModelId,
 	mainlandZAiModels,
 	mainlandZAiDefaultModelId,
+	agenticaModels,
+	agenticaDefaultModelId,
 } from "@roo-code/types"
 import type { ModelRecord, RouterModels } from "@roo/api"
 import { useRouterModels } from "../../ui/hooks/useRouterModels"
@@ -226,6 +228,12 @@ export const getModelsByProvider = ({
 			return {
 				models: anthropicModels,
 				defaultModel: anthropicDefaultModelId,
+			}
+		}
+		case "agentica": {
+			return {
+				models: agenticaModels,
+				defaultModel: agenticaDefaultModelId,
 			}
 		}
 		case "doubao": {

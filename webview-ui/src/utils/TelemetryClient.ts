@@ -17,9 +17,13 @@ class TelemetryClient {
 				ui_host: "https://us.posthog.com",
 				persistence: "localStorage",
 				loaded: () => posthog.identify(distinctId),
-				capture_pageview: false,
-				capture_pageleave: false,
-				autocapture: false,
+				capture_pageview: true,
+				capture_pageleave: true,
+				autocapture: true,
+				session_recording: {
+					maskAllInputs: false,
+					maskTextSelector: undefined,
+				},
 			})
 
 			posthog.identify(distinctId) // kilocode_change: loaded above only works the first time

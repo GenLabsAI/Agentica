@@ -294,6 +294,8 @@ export const SECRET_STATE_KEYS = [
 	"syntheticApiKey",
 	"ovhCloudAiEndpointsApiKey",
 	"inceptionLabsApiKey",
+	"agenticaEmail",
+	"agenticaPassword",
 	// kilocode_change end
 	"codebaseIndexOpenAiCompatibleApiKey",
 	"codebaseIndexGeminiApiKey",

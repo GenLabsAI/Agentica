@@ -48,6 +48,8 @@ import {
 	minimaxModels,
 	minimaxDefaultModelId,
 	ovhCloudAiEndpointsDefaultModelId,
+	agenticaModels,
+	agenticaDefaultModelId,
 } from "@roo-code/types"
 
 /**
@@ -99,6 +101,7 @@ export interface ModelInfo {
 	cachableFields?: string[]
 	displayName?: string | null
 	preferredIndex?: number | null
+	creditsMultiplier?: number
 	deprecated?: boolean
 	isFree?: boolean
 	supportsNativeTools?: boolean
@@ -133,6 +136,7 @@ export const PROVIDER_TO_ROUTER_NAME: Record<ProviderName, RouterName | null> = 
 	"vercel-ai-gateway": "vercel-ai-gateway",
 	ovhcloud: "ovhcloud",
 	// Providers without dynamic model support
+	agentica: null,
 	anthropic: null,
 	bedrock: null,
 	vertex: null,
@@ -185,6 +189,7 @@ export const PROVIDER_MODEL_FIELD: Record<ProviderName, string | null> = {
 	"vercel-ai-gateway": "vercelAiGatewayModelId",
 	ovhcloud: "ovhCloudAiEndpointsModelId",
 	// Providers without dynamic model support
+	agentica: null,
 	anthropic: null,
 	bedrock: null,
 	vertex: null,
@@ -252,6 +257,7 @@ export const getModelFieldForProvider = (provider: ProviderName): string | null 
  * For providers without router support, these are fallback defaults
  */
 export const DEFAULT_MODEL_IDS: Partial<Record<ProviderName, string>> = {
+	agentica: agenticaDefaultModelId,
 	anthropic: anthropicDefaultModelId,
 	bedrock: bedrockDefaultModelId,
 	vertex: vertexDefaultModelId,
@@ -308,6 +314,11 @@ export function getModelsByProvider(params: {
 
 	// Handle non-router providers with static model definitions
 	switch (provider) {
+		case "agentica":
+			return {
+				models: agenticaModels as ModelRecord,
+				defaultModel: agenticaDefaultModelId,
+			}
 		case "anthropic":
 			return {
 				models: anthropicModels as ModelRecord,

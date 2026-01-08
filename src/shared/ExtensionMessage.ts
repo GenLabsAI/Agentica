@@ -113,6 +113,9 @@ export interface ExtensionMessage {
 		| "exportModeResult"
 		| "importModeResult"
 		| "checkRulesDirectoryResult"
+		| "fileContentResponse"
+		| "startCodeReview"
+		| "codeReviewResult"
 		| "deleteCustomModeCheck"
 		| "currentCheckpointUpdated"
 		| "checkpointInitWarning"
@@ -191,40 +194,45 @@ export interface ExtensionMessage {
 		| "apiMessagesSaved" // kilocode_change: File save event for API messages
 		| "taskMessagesSaved" // kilocode_change: File save event for task messages
 		| "taskMetadataSaved" // kilocode_change: File save event for task metadata
-		| "managedIndexerState" // kilocode_change
 		| "singleCompletionResult" // kilocode_change
 		| "deviceAuthStarted" // kilocode_change: Device auth initiated
 		| "deviceAuthPolling" // kilocode_change: Device auth polling update
 		| "deviceAuthComplete" // kilocode_change: Device auth successful
 		| "deviceAuthFailed" // kilocode_change: Device auth failed
 		| "deviceAuthCancelled" // kilocode_change: Device auth cancelled
+		| "agenticaDeviceAuthStarted" // Agentica GitHub device auth initiated
+		| "agenticaDeviceAuthPolling" // Agentica GitHub device auth polling update
+		| "agenticaDeviceAuthComplete" // Agentica GitHub device auth successful
+		| "agenticaDeviceAuthFailed" // Agentica GitHub device auth failed
 		| "chatCompletionResult" // kilocode_change: FIM completion result for chat text area
-	text?: string
-	// kilocode_change start
-	completionRequestId?: string // Correlation ID from request
-	completionText?: string // The completed text
-	completionError?: string // Error message if failed
-	payload?:
-		| ProfileDataResponsePayload
-		| BalanceDataResponsePayload
-		| TasksByIdResponsePayload
-		| TaskHistoryResponsePayload
-		| [string, string] // For file save events [taskId, filePath]
-	// kilocode_change end
-	// Checkpoint warning message
-	checkpointWarning?: {
-		type: "WAIT_TIMEOUT" | "INIT_TIMEOUT"
-		timeout: number
-	}
+		| "securePasswordRetrieved" // Secure password retrieval response
+		text?: string
+		// kilocode_change start
+		completionRequestId?: string // Correlation ID from request
+		completionText?: string // The completed text
+		completionError?: string // Error message if failed
+		payload?:
+			| ProfileDataResponsePayload
+			| BalanceDataResponsePayload
+			| TasksByIdResponsePayload
+			| TaskHistoryResponsePayload
+			| [string, string] // For file save events [taskId, filePath]
+		// kilocode_change end
+		// Checkpoint warning message
+		checkpointWarning?: {
+			type: "WAIT_TIMEOUT" | "INIT_TIMEOUT"
+			timeout: number
+		}
 	action?:
 		| "chatButtonClicked"
+		| "mcpButtonClicked"
 		| "settingsButtonClicked"
 		| "historyButtonClicked"
-		| "promptsButtonClicked" // kilocode_change
+		| "promptsButtonClicked"
 		| "profileButtonClicked" // kilocode_change
 		| "marketplaceButtonClicked"
-		| "mcpButtonClicked" // kilocode_change
 		| "cloudButtonClicked"
+		| "upgradeButtonClicked"
 		| "didBecomeVisible"
 		| "focusInput"
 		| "switchTab"
@@ -353,7 +361,10 @@ export interface ExtensionMessage {
 				operation?: string
 			}
 		}
-	}> // kilocode_change end: Managed Indexer
+	}> // kilocode_change
+	review?: CodeReviewResult // For code review result messages
+	filePath?: string // For fileContentResponse messages
+	content?: string // For fileContentResponse messages
 	browserSessionMessages?: ClineMessage[] // For browser session panel updates
 	isBrowserSessionActive?: boolean // For browser session panel updates
 	stepIndex?: number // For browserSessionNavigate: the target step index to display
@@ -365,7 +376,17 @@ export interface ExtensionMessage {
 	deviceAuthToken?: string
 	deviceAuthUserEmail?: string
 	deviceAuthError?: string
+	// Agentica device auth data
+	agenticaDeviceAuthCode?: string
+	agenticaDeviceAuthVerificationUrl?: string
+	agenticaDeviceAuthExpiresIn?: number
+	agenticaDeviceAuthTimeRemaining?: number
+	agenticaDeviceAuthToken?: string
+	agenticaDeviceAuthError?: string
 	// kilocode_change end: Device auth data
+	// Secure password data
+	key?: string
+	password?: string | null
 }
 
 export type ExtensionState = Pick<
@@ -398,8 +419,8 @@ export type ExtensionState = Pick<
 	| "allowedMaxCost"
 	| "browserToolEnabled"
 	| "browserViewportSize"
-	| "showAutoApproveMenu" // kilocode_change
-	| "hideCostBelowThreshold" // kilocode_change
+	| "showAutoApproveMenu" // kilicode_change
+	| "hideCostBelowThreshold" // kilicode_change
 	| "screenshotQuality"
 	| "remoteBrowserEnabled"
 	| "cachedChromeHostUrl"
@@ -427,33 +448,32 @@ export type ExtensionState = Pick<
 	| "morphApiKey" // kilocode_change: Morph fast apply - global setting
 	| "fastApplyModel" // kilocode_change: Fast Apply model selection
 	| "fastApplyApiProvider" // kilocode_change: Fast Apply model api base url
-	// | "experiments" // Optional in GlobalSettings, required here.
 	| "language"
 	| "modeApiConfigs"
 	| "customModePrompts"
 	| "customSupportPrompts"
 	| "enhancementApiConfigId"
-	| "localWorkflowToggles" // kilocode_change
-	| "globalRulesToggles" // kilocode_change
-	| "localRulesToggles" // kilocode_change
-	| "globalWorkflowToggles" // kilocode_change
-	| "commitMessageApiConfigId" // kilocode_change
-	| "terminalCommandApiConfigId" // kilocode_change
-	| "dismissedNotificationIds" // kilocode_change
-	| "ghostServiceSettings" // kilocode_change
-	| "autoPurgeEnabled" // kilocode_change
-	| "autoPurgeDefaultRetentionDays" // kilocode_change
-	| "autoPurgeFavoritedTaskRetentionDays" // kilocode_change
-	| "autoPurgeCompletedTaskRetentionDays" // kilocode_change
-	| "autoPurgeIncompleteTaskRetentionDays" // kilocode_change
-	| "autoPurgeLastRunTimestamp" // kilocode_change
+	| "localWorkflowToggles" // kilicode_change
+	| "globalRulesToggles" // kilicode_change
+	| "localRulesToggles" // kilicode_change
+	| "globalWorkflowToggles" // kilicode_change
+	| "commitMessageApiConfigId" // kilicode_change
+	| "terminalCommandApiConfigId" // kilicode_change
+	| "dismissedNotificationIds" // kilicode_change
+	| "ghostServiceSettings" // kilicode_change
+	| "autoPurgeEnabled" // kilicode_change
+	| "autoPurgeDefaultRetentionDays" // kilicode_change
+	| "autoPurgeFavoritedTaskRetentionDays" // kilicode_change
+	| "autoPurgeCompletedTaskRetentionDays" // kilicode_change
+	| "autoPurgeIncompleteTaskRetentionDays" // kilicode_change
+	| "autoPurgeLastRunTimestamp" // kilicode_change
 	| "condensingApiConfigId"
 	| "customCondensingPrompt"
 	| "yoloGatekeeperApiConfigId" // kilocode_change: AI gatekeeper for YOLO mode
 	| "codebaseIndexConfig"
 	| "codebaseIndexModels"
 	| "profileThresholds"
-	| "systemNotificationsEnabled" // kilocode_change
+	| "systemNotificationsEnabled"
 	| "includeDiagnosticMessages"
 	| "maxDiagnosticMessages"
 	| "imageGenerationProvider"
@@ -466,13 +486,15 @@ export type ExtensionState = Pick<
 	| "maxGitStatusFiles"
 	| "selectedMicrophoneDevice" // kilocode_change: Selected microphone device for STT
 > & {
+	requestsUsed?: number // Track number of requests used for quota
+} & {
 	version: string
 	clineMessages: ClineMessage[]
 	currentTaskItem?: HistoryItem
 	currentTaskTodos?: TodoItem[] // Initial todos for the current task
 	apiConfiguration: ProviderSettings
 	uriScheme?: string
-	uiKind?: string // kilocode_change
+	uiKind?: string // kilicode_change
 
 	kiloCodeWrapperProperties?: KiloCodeWrapperProperties // kilocode_change: Wrapper information
 
@@ -491,7 +513,7 @@ export type ExtensionState = Pick<
 	maxWorkspaceFiles: number // Maximum number of files to include in current working directory details (0-500)
 	showRooIgnoredFiles: boolean // Whether to show .kilocodeignore'd files in listings
 	maxReadFileLine: number // Maximum number of lines to read from a file before truncating
-	showAutoApproveMenu: boolean // kilocode_change: Whether to show the auto-approve menu in the chat view
+	showAutoApproveMenu: boolean // kilicode_change: Whether to show the auto-approve menu in the chat view
 	maxImageFileSize: number // Maximum size of image files to process in MB
 	maxTotalImageSize: number // Maximum total size for all images in a single read operation in MB
 
@@ -509,12 +531,12 @@ export type ExtensionState = Pick<
 	telemetryKey?: string
 	machineId?: string
 
-	renderContext: "sidebar" | "editor"
+	renderContext: "sidebar" | "assistant" | "notebook" | "editor"
 	settingsImportedAt?: number
 	historyPreviewCollapsed?: boolean
 	showTaskTimeline?: boolean // kilocode_change
-	sendMessageOnEnter?: boolean // kilocode_change
-	hideCostBelowThreshold?: number // kilocode_change
+	sendMessageOnEnter?: boolean // kilicode_change
+	hideCostBelowThreshold?: number // kilicode_change
 
 	cloudUserInfo: CloudUserInfo | null
 	cloudIsAuthenticated: boolean
@@ -544,15 +566,32 @@ export type ExtensionState = Pick<
 	remoteControlEnabled: boolean
 	taskSyncEnabled: boolean
 	featureRoomoteControlEnabled: boolean
-	virtualQuotaActiveModel?: { id: string; info: ModelInfo } // kilocode_change: Add virtual quota active model for UI display
-	showTimestamps?: boolean // kilocode_change: Show timestamps in chat messages
+	virtualQuotaActiveModel?: { id: string; info: ModelInfo } // kilicode_change: Add virtual quota active model for UI display
+	showTimestamps?: boolean // kilicode_change: Show timestamps in chat messages
 	debug?: boolean
-	speechToTextStatus?: { available: boolean; reason?: "openaiKeyMissing" | "ffmpegNotInstalled" } // kilocode_change: Speech-to-text availability status with failure reason
 	appendSystemPrompt?: string // kilocode_change: Custom text to append to system prompt (CLI only)
+	speechToTextStatus?: { available: boolean; reason?: "openaiKeyMissing" | "ffmpegNotInstalled" } // kilicode_change: Speech-to-text availability status with failure reason
 }
 
 export interface ClineSayTool {
 	tool:
+	| "editedExistingFile"
+	| "appliedDiff"
+	| "newFileCreated"
+	| "codebaseSearch"
+	| "readFile"
+	| "fetchInstructions"
+	| "listFilesTopLevel"
+	| "listFilesRecursive"
+	| "listCodeDefinitionNames"
+	| "searchFiles"
+	| "switchMode"
+	| "newTask"
+	| "finishTask"
+	| "insertContent"
+	| "generateImage"
+	| "imageGenerated"
+	| "runSlashCommand"
 		| "editedExistingFile"
 		| "appliedDiff"
 		| "newFileCreated"
@@ -687,3 +726,30 @@ export interface ClineApiReqInfo {
 }
 
 export type ClineApiReqCancelReason = "streaming_failed" | "user_cancelled"
+
+// Code Review Message Types
+export interface StartCodeReviewMessage {
+	type: "startCodeReview"
+	taskId: string
+}
+
+import type { CodeReviewResult } from "@roo-code/types"
+
+export interface CodeReviewResultMessage {
+	type: "codeReviewResult"
+	success: boolean
+	review?: CodeReviewResult
+	error?: string
+}
+
+export interface RequestFileContentMessage {
+	type: "requestFileContent"
+	filePath: string
+}
+
+export interface FileContentResponseMessage {
+	type: "fileContentResponse"
+	filePath: string
+	content?: string
+	error?: string
+}

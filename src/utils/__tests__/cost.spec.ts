@@ -112,6 +112,59 @@ describe("Cost Utility", () => {
 			expect(result.totalInputTokens).toBe(6000) // 1000 + 2000 + 3000
 			expect(result.totalOutputTokens).toBe(500)
 		})
+
+		it("should apply credits multiplier correctly", () => {
+			const modelWithCreditsMultiplier: ModelInfo = {
+				...mockModelInfo,
+				creditsMultiplier: 5, // 5x credits multiplier
+			}
+
+			const result = calculateApiCostAnthropic(modelWithCreditsMultiplier, 1000, 500)
+
+			// Cost = creditsMultiplier * $0.001 = 5 * 0.001 = $0.005
+			expect(result.totalCost).toBe(0.005)
+			expect(result.totalInputTokens).toBe(1000)
+			expect(result.totalOutputTokens).toBe(500)
+		})
+
+		it("should handle missing credits multiplier (default to 0x)", () => {
+			const result = calculateApiCostAnthropic(mockModelInfo, 1000, 500)
+
+			// Should use default multiplier of 0 (free)
+			expect(result.totalCost).toBe(0)
+			expect(result.totalInputTokens).toBe(1000)
+			expect(result.totalOutputTokens).toBe(500)
+		})
+
+		it("should handle 0x credits multiplier (free model)", () => {
+			const freeModel: ModelInfo = {
+				...mockModelInfo,
+				creditsMultiplier: 0, // Free model
+			}
+
+			const result = calculateApiCostAnthropic(freeModel, 1000, 500)
+
+			// Cost = 0 * $0.001 = $0 (free)
+			expect(result.totalCost).toBe(0)
+			expect(result.totalInputTokens).toBe(1000)
+			expect(result.totalOutputTokens).toBe(500)
+		})
+
+		it("should apply token-based pricing for premium models", () => {
+			const premiumModel: ModelInfo = {
+				...mockModelInfo,
+				inputPrice: 3.0, // $3 per million input tokens
+				outputPrice: 15.0, // $15 per million output tokens
+				// No creditsMultiplier - uses token pricing instead
+			}
+
+			const result = calculateApiCostAnthropic(premiumModel, 1000, 500)
+
+			// Cost = (1000 * 3.0 / 1M) + (500 * 15.0 / 1M) = 0.003 + 0.0075 = $0.0105
+			expect(result.totalCost).toBe(0.0105)
+			expect(result.totalInputTokens).toBe(1000)
+			expect(result.totalOutputTokens).toBe(500)
+		})
 	})
 
 	describe("calculateApiCostOpenAI", () => {
@@ -219,6 +272,29 @@ describe("Cost Utility", () => {
 			// Total: 0.003 + 0.0075 = 0.0105
 			expect(result.totalCost).toBe(0.0105)
 			expect(result.totalInputTokens).toBe(6000) // Total already includes cache
+			expect(result.totalOutputTokens).toBe(500)
+		})
+
+		it("should apply credits multiplier correctly", () => {
+			const modelWithCreditsMultiplier: ModelInfo = {
+				...mockModelInfo,
+				creditsMultiplier: 10, // 10x credits multiplier
+			}
+
+			const result = calculateApiCostOpenAI(modelWithCreditsMultiplier, 1000, 500)
+
+			// Cost = creditsMultiplier * $0.001 = 10 * 0.001 = $0.01
+			expect(result.totalCost).toBe(0.01)
+			expect(result.totalInputTokens).toBe(1000)
+			expect(result.totalOutputTokens).toBe(500)
+		})
+
+		it("should handle missing credits multiplier (default to 0x)", () => {
+			const result = calculateApiCostOpenAI(mockModelInfo, 1000, 500)
+
+			// Should use default multiplier of 0 (free)
+			expect(result.totalCost).toBe(0)
+			expect(result.totalInputTokens).toBe(1000)
 			expect(result.totalOutputTokens).toBe(500)
 		})
 	})

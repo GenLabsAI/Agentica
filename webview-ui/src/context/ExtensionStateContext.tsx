@@ -233,13 +233,18 @@ export const mergeExtensionState = (prevState: ExtensionState, newState: Extensi
 		...newRest
 	} = newState
 
+	// Preserve locally-entered sensitive values (e.g., provider credentials) when
+	// the extension sends a sanitized apiConfiguration that omits them.
+	const mergedApiConfiguration = {
+		...(prevState.apiConfiguration ?? {}),
+		...(apiConfiguration ?? {}),
+	}
+
 	const customModePrompts = { ...prevCustomModePrompts, ...newCustomModePrompts }
 	const experiments = { ...prevExperiments, ...newExperiments }
 	const rest = { ...prevRest, ...newRest }
 
-	// Note that we completely replace the previous apiConfiguration and customSupportPrompts objects
-	// with new ones since the state that is broadcast is the entire objects so merging is not necessary.
-	return { ...rest, apiConfiguration, customModePrompts, customSupportPrompts, experiments }
+	return { ...rest, apiConfiguration: mergedApiConfiguration, customModePrompts, customSupportPrompts, experiments }
 }
 
 export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -263,6 +268,7 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 		fuzzyMatchThreshold: 1.0,
 		language: "en", // Default language code
 		writeDelayMs: 1000,
+		requestsUsed: 0,
 		browserViewportSize: "900x600",
 		screenshotQuality: 75,
 		terminalOutputLineLimit: 500,
@@ -482,6 +488,12 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 						}
 						return prevState
 					})
+					break
+				}
+				case "usageDataResponse": {
+					if (message.values?.day?.requests !== undefined) {
+						setState((prevState) => ({ ...prevState, requestsUsed: message.values?.day?.requests ?? 0 }))
+					}
 					break
 				}
 				case "mcpServers": {

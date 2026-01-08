@@ -10,9 +10,8 @@ mock/
 *.orig
 
 # Builds
-bin/
 bin-unpacked/
-*.vsix
+# *.vsix - Just for now!
 
 # Local prompts and rules
 /local-prompts
@@ -67,6 +66,9 @@ qdrant_storage/
 # to make it easier to work on features in parallel
 *.code-workspace
 
+# Custom git commit/push macros
+git-commit-push.bat
+quick-commit.sh
 # Act Secret Files
 .secrets
 # Architect plans

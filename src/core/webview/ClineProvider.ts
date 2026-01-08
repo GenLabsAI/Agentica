@@ -59,6 +59,7 @@ import { experimentDefault } from "../../shared/experiments"
 import { formatLanguage } from "../../shared/language"
 import { WebviewMessage } from "../../shared/WebviewMessage"
 import { EMBEDDING_MODEL_PROFILES } from "../../shared/embeddingModels"
+import { UsageTracker } from "../../utils/usage-tracker" // kilocode_change
 import { ProfileValidator } from "../../shared/ProfileValidator"
 
 import { Terminal } from "../../integrations/terminal/Terminal"
@@ -116,6 +117,7 @@ import { getKilocodeConfig, KilocodeConfig } from "../../utils/kilo-config-file"
 import { resolveToolProtocol } from "../../utils/resolveToolProtocol"
 import { kilo_execIfExtension } from "../../shared/kilocode/cli-sessions/extension/session-manager-utils"
 import { DeviceAuthHandler } from "../kilocode/webview/deviceAuthHandler"
+import { GithubDeviceAuthService } from "../../services/agentica/GithubDeviceAuthService"
 
 export type ClineProviderState = Awaited<ReturnType<ClineProvider["getState"]>>
 // kilocode_change end
@@ -141,8 +143,7 @@ interface PendingEditOperation {
 
 export class ClineProvider
 	extends EventEmitter<TaskProviderEvents>
-	implements vscode.WebviewViewProvider, TelemetryPropertiesProvider, TaskProviderLike
-{
+	implements vscode.WebviewViewProvider, TelemetryPropertiesProvider, TaskProviderLike {
 	// Used in package.json as the view's id. This value cannot be changed due
 	// to how VSCode caches views based on their id, and updating the id would
 	// break existing instances of the extension.
@@ -165,6 +166,7 @@ export class ClineProvider
 	private currentWorkspacePath: string | undefined
 	private autoPurgeScheduler?: any // kilocode_change - (Any) Prevent circular import
 	private deviceAuthHandler?: DeviceAuthHandler // kilocode_change - Device auth handler
+	private agenticaDeviceAuthService?: GithubDeviceAuthService // Agentica GitHub device auth service
 
 	private recentTasksCache?: string[]
 	private pendingOperations: Map<string, PendingEditOperation> = new Map()
@@ -265,8 +267,7 @@ export class ClineProvider
 					}
 				} catch (error) {
 					this.log(
-						`[onTaskAborted] Failed to rehydrate after streaming failure: ${
-							error instanceof Error ? error.message : String(error)
+						`[onTaskAborted] Failed to rehydrate after streaming failure: ${error instanceof Error ? error.message : String(error)
 						}`,
 					)
 				}
@@ -992,8 +993,7 @@ export class ClineProvider
 					} catch (error) {
 						// Log the error but continue with task restoration.
 						this.log(
-							`Failed to restore API configuration for mode '${historyItem.mode}': ${
-								error instanceof Error ? error.message : String(error)
+							`Failed to restore API configuration for mode '${historyItem.mode}': ${error instanceof Error ? error.message : String(error)
 							}. Continuing with default configuration.`,
 						)
 						// The task will continue with the current/default configuration.
@@ -1382,7 +1382,7 @@ export class ClineProvider
 				}
 
 				// Only update the task's mode after successful persistence.
-				;(task as any)._taskMode = newMode
+				; (task as any)._taskMode = newMode
 			} catch (error) {
 				// If persistence fails, log the error but don't update the in-memory state.
 				this.log(
@@ -1727,6 +1727,237 @@ export class ClineProvider
 
 		const profileName = `Requesty (${new Date().toLocaleString()})`
 		await this.upsertProviderProfile(profileName, newConfiguration)
+	}
+
+	// Agentica
+
+	async handleAgenticaCallback(code: string) {
+		let apiKey: string
+		let userEmail: string | undefined
+
+		try {
+			const baseUrl = "https://api.genlabs.dev/agentica/v1"
+			const response = await axios.post(`${baseUrl}/auth/github`, { code })
+
+			if (response.data && response.data.api_key) {
+				apiKey = response.data.api_key
+				userEmail = response.data.user?.email
+			} else {
+				throw new Error("Invalid response from Agentica API")
+			}
+		} catch (error: any) {
+			this.log(
+				`Error exchanging GitHub code for Agentica API key: ${JSON.stringify(error, Object.getOwnPropertyNames(error), 2)}`,
+			)
+
+			const errorMessage = error.response?.data?.error || error.message || "Failed to authenticate with GitHub"
+			vscode.window.showErrorMessage(`Agentica GitHub authentication failed: ${errorMessage}`)
+			throw error
+		}
+
+		const { apiConfiguration, currentApiConfigName = "default" } = await this.getState()
+		const { agenticaDefaultModelId } = await import("@roo-code/types")
+
+		const newConfiguration: ProviderSettings = {
+			...apiConfiguration,
+			apiProvider: "agentica",
+			agenticaApiKey: apiKey,
+			agenticaEmail: userEmail, // Store email from OAuth response
+			agenticaModelId: apiConfiguration?.agenticaModelId || agenticaDefaultModelId,
+		}
+
+		await this.upsertProviderProfile(currentApiConfigName, newConfiguration)
+		vscode.window.showInformationMessage("Successfully authenticated with Agentica via GitHub!")
+	}
+
+	/**
+	 * Handle Agentica GitHub device flow authentication
+	 * Uses GitHub's device flow to get access token, then exchanges it for Agentica API key
+	 */
+	async handleAgenticaDeviceAuth(githubAccessToken: string) {
+		let apiKey: string
+		let userEmail: string | undefined
+
+		this.log(`Exchanging GitHub access token for Agentica API key...`)
+		try {
+			const baseUrl = "https://api.genlabs.dev/agentica/v1"
+			// Exchange GitHub access token for Agentica API key
+			const response = await axios.post(
+				`${baseUrl}/auth/github`,
+				{ access_token: githubAccessToken },
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			)
+
+			this.log(`Agentica API response status: ${response.status}`)
+			this.log(`Agentica API response data: ${JSON.stringify(response.data)}`)
+
+			if (response.data && response.data.api_key) {
+				apiKey = response.data.api_key
+				userEmail = response.data.user?.email
+				this.log(`Successfully received API key and user email: ${userEmail}`)
+			} else {
+				this.log(`Invalid response structure: ${JSON.stringify(response.data)}`)
+				throw new Error("Invalid response from Agentica API - missing api_key")
+			}
+		} catch (error: any) {
+			this.log(
+				`Error exchanging token: ${error.response?.status} ${error.response?.statusText} - ${JSON.stringify(error.response?.data)}`,
+			)
+
+			const errorMessage = error.response?.data?.error || error.message || "Failed to authenticate with GitHub"
+			vscode.window.showErrorMessage(`Agentica GitHub authentication failed: ${errorMessage}`)
+			throw error
+		}
+
+		const { apiConfiguration, currentApiConfigName = "default" } = await this.getState()
+		const { agenticaDefaultModelId } = await import("@roo-code/types")
+
+		const newConfiguration: ProviderSettings = {
+			...apiConfiguration,
+			apiProvider: "agentica",
+			agenticaApiKey: apiKey,
+			agenticaEmail: userEmail,
+			agenticaModelId: apiConfiguration?.agenticaModelId || agenticaDefaultModelId,
+		}
+
+		// Use upsertProviderProfile which handles state updates properly
+		await this.upsertProviderProfile(currentApiConfigName, newConfiguration)
+		
+		// Post state update to webview to refresh UI
+		await this.postStateToWebview()
+		
+		vscode.window.showInformationMessage("Successfully authenticated with Agentica via GitHub!")
+	}
+
+	/**
+	 * Start Agentica GitHub device authorization flow
+	 */
+	async startAgenticaDeviceAuth(): Promise<void> {
+		// Prevent multiple simultaneous auth flows
+		if (this.agenticaDeviceAuthService) {
+			this.log("Agentica device auth already in progress, cleaning up previous instance")
+			this.agenticaDeviceAuthService.dispose()
+			this.agenticaDeviceAuthService = undefined
+		}
+
+		try {
+			this.agenticaDeviceAuthService = new GithubDeviceAuthService()
+
+			// Set up event listeners (only once per service instance)
+			const setupListeners = () => {
+				this.agenticaDeviceAuthService!.on("started", (data: { userCode: string; verificationUrl: string; expiresIn: number }) => {
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthStarted",
+						deviceAuthCode: data.userCode,
+						deviceAuthVerificationUrl: data.verificationUrl,
+						deviceAuthExpiresIn: data.expiresIn,
+					})
+					// Open browser automatically
+					vscode.env.openExternal(vscode.Uri.parse(data.verificationUrl))
+				})
+
+				this.agenticaDeviceAuthService!.on("polling", (timeRemaining: number) => {
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthPolling",
+						deviceAuthTimeRemaining: timeRemaining,
+					})
+				})
+
+			this.agenticaDeviceAuthService!.on("success", async (accessToken: string) => {
+				this.log(`Agentica device auth success - received access token`)
+				try {
+					await this.handleAgenticaDeviceAuth(accessToken)
+					this.log("Agentica device auth - successfully exchanged token for API key")
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthComplete",
+						deviceAuthToken: accessToken,
+					})
+				} catch (error) {
+					const errorMessage = error instanceof Error ? error.message : String(error)
+					this.log(`Error in handleAgenticaDeviceAuth: ${errorMessage}`)
+					vscode.window.showErrorMessage(`Failed to exchange GitHub token: ${errorMessage}`)
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthFailed",
+						deviceAuthError: errorMessage,
+					})
+				} finally {
+					// Clean up
+					this.agenticaDeviceAuthService?.dispose()
+					this.agenticaDeviceAuthService = undefined
+				}
+			})
+
+				this.agenticaDeviceAuthService!.on("denied", () => {
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthFailed",
+						deviceAuthError: "Authorization was denied",
+					})
+					this.agenticaDeviceAuthService?.dispose()
+					this.agenticaDeviceAuthService = undefined
+				})
+
+				this.agenticaDeviceAuthService!.on("expired", () => {
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthFailed",
+						deviceAuthError: "Authorization code expired. Please try again.",
+					})
+					this.agenticaDeviceAuthService?.dispose()
+					this.agenticaDeviceAuthService = undefined
+				})
+
+				this.agenticaDeviceAuthService!.on("error", (error: Error) => {
+					this.log(`Agentica device auth error: ${error.message}`)
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthFailed",
+						deviceAuthError: error.message || "An error occurred during authentication",
+					})
+					vscode.window.showErrorMessage(`Agentica GitHub authentication error: ${error.message}`)
+					this.agenticaDeviceAuthService?.dispose()
+					this.agenticaDeviceAuthService = undefined
+				})
+
+				this.agenticaDeviceAuthService!.on("cancelled", () => {
+					// Don't send message here - cancelAgenticaDeviceAuth handles UI reset
+					this.agenticaDeviceAuthService?.dispose()
+					this.agenticaDeviceAuthService = undefined
+				})
+			}
+
+			setupListeners()
+
+			// Start the device auth flow
+			await this.agenticaDeviceAuthService.initiate()
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : String(error)
+			this.log(`Failed to start Agentica device auth: ${errorMessage}`)
+			vscode.window.showErrorMessage(`Failed to start Agentica GitHub authentication: ${errorMessage}`)
+
+			this.postMessageToWebview({
+				type: "agenticaDeviceAuthFailed",
+				deviceAuthError: errorMessage,
+			})
+
+			if (this.agenticaDeviceAuthService) {
+				this.agenticaDeviceAuthService.dispose()
+				this.agenticaDeviceAuthService = undefined
+			}
+		}
+	}
+
+	/**
+	 * Cancel Agentica device authorization flow
+	 */
+	cancelAgenticaDeviceAuth(): void {
+		if (this.agenticaDeviceAuthService) {
+			this.agenticaDeviceAuthService.cancel()
+			this.agenticaDeviceAuthService.dispose()
+			this.agenticaDeviceAuthService = undefined
+			// Frontend handles UI reset directly in handleCancelDeviceAuth
+		}
 	}
 
 	// kilocode_change start
@@ -2440,14 +2671,14 @@ export class ClineProvider
 			// kilocode_change start
 			| "taskHistoryFullLength"
 			| "taskHistoryVersion"
-			// kilocode_change end
+		// kilocode_change end
 		>
 	> {
 		const stateValues = this.contextProxy.getValues()
 		const customModes = await this.customModesManager.getCustomModes()
 
 		// Determine apiProvider with the same logic as before.
-		const apiProvider: ProviderName = stateValues.apiProvider ? stateValues.apiProvider : "kilocode" // kilocode_change: fall back to kilocode
+		const apiProvider: ProviderName = stateValues.apiProvider ? stateValues.apiProvider : "agentica" // Changed default to agentica
 
 		// Build the apiConfiguration object combining state values and secrets.
 		const providerSettings = this.contextProxy.getProviderSettings()

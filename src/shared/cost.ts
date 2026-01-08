@@ -15,16 +15,40 @@ function calculateApiCostInternal(
 	totalInputTokens: number,
 	totalOutputTokens: number,
 ): ApiCostResult {
-	const cacheWritesCost = ((modelInfo.cacheWritesPrice || 0) / 1_000_000) * cacheCreationInputTokens
-	const cacheReadsCost = ((modelInfo.cacheReadsPrice || 0) / 1_000_000) * cacheReadInputTokens
-	const baseInputCost = ((modelInfo.inputPrice || 0) / 1_000_000) * inputTokens
-	const outputCost = ((modelInfo.outputPrice || 0) / 1_000_000) * outputTokens
-	const totalCost = cacheWritesCost + cacheReadsCost + baseInputCost + outputCost
+	// For Agentica models, check if we should use token-based pricing or credit-based pricing
+	const hasTokenPricing = modelInfo.inputPrice !== undefined && modelInfo.outputPrice !== undefined &&
+	                       (modelInfo.inputPrice > 0 || modelInfo.outputPrice > 0)
 
-	return {
-		totalInputTokens,
-		totalOutputTokens,
-		totalCost,
+	if (hasTokenPricing) {
+		// Token-based pricing for premium models (like other providers)
+		const inputPricePerToken = (modelInfo.inputPrice || 0) / 1_000_000
+		const outputPricePerToken = (modelInfo.outputPrice || 0) / 1_000_000
+		const cacheWritesPricePerToken = (modelInfo.cacheWritesPrice || modelInfo.inputPrice || 0) / 1_000_000
+		const cacheReadsPricePerToken = (modelInfo.cacheReadsPrice || 0) / 1_000_000
+
+		const inputCost = inputTokens * inputPricePerToken
+		const outputCost = outputTokens * outputPricePerToken
+		const cacheWriteCost = cacheCreationInputTokens * cacheWritesPricePerToken
+		const cacheReadCost = cacheReadInputTokens * cacheReadsPricePerToken
+
+		const totalCost = inputCost + outputCost + cacheWriteCost + cacheReadCost
+
+		return {
+			totalInputTokens,
+			totalOutputTokens,
+			totalCost,
+		}
+	} else {
+		// Credit-based pricing for free models
+		// Cost = creditsMultiplier * $0.001 (where 10 credits = 1 cent)
+		const creditsMultiplier = modelInfo.creditsMultiplier || 0
+		const totalCost = creditsMultiplier * 0.001 // $0.001 per credit
+
+		return {
+			totalInputTokens,
+			totalOutputTokens,
+			totalCost,
+		}
 	}
 }
 

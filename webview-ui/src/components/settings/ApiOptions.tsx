@@ -46,6 +46,7 @@ import {
 	vercelAiGatewayDefaultModelId,
 	deepInfraDefaultModelId,
 	minimaxDefaultModelId,
+	agenticaDefaultModelId,
 	nanoGptDefaultModelId, //kilocode_change
 	type ToolProtocol,
 	TOOL_PROTOCOL,
@@ -78,6 +79,7 @@ import {
 
 import {
 	Anthropic,
+	Agentica,
 	Baseten,
 	Bedrock,
 	Cerebras,
@@ -428,6 +430,7 @@ const ApiOptions = ({
 				ovhcloud: { field: "ovhCloudAiEndpointsModelId", default: ovhCloudAiEndpointsDefaultModelId },
 				inception: { field: "inceptionLabsModelId", default: inceptionDefaultModelId },
 				// kilocode_change end
+				agentica: { field: "apiModelId", default: agenticaDefaultModelId },
 			}
 
 			const config = PROVIDER_MODEL_CONFIG[value]
@@ -457,6 +460,7 @@ const ApiOptions = ({
 		// kilocode_change start
 		// Providers that don't have documentation pages yet
 		const excludedProviders = [
+			"agentica",
 			"gemini-cli",
 			"moonshot",
 			"chutes",
@@ -507,7 +511,6 @@ const ApiOptions = ({
 		[],
 	)
 	// kilocode_change end
-
 	return (
 		<div className="flex flex-col gap-3">
 			{/* kilocode_change start - autocomplete profile type system */}
@@ -657,6 +660,14 @@ const ApiOptions = ({
 					apiConfiguration={apiConfiguration}
 					setApiConfigurationField={setApiConfigurationField}
 					simplifySettings={fromWelcomeView}
+				/>
+			)}
+
+			{selectedProvider === "agentica" && (
+				<Agentica
+					apiConfiguration={apiConfiguration}
+					setApiConfigurationField={setApiConfigurationField}
+					uriScheme={uriScheme}
 				/>
 			)}
 

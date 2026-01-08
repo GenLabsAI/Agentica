@@ -39,6 +39,7 @@ export const commandIds = [
 	"popoutButtonClicked",
 	"cloudButtonClicked",
 	"settingsButtonClicked",
+	"upgradeButtonClicked",
 
 	"openInNewTab",
 	"open", // kilocode_change
@@ -58,6 +59,7 @@ export const commandIds = [
 	"acceptInput",
 	"profileButtonClicked", // kilocode_change
 	"helpButtonClicked", // kilocode_change
+	"githubSignIn", // kilocode_change
 	"focusChatInput", // kilocode_change
 	"importSettings", // kilocode_change
 	"exportSettings", // kilocode_change

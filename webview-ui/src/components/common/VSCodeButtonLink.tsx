@@ -1,27 +1,29 @@
-import React from "react"
-import { Button } from "@src/components/ui"
+import React from "react";
+import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 
 interface VSCodeButtonLinkProps {
-	href: string
-	children: React.ReactNode
-	appearance?: "primary" | "secondary"
-	[key: string]: any
+	href: string;
+	children: React.ReactNode;
+	[key: string]: any;
 }
 
-export const VSCodeButtonLink = ({ href, children, appearance, ...props }: VSCodeButtonLinkProps) => {
-	// Map appearance to variant for the new Button component
-	const variant = appearance === "primary" ? "primary" : appearance === "secondary" ? "secondary" : undefined
-
-	return (
-		<a
-			href={href}
+export const VSCodeButtonLink = ({ href, children, ...props }: VSCodeButtonLinkProps) => (
+	<a
+		href={href}
+		style={{
+			textDecoration: "none",
+			color: "inherit",
+		}}
+	>
+		<div
 			style={{
-				textDecoration: "none",
-				color: "inherit",
-			}}>
-			<Button variant={variant} {...props}>
-				{children}
-			</Button>
-		</a>
-	)
-}
+				borderRadius: 6,
+				overflow: "hidden",     // clip corners
+				display: "inline-block", // shrink wrapper correctly
+				lineHeight: 0,           // CRUCIAL → makes clipping work
+			}}
+		>
+			<VSCodeButton {...props}>{children}</VSCodeButton>
+		</div>
+	</a>
+);

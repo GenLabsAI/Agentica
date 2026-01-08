@@ -4,13 +4,14 @@ import { useCloudUpsell } from "@src/hooks/useCloudUpsell"
 import { CloudUpsellDialog } from "@src/components/cloud/CloudUpsellDialog"
 import DismissibleUpsell from "@src/components/common/DismissibleUpsell"
 import {
+	FoldVertical,
 	ChevronUp,
 	ChevronDown,
+	CheckCircle,
 	SquarePen,
 	Coins,
 	HardDriveDownload,
 	HardDriveUpload,
-	FoldVertical,
 	Globe,
 } from "lucide-react"
 import prettyBytes from "pretty-bytes"
@@ -21,11 +22,11 @@ import { getModelMaxOutputTokens } from "@roo/api"
 import { findLastIndex } from "@roo/array"
 
 import { formatLargeNumber } from "@src/utils/format"
+import { vscode } from "@src/utils/vscode"
 import { cn } from "@src/lib/utils"
 import { StandardTooltip, Button } from "@src/components/ui"
 import { useExtensionState } from "@src/context/ExtensionStateContext"
 import { useSelectedModel } from "@/components/ui/hooks/useSelectedModel"
-import { vscode } from "@src/utils/vscode"
 
 import Thumbnails from "../common/Thumbnails"
 
@@ -33,6 +34,8 @@ import { TaskActions } from "./TaskActions"
 import { ContextWindowProgress } from "./ContextWindowProgress"
 import { Mention } from "./Mention"
 import { TodoListDisplay } from "./TodoListDisplay"
+import { CodeReviewDialog, type CodeReviewResult } from "./CodeReviewDialog"
+import type { CodeReviewIssue } from "@roo-code/types"
 import { LucideIconButton } from "./LucideIconButton"
 
 export interface TaskHeaderProps {
@@ -61,10 +64,14 @@ const TaskHeader = ({
 	todos,
 }: TaskHeaderProps) => {
 	const { t } = useTranslation()
-	const { apiConfiguration, currentTaskItem, clineMessages, isBrowserSessionActive } = useExtensionState()
+	const { apiConfiguration, currentTaskItem, clineMessages, mode, cloudIsAuthenticated, isBrowserSessionActive } = useExtensionState()
 	const { id: modelId, info: model } = useSelectedModel(apiConfiguration)
 	const [isTaskExpanded, setIsTaskExpanded] = useState(false)
 	const [showLongRunningTaskMessage, setShowLongRunningTaskMessage] = useState(false)
+	const [showCodeReviewDialog, setShowCodeReviewDialog] = useState(false)
+	const [codeReviewLoading, setCodeReviewLoading] = useState(false)
+	const [codeReviewResult, setCodeReviewResult] = useState<CodeReviewResult | null>(null)
+	const [codeReviewError, setCodeReviewError] = useState<string | null>(null)
 	const { isOpen, openUpsell, closeUpsell, handleConnect } = useCloudUpsell({
 		autoOpenOnAuth: false,
 	})
@@ -83,6 +90,9 @@ const TaskHeader = ({
 				})()
 			: false
 
+	// Check if code review button should be shown
+	const shouldShowCodeReview = isTaskComplete && ["code", "architect"].includes(mode) && cloudIsAuthenticated
+
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			if (currentTaskItem && !isTaskComplete) {
@@ -96,6 +106,46 @@ const TaskHeader = ({
 	const textContainerRef = useRef<HTMLDivElement>(null)
 	const textRef = useRef<HTMLDivElement>(null)
 	const contextWindow = model?.contextWindow || 1
+
+	// Handle code review
+	const handleStartCodeReview = () => {
+		if (!currentTaskItem) return
+
+		setCodeReviewLoading(true)
+		setCodeReviewError(null)
+		setCodeReviewResult(null)
+		setShowCodeReviewDialog(true)
+
+		// Send message to start code review
+		vscode.postMessage({
+			type: "startCodeReview",
+			taskId: currentTaskItem.id,
+		})
+	}
+
+	const handleCloseCodeReview = () => {
+		setShowCodeReviewDialog(false)
+		setCodeReviewResult(null)
+		setCodeReviewError(null)
+	}
+
+	// Listen for code review results
+	useEffect(() => {
+		const handleMessage = (event: MessageEvent) => {
+			const message = event.data
+			if (message.type === "codeReviewResult") {
+				setCodeReviewLoading(false)
+				if (message.success) {
+					setCodeReviewResult(message.review)
+				} else {
+					setCodeReviewError(message.error || "Failed to generate code review")
+				}
+			}
+		}
+
+		window.addEventListener("message", handleMessage)
+		return () => window.removeEventListener("message", handleMessage)
+	}, [])
 
 	// Detect if this task had any browser session activity so we can show a grey globe when inactive
 	const browserSessionStartIndex = useMemo(() => {
@@ -405,12 +455,45 @@ const TaskHeader = ({
 								</tbody>
 							</table>
 						</div>
+
+						{/* Footer with task management buttons */}
+						<div onClick={(e) => e.stopPropagation()}>
+							<TaskActions item={currentTaskItem} buttonsDisabled={buttonsDisabled} />
+							{shouldShowCodeReview && (
+								<div className="mt-2">
+									<StandardTooltip content={t("chat:codeReview.tooltip", { defaultValue: "Get an AI-powered review of the code changes" })}>
+										<button
+											onClick={handleStartCodeReview}
+											disabled={buttonsDisabled}
+											className="flex items-center gap-2 px-3 py-1.5 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white text-sm rounded-md transition-colors disabled:cursor-not-allowed">
+											<CheckCircle className="w-4 h-4" />
+											{t("chat:codeReview.button", { defaultValue: "Review with Deca" })}
+										</button>
+									</StandardTooltip>
+								</div>
+							)}
+						</div>
 					</>
 				)}
 				{/* Todo list - always shown at bottom when todos exist */}
 				{hasTodos && <TodoListDisplay todos={todos ?? (task as any)?.tool?.todos ?? []} />}
 			</div>
 			<CloudUpsellDialog open={isOpen} onOpenChange={closeUpsell} onConnect={handleConnect} />
+			<CodeReviewDialog
+				isOpen={showCodeReviewDialog}
+				onClose={handleCloseCodeReview}
+				isLoading={codeReviewLoading}
+				review={codeReviewResult || undefined}
+				error={codeReviewError || undefined}
+				onStartReview={handleStartCodeReview}
+				onFixIssues={(selectedIssues: CodeReviewIssue[]) => {
+					// For TaskHeader, we need to inject into the chat somehow
+					// This would require passing a callback from the parent component
+					// For now, we'll just close the dialog
+					console.log('Selected issues for fixing:', selectedIssues)
+					handleCloseCodeReview()
+				}}
+			/>
 		</div>
 	)
 }

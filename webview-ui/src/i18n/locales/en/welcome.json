@@ -1,45 +1,26 @@
 {
-	"greeting": "Hi, I'm Kilo Code!",
-	"introduction": "<strong>Kilo Code is the premiere autonomous coding agent.</strong> Get ready to architect, code, debug, and boost your productivity like you've never seen before. To continue, Kilo Code requires an API key.",
-	"notice": "To get started, this extension needs an API provider.",
-	"start": "Let's go!",
-	"routers": {
-		"requesty": {
-			"description": "Your optimized LLM router",
-			"incentive": "$1 free credit"
-		},
-		"openrouter": {
-			"description": "A unified interface for LLMs"
-		},
-		"roo": {
-			"description": "The best free models to get started",
-			"incentive": "Try Roo out for free"
-		}
-	},
-	"chooseProvider": "To do its magic, Kilo Code needs an API key.",
-	"providerSignup": {
-		"rooCloudProvider": "Roo Code Cloud Provider",
-		"rooCloudDescription": "The simplest way to use Roo. A curated mix of free and paid models at a low cost",
-		"learnMore": "learn more",
-		"useAnotherProvider": "Use another provider",
-		"useAnotherProviderDescription": "Enter an API key and get going.",
-		"noApiKeys": "Don't want to deal with keys? Go with the Roo Code Cloud Provider.",
-		"getStarted": "Get started"
-	},
-	"waitingForCloud": {
-		"heading": "Taking you to Roo Code Cloud...",
-		"description": "We'll take you to your browser to sign up for Roo Code Cloud. We'll then bring you back here to finish.",
-		"noPrompt": "If you don't get prompted to open a URL, <clickHere>click here</clickHere>.",
-		"havingTrouble": "If you've completed sign up but are having trouble, <clickHere>click here</clickHere>.",
-		"pasteUrl": "Paste the callback URL shown in your browser:",
-		"invalidURL": "That doesn't look like a valid callback URL. Please copy what Roo Code Cloud is showing in your browser.",
-		"goBack": "Go back"
-	},
-	"startRouter": "We recommend using an LLM Router:",
-	"startCustom": "Or you can bring your provider API key:",
-	"telemetry": {
-		"helpImprove": "Help Improve Kilo Code",
-		"helpImproveMessage": "Kilo Code collects error and usage data to help us fix bugs and improve the extension. This telemetry does not collect code, prompts or personal information. You can turn this off in <settingsLink>settings</settingsLink>."
-	},
-	"importSettings": "Import Settings"
+  "greeting": "Hi, I'm Agentica!",
+  "introduction": "<strong>Agentica is the premiere autonomous coding agent.</strong> Get ready to architect, code, debug, and boost your productivity like you've never seen before. To continue, Agentica requires an API key.",
+  "notice": "To get started, this extension needs an API provider.",
+  "start": "Let's go!",
+  "routers": {
+    "requesty": {
+      "description": "Your optimized LLM router",
+      "incentive": "$1 free credit"
+    },
+    "openrouter": {
+      "description": "A unified interface for LLMs"
+    },
+    "roo": {
+      "description": "The best free models to get started",
+      "incentive": "Try Roo out for free"
+    }
+  },
+  "startRouter": "We recommend using an LLM Router:",
+  "startCustom": "Or you can bring your provider API key:",
+  "telemetry": {
+    "helpImprove": "Help Improve Agentica",
+    "helpImproveMessage": "Agentica collects error and usage data to help us fix bugs and improve the extension. This telemetry does not collect code, prompts or personal information. You can turn this off in <settingsLink>settings</settingsLink>."
+  },
+  "importSettings": "Import Settings"
 }

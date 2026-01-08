@@ -2952,6 +2952,19 @@ export const webviewMessageHandler = async (
 			provider.postMessageToWebview({ type: "action", action: "cloudButtonClicked" })
 			break
 		}
+		case "githubSignIn": {
+			// Trigger the GitHub OAuth flow via the registered command
+			vscode.commands.executeCommand("githubSignIn")
+			break
+		}
+		case "startAgenticaDeviceAuth": {
+			await provider.startAgenticaDeviceAuth()
+			break
+		}
+		case "cancelAgenticaDeviceAuth": {
+			provider.cancelAgenticaDeviceAuth()
+			break
+		}
 		case "rooCloudSignIn": {
 			try {
 				TelemetryService.instance.captureEvent(TelemetryEventName.AUTHENTICATION_INITIATED)
@@ -4190,6 +4203,68 @@ export const webviewMessageHandler = async (
 		}
 		// kilocode_change end
 
+		case "startCodeReview": {
+			try {
+				const { taskId } = message
+
+				if (!taskId) {
+					await provider.postMessageToWebview({
+						type: "codeReviewResult",
+						success: false,
+						error: "Task ID is required"
+					})
+					break
+				}
+
+				// Get the task messages
+				const task = await provider.getTaskWithId(taskId)
+				if (!task) {
+					await provider.postMessageToWebview({
+						type: "codeReviewResult",
+						success: false,
+						error: "Task not found"
+					})
+					break
+				}
+
+				// Load messages from file
+				const messagesContent = await fs.readFile(task.uiMessagesFilePath, "utf8")
+				const messages: ClineMessage[] = JSON.parse(messagesContent)
+
+				// Import the code review service
+				const { CodeReviewService } = await import("../../services/code-review/CodeReviewService")
+
+				// Create and initialize the service
+				const codeReviewService = new CodeReviewService(CloudService.instance!, provider.cwd)
+				await codeReviewService.initialize()
+
+				// Extract task changes
+				const { directoryTree, diff, mode, taskDescription } = await codeReviewService.extractTaskChanges(
+					taskId,
+					messages
+				)
+
+				// Generate the review
+				const review = await codeReviewService.generateCodeReview(directoryTree, diff, mode, taskDescription)
+
+				// Send the result back to the webview
+				await provider.postMessageToWebview({
+					type: "codeReviewResult",
+					success: true,
+					review
+				})
+
+			} catch (error) {
+				provider.log(`Error in code review: ${error instanceof Error ? error.message : String(error)}`)
+				await provider.postMessageToWebview({
+					type: "codeReviewResult",
+					success: false,
+					error: error instanceof Error ? error.message : "Failed to generate code review"
+				})
+			}
+			break
+		}
+
 		case "openDebugApiHistory":
 		case "openDebugUiHistory": {
 			const currentTask = provider.getCurrentTask()
@@ -4246,6 +4321,46 @@ export const webviewMessageHandler = async (
 			break
 		}
 
+		case "requestFileContent": {
+			try {
+				const { filePath } = message
+
+				if (!filePath) {
+					await provider.postMessageToWebview({
+						type: "fileContentResponse",
+						filePath: "",
+						error: "File path is required"
+					})
+					break
+				}
+
+				// Import the code review service
+				const { CodeReviewService } = await import("../../services/code-review/CodeReviewService")
+
+				// Create service instance
+				const codeReviewService = new CodeReviewService(CloudService.instance!, provider.cwd)
+
+				// Request file content
+				const content = await codeReviewService.requestFileContent(filePath)
+
+				// Send the file content back to continue the agent loop
+				await provider.postMessageToWebview({
+					type: "fileContentResponse",
+					filePath,
+					content
+				})
+
+			} catch (error) {
+				provider.log(`Error requesting file content: ${error instanceof Error ? error.message : String(error)}`)
+				await provider.postMessageToWebview({
+					type: "fileContentResponse",
+					filePath: message.filePath,
+					error: error instanceof Error ? error.message : "Failed to read file"
+				})
+			}
+			break
+		}
+
 		// kilocode_change start - Device Auth handlers
 		case "startDeviceAuth":
 		case "cancelDeviceAuth":
@@ -4254,6 +4369,62 @@ export const webviewMessageHandler = async (
 			break
 		}
 		// kilocode_change end
+
+		// Secure password storage handlers
+		case "storeSecurePassword": {
+			try {
+				const { key, password } = message
+				if (key && password) {
+					// Import the secure password storage utility
+					const { SecurePasswordStorage } = await import("../../utils/securePasswordStorage")
+					await SecurePasswordStorage.storePasswordForService("agentica", key, password)
+				}
+			} catch (error) {
+				provider.log(`Error storing secure password: ${error instanceof Error ? error.message : String(error)}`)
+			}
+			break
+		}
+		case "getSecurePassword": {
+			try {
+				const { key } = message
+				if (key) {
+					// Import the secure password storage utility
+					const { SecurePasswordStorage } = await import("../../utils/securePasswordStorage")
+					const password = await SecurePasswordStorage.getPasswordForService("agentica", key)
+					
+					// Send the password back to the webview
+					await provider.postMessageToWebview({
+						type: "securePasswordRetrieved",
+						key,
+						password
+					})
+				}
+			} catch (error) {
+				provider.log(`Error retrieving secure password: ${error instanceof Error ? error.message : String(error)}`)
+				
+				// Send error response
+				await provider.postMessageToWebview({
+					type: "securePasswordRetrieved",
+					key: message.key,
+					password: null,
+					error: error instanceof Error ? error.message : String(error)
+				})
+			}
+			break
+		}
+		case "clearSecurePassword": {
+			try {
+				const { key } = message
+				if (key) {
+					// Import the secure password storage utility
+					const { SecurePasswordStorage } = await import("../../utils/securePasswordStorage")
+					await SecurePasswordStorage.clearPasswordForService("agentica", key)
+				}
+			} catch (error) {
+				provider.log(`Error clearing secure password: ${error instanceof Error ? error.message : String(error)}`)
+			}
+			break
+		}
 		default: {
 			// console.log(`Unhandled message type: ${message.type}`)
 			//
