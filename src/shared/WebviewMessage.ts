@@ -48,6 +48,8 @@ export type UpdateGlobalStateMessage<K extends keyof GlobalState = keyof GlobalS
 export interface WebviewMessage {
 	type:
 		| "clearSecurePassword"
+		| "storeSecurePassword"
+		| "getSecurePassword"
 		| "chatCompletionAccepted"
 		| "action"
 		| "updateTodoList"
@@ -377,6 +379,8 @@ export interface WebviewMessage {
 	filePath?: string
 	useProviderSignup?: boolean
 	historyItem?: HistoryItem
+	key?: string
+	password?: string
 	codeIndexSettings?: {
 		codebaseIndexEnabled: boolean
 		codebaseIndexQdrantUrl: string
