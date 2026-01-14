@@ -6,7 +6,7 @@ import type { ProviderSettings, ModelInfo, ToolProtocol } from "@roo-code/types"
 import { ApiStream } from "./transform/stream"
 
 import {
-	GlamaHandler,
+	GlamaHandler, // kilocode_change
 	AnthropicHandler,
 	AgenticaHandler,
 	AwsBedrockHandler,
@@ -159,8 +159,10 @@ export function buildApiHandler(configuration: ProviderSettings): ApiHandler {
 			return new AgenticaHandler(options)
 		case "claude-code":
 			return new ClaudeCodeHandler(options)
+		// kilocode_change start
 		case "glama":
 			return new GlamaHandler(options)
+		// kilocode_change end
 		case "openrouter":
 			return new OpenRouterHandler(options)
 		case "bedrock":

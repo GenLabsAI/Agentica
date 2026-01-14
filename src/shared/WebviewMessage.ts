@@ -18,6 +18,7 @@ import {
 } from "@roo-code/types"
 
 import { Mode } from "./modes"
+import { MicrophoneDevice } from "./sttContract" // kilocode_change: Microphone device type for STT
 
 export type ClineAskResponse =
 	| "yesButtonClicked"
@@ -44,9 +45,12 @@ export type UpdateGlobalStateMessage<K extends keyof GlobalState = keyof GlobalS
 	stateValue: GlobalStateValue<K>
 }
 // kilocode_change end: Type-safe global state update message
-
 export interface WebviewMessage {
 	type:
+		| "clearSecurePassword"
+		| "storeSecurePassword"
+		| "getSecurePassword"
+		| "chatCompletionAccepted"
 		| "action"
 		| "updateTodoList"
 		| "deleteMultipleTasksWithIds"
@@ -57,7 +61,7 @@ export interface WebviewMessage {
 		| "loadApiConfiguration"
 		| "loadApiConfigurationById"
 		| "githubSignIn"
-		| "getProfileConfigurationForEditing" // kilocode_change: Request to get profile config without activating
+		| "getProfileConfigurationForEditing"
 		| "renameApiConfiguration"
 		| "getListApiConfiguration"
 		| "customInstructions"
@@ -90,19 +94,20 @@ export interface WebviewMessage {
 		| "requestRooCreditBalance"
 		| "requestVsCodeLmModels"
 		| "requestHuggingFaceModels"
-		| "requestSapAiCoreModels" // kilocode_change
-		| "requestSapAiCoreDeployments" // kilocode_change
+		| "requestSapAiCoreModels"
+		| "requestSapAiCoreDeployments"
 		| "requestFileContent"
 		| "openImage"
 		| "saveImage"
 		| "openFile"
 		| "openMention"
 		| "cancelTask"
+		| "cancelAutoApproval"
 		| "updateVSCodeSetting"
 		| "getVSCodeSetting"
 		| "vsCodeSetting"
 		| "updateCondensingPrompt"
-		| "yoloGatekeeperApiConfigId" // kilocode_change: AI gatekeeper for YOLO mode
+		| "yoloGatekeeperApiConfigId"
 		| "playSound"
 		| "playTts"
 		| "stopTts"
@@ -117,12 +122,12 @@ export interface WebviewMessage {
 		| "toggleToolEnabledForPrompt"
 		| "toggleMcpServer"
 		| "updateMcpTimeout"
-		| "fuzzyMatchThreshold" // kilocode_change
-		| "morphApiKey" // kilocode_change: Morph fast apply - global setting
-		| "fastApplyModel" // kilocode_change: Fast Apply model selection
-		| "fastApplyApiProvider" // kilocode_change: Fast Apply model api base url
-		| "writeDelayMs" // kilocode_change
-		| "diagnosticsEnabled" // kilocode_change
+		| "fuzzyMatchThreshold"
+		| "morphApiKey"
+		| "fastApplyModel"
+		| "fastApplyApiProvider"
+		| "writeDelayMs"
+		| "diagnosticsEnabled"
 		| "enhancePrompt"
 		| "enhancedPrompt"
 		| "draggedImages"
@@ -141,16 +146,19 @@ export interface WebviewMessage {
 		| "copySystemPrompt"
 		| "systemPrompt"
 		| "enhancementApiConfigId"
-		| "commitMessageApiConfigId" // kilocode_change
-		| "terminalCommandApiConfigId" // kilocode_change
-		| "ghostServiceSettings" // kilocode_change
-		| "stt:start" // kilocode_change: Start STT recording
-		| "stt:stop" // kilocode_change: Stop STT recording
-		| "stt:cancel" // kilocode_change: Cancel STT recording
-		| "includeTaskHistoryInEnhance" // kilocode_change
-		| "snoozeAutocomplete" // kilocode_change
+		| "commitMessageApiConfigId"
+		| "terminalCommandApiConfigId"
+		| "ghostServiceSettings"
+		| "stt:start"
+		| "stt:stop"
+		| "stt:cancel"
+		| "stt:checkAvailability"
+		| "stt:listDevices"
+		| "stt:selectDevice"
+		| "includeTaskHistoryInEnhance"
+		| "snoozeAutocomplete"
 		| "autoApprovalEnabled"
-		| "yoloMode" // kilocode_change
+		| "yoloMode"
 		| "updateCustomMode"
 		| "deleteCustomMode"
 		| "setopenAiCustomModelInfo"
@@ -158,38 +166,38 @@ export interface WebviewMessage {
 		| "checkpointDiff"
 		| "checkpointRestore"
 		| "requestCheckpointRestoreApproval"
-		| "seeNewChanges" // kilocode_change
+		| "seeNewChanges"
 		| "startCodeReview"
 		| "deleteMcpServer"
 		| "humanRelayResponse"
 		| "humanRelayCancel"
-		| "insertTextToChatArea" // kilocode_change
+		| "insertTextToChatArea"
 		| "codebaseIndexEnabled"
 		| "telemetrySetting"
 		| "testBrowserConnection"
 		| "browserConnectionResult"
-		| "allowVeryLargeReads" // kilocode_change
-		| "showFeedbackOptions" // kilocode_change
-		| "fetchMcpMarketplace" // kilocode_change
-		| "silentlyRefreshMcpMarketplace" // kilocode_change
-		| "fetchLatestMcpServersFromHub" // kilocode_change
-		| "downloadMcp" // kilocode_change
-		| "showSystemNotification" // kilocode_change
-		| "showAutoApproveMenu" // kilocode_change
-		| "reportBug" // kilocode_change
-		| "profileButtonClicked" // kilocode_change
-		| "fetchProfileDataRequest" // kilocode_change
-		| "profileDataResponse" // kilocode_change
-		| "fetchBalanceDataRequest" // kilocode_change
-		| "shopBuyCredits" // kilocode_change
-		| "balanceDataResponse" // kilocode_change
-		| "updateProfileData" // kilocode_change
-		| "condense" // kilocode_change
-		| "toggleWorkflow" // kilocode_change
-		| "refreshRules" // kilocode_change
-		| "toggleRule" // kilocode_change
-		| "createRuleFile" // kilocode_change
-		| "deleteRuleFile" // kilocode_change
+		| "allowVeryLargeReads"
+		| "showFeedbackOptions"
+		| "fetchMcpMarketplace"
+		| "silentlyRefreshMcpMarketplace"
+		| "fetchLatestMcpServersFromHub"
+		| "downloadMcp"
+		| "showSystemNotification"
+		| "showAutoApproveMenu"
+		| "reportBug"
+		| "profileButtonClicked"
+		| "fetchProfileDataRequest"
+		| "profileDataResponse"
+		| "fetchBalanceDataRequest"
+		| "shopBuyCredits"
+		| "balanceDataResponse"
+		| "updateProfileData"
+		| "condense"
+		| "toggleWorkflow"
+		| "refreshRules"
+		| "toggleRule"
+		| "createRuleFile"
+		| "deleteRuleFile"
 		| "searchFiles"
 		| "toggleApiConfigPin"
 		| "hasOpenedModeSelector"
@@ -202,25 +210,25 @@ export interface WebviewMessage {
 		| "condenseTaskContextRequest"
 		| "requestIndexingStatus"
 		| "startIndexing"
-		| "cancelIndexing" // kilocode_change
+		| "cancelIndexing"
 		| "clearIndexData"
 		| "indexingStatusUpdate"
 		| "indexCleared"
 		| "focusPanelRequest"
-		| "clearUsageData" // kilocode_change
-		| "getUsageData" // kilocode_change
-		| "usageDataResponse" // kilocode_change
-		| "showTaskTimeline" // kilocode_change
-		| "sendMessageOnEnter" // kilocode_change
-		| "showTimestamps" // kilocode_change
-		| "hideCostBelowThreshold" // kilocode_change
-		| "toggleTaskFavorite" // kilocode_change
-		| "fixMermaidSyntax" // kilocode_change
-		| "mermaidFixResponse" // kilocode_change
-		| "openGlobalKeybindings" // kilocode_change
-		| "getKeybindings" // kilocode_change
+		| "clearUsageData"
+		| "getUsageData"
+		| "usageDataResponse"
+		| "showTaskTimeline"
+		| "sendMessageOnEnter"
+		| "showTimestamps"
+		| "hideCostBelowThreshold"
+		| "toggleTaskFavorite"
+		| "fixMermaidSyntax"
+		| "mermaidFixResponse"
+		| "openGlobalKeybindings"
+		| "getKeybindings"
 		| "setReasoningBlockCollapsed"
-		| "setHistoryPreviewCollapsed" // kilocode_change
+		| "setHistoryPreviewCollapsed"
 		| "openExternal"
 		| "filterMarketplaceItems"
 		| "mcpButtonClicked"
@@ -233,20 +241,20 @@ export interface WebviewMessage {
 		| "marketplaceInstallResult"
 		| "fetchMarketplaceData"
 		| "switchTab"
-		| "profileThresholds" // kilocode_change
-		| "editMessage" // kilocode_change
-		| "systemNotificationsEnabled" // kilocode_change
-		| "dismissNotificationId" // kilocode_change
-		| "tasksByIdRequest" // kilocode_change
-		| "taskHistoryRequest" // kilocode_change
-		| "updateGlobalState" // kilocode_change
-		| "autoPurgeEnabled" // kilocode_change
-		| "autoPurgeDefaultRetentionDays" // kilocode_change
-		| "autoPurgeFavoritedTaskRetentionDays" // kilocode_change
-		| "autoPurgeCompletedTaskRetentionDays" // kilocode_change
-		| "autoPurgeIncompleteTaskRetentionDays" // kilocode_change
-		| "manualPurge" // kilocode_change
-		| "shareTaskSuccess" // kilocode_change
+		| "profileThresholds"
+		| "editMessage"
+		| "systemNotificationsEnabled"
+		| "dismissNotificationId"
+		| "tasksByIdRequest"
+		| "taskHistoryRequest"
+		| "updateGlobalState"
+		| "autoPurgeEnabled"
+		| "autoPurgeDefaultRetentionDays"
+		| "autoPurgeFavoritedTaskRetentionDays"
+		| "autoPurgeCompletedTaskRetentionDays"
+		| "autoPurgeIncompleteTaskRetentionDays"
+		| "manualPurge"
+		| "shareTaskSuccess"
 		| "exportMode"
 		| "exportModeResult"
 		| "importMode"
@@ -263,14 +271,14 @@ export interface WebviewMessage {
 		| "insertTextIntoTextarea"
 		| "showMdmAuthRequiredNotification"
 		| "imageGenerationSettings"
-		| "kiloCodeImageApiKey" // kilocode_change
+		| "kiloCodeImageApiKey"
 		| "queueMessage"
 		| "removeQueuedMessage"
 		| "editQueuedMessage"
 		| "dismissUpsell"
 		| "getDismissedUpsells"
 		| "updateSettings"
-		| "requestManagedIndexerState" // kilocode_change
+		| "requestManagedIndexerState"
 		| "allowedCommands"
 		| "deniedCommands"
 		| "killBrowserSession"
@@ -278,141 +286,42 @@ export interface WebviewMessage {
 		| "showBrowserSessionPanelAtStep"
 		| "refreshBrowserSessionPanel"
 		| "browserPanelDidLaunch"
-		| "addTaskToHistory" // kilocode_change
-		| "sessionShare" // kilocode_change
-		| "shareTaskSession" // kilocode_change
-		| "sessionFork" // kilocode_change
-		| "sessionShow" // kilocode_change
-		| "sessionSelect" // kilocode_change
-		| "singleCompletion" // kilocode_change
+		| "addTaskToHistory"
+		| "sessionShare"
+		| "shareTaskSession"
+		| "sessionFork"
+		| "sessionShow"
+		| "sessionSelect"
+		| "singleCompletion"
 		| "openDebugApiHistory"
 		| "openDebugUiHistory"
-		| "startDeviceAuth" // kilocode_change: Start device auth flow
-		| "startAgenticaDeviceAuth" // Start Agentica GitHub device auth flow
-		| "cancelAgenticaDeviceAuth" // Cancel Agentica GitHub device auth flow
-		| "cancelDeviceAuth" // kilocode_change: Cancel device auth flow
-		| "deviceAuthCompleteWithProfile" // kilocode_change: Device auth complete with specific profile
-		| "requestChatCompletion" // kilocode_change: Request FIM completion for chat text area
-		| "storeSecurePassword" // Store password securely
-		| "getSecurePassword" // Retrieve password securely
-		| "clearSecurePassword" // Clear password securely
-		text?: string
-		completionRequestId?: string // kilocode_change
-		shareId?: string // kilocode_change - for sessionFork
-		sessionId?: string // kilocode_change - for sessionSelect
-		editedMessageContent?: string
-		action?: string
-		tab?: "settings" | "history" | "mcp" | "modes" | "chat" | "marketplace" | "cloud" | "plans" | "auth" // kilocode_change
-		disabled?: boolean
-		context?: string
-		dataUri?: string
-		askResponse?: ClineAskResponse
-		apiConfiguration?: ProviderSettings
-		images?: string[]
-		bool?: boolean
-		value?: number
-		stepIndex?: number
-		isLaunchAction?: boolean
-		forceShow?: boolean
-		commands?: string[]
-		audioType?: AudioType
-		// kilocode_change begin
-		notificationOptions?: {
-			title?: string
-			subtitle?: string
-			message: string
-		}
-		mcpId?: string
-		toolNames?: string[]
-		autoApprove?: boolean
-		workflowPath?: string // kilocode_change
-		enabled?: boolean // kilocode_change
-		rulePath?: string // kilocode_change
-		isGlobal?: boolean // kilocode_change
-		filename?: string // kilocode_change
-		ruleType?: string // kilocode_change
-		notificationId?: string // kilocode_change
-		commandIds?: string[] // kilocode_change: For getKeybindings
-		key?: string
-		password?: string
-		serverName?: string
-		toolName?: string
-		alwaysAllow?: boolean
-		isEnabled?: boolean
-		mode?: Mode
-		promptMode?: PromptMode
-		customPrompt?: PromptComponent
-		dataUrls?: string[]
-		values?: Record<string, any>
-		query?: string
-		setting?: string
-		slug?: string
-		language?: string // User's language for speech transcription (STT)
-		modeConfig?: ModeConfig
-		timeout?: number
-		payload?: WebViewMessagePayload
-		source?: "global" | "project"
-		requestId?: string
-		ids?: string[]
-		hasSystemPromptOverride?: boolean
-		terminalOperation?: "continue" | "abort"
-		messageTs?: number
-		restoreCheckpoint?: boolean
-		historyPreviewCollapsed?: boolean
-		filters?: { type?: string; search?: string; tags?: string[] }
-		settings?: any
-		url?: string // For openExternal
-		mpItem?: MarketplaceItem
-		mpInstallOptions?: InstallMarketplaceItemOptions
-		config?: Record<string, any> // Add config to the payload
-		visibility?: ShareVisibility // For share visibility
-		hasContent?: boolean // For checkRulesDirectoryResult
-		checkOnly?: boolean // For deleteCustomMode check
-		upsellId?: string // For dismissUpsell
-		list?: string[] // For dismissedUpsells response
-		organizationId?: string | null // For organization switching
-		taskId?: string // For code review messages
-		filePath?: string // For requestFileContent messages
-		useProviderSignup?: boolean // For rooCloudSignIn to use provider signup flow
-		historyItem?: HistoryItem // kilocode_change For addTaskToHistory
-		codeIndexSettings?: {
-			// Global state settings
-			codebaseIndexEnabled: boolean
-			codebaseIndexQdrantUrl: string
-			codebaseIndexEmbedderProvider:
-				| "openai"
-				| "ollama"
-				| "openai-compatible"
-				| "gemini"
-				| "mistral"
-				| "vercel-ai-gateway"
-				| "bedrock"
-				| "openrouter"
-			codebaseIndexVectorStoreProvider?: "lancedb" | "qdrant" // kilocode_change
-			codebaseIndexLancedbVectorStoreDirectory?: string // kilocode_change
-			codebaseIndexEmbedderBaseUrl?: string
-			codebaseIndexEmbedderModelId: string
-			codebaseIndexEmbedderModelDimension?: number // Generic dimension for all providers
-			codebaseIndexOpenAiCompatibleBaseUrl?: string
-			codebaseIndexBedrockRegion?: string
-			codebaseIndexBedrockProfile?: string
-			codebaseIndexSearchMaxResults?: number
-			codebaseIndexSearchMinScore?: number
-			// kilocode_change start
-			codebaseIndexEmbeddingBatchSize?: number
-			codebaseIndexScannerMaxBatchRetries?: number
-			// kilocode_change end
-			codebaseIndexOpenRouterSpecificProvider?: string // OpenRouter provider routing
-	
-			// Secret settings
-			codeIndexOpenAiKey?: string
-			codeIndexQdrantApiKey?: string
-			codebaseIndexOpenAiCompatibleApiKey?: string
-			codebaseIndexGeminiApiKey?: string
-			codebaseIndexMistralApiKey?: string
-			codebaseIndexVercelAiGatewayApiKey?: string
-			codebaseIndexOpenRouterApiKey?: string
-	// kilocode_change begin
+		| "startDeviceAuth"
+		| "startAgenticaDeviceAuth"
+		| "cancelAgenticaDeviceAuth"
+		| "cancelDeviceAuth"
+		| "deviceAuthCompleteWithProfile"
+		| "requestChatCompletion"
+	text?: string
+	suggestionLength?: number
+	completionRequestId?: string
+	shareId?: string
+	sessionId?: string
+	editedMessageContent?: string
+	action?: string
+	tab?: "settings" | "history" | "mcp" | "modes" | "chat" | "marketplace" | "cloud" | "plans" | "auth"
+	disabled?: boolean
+	context?: string
+	dataUri?: string
+	askResponse?: ClineAskResponse
+	apiConfiguration?: ProviderSettings
+	images?: string[]
+	bool?: boolean
+	value?: number
+	stepIndex?: number
+	isLaunchAction?: boolean
+	forceShow?: boolean
+	commands?: string[]
+	audioType?: AudioType
 	notificationOptions?: {
 		title?: string
 		subtitle?: string
@@ -421,15 +330,14 @@ export interface WebviewMessage {
 	mcpId?: string
 	toolNames?: string[]
 	autoApprove?: boolean
-	workflowPath?: string // kilocode_change
-	enabled?: boolean // kilocode_change
-	rulePath?: string // kilocode_change
-	isGlobal?: boolean // kilocode_change
-	filename?: string // kilocode_change
-	ruleType?: string // kilocode_change
-	notificationId?: string // kilocode_change
-	commandIds?: string[] // kilocode_change: For getKeybindings
-	// kilocode_change end
+	workflowPath?: string
+	enabled?: boolean
+	rulePath?: string
+	isGlobal?: boolean
+	filename?: string
+	ruleType?: string
+	notificationId?: string
+	commandIds?: string[]
 	serverName?: string
 	toolName?: string
 	alwaysAllow?: boolean
@@ -442,7 +350,8 @@ export interface WebviewMessage {
 	query?: string
 	setting?: string
 	slug?: string
-	language?: string // User's language for speech transcription (STT)
+	language?: string
+	device?: MicrophoneDevice | null
 	modeConfig?: ModeConfig
 	timeout?: number
 	payload?: WebViewMessagePayload
@@ -456,22 +365,23 @@ export interface WebviewMessage {
 	historyPreviewCollapsed?: boolean
 	filters?: { type?: string; search?: string; tags?: string[] }
 	settings?: any
-	url?: string // For openExternal
+	url?: string
 	mpItem?: MarketplaceItem
 	mpInstallOptions?: InstallMarketplaceItemOptions
-	config?: Record<string, any> // Add config to the payload
-	visibility?: ShareVisibility // For share visibility
-	hasContent?: boolean // For checkRulesDirectoryResult
-	checkOnly?: boolean // For deleteCustomMode check
-	upsellId?: string // For dismissUpsell
-	list?: string[] // For dismissedUpsells response
-	organizationId?: string | null // For organization switching
-	taskId?: string // For code review messages
-	filePath?: string // For requestFileContent messages
-	useProviderSignup?: boolean // For rooCloudSignIn to use provider signup flow
-	historyItem?: HistoryItem // kilocode_change For addTaskToHistory
+	config?: Record<string, any>
+	visibility?: ShareVisibility
+	hasContent?: boolean
+	checkOnly?: boolean
+	upsellId?: string
+	list?: string[]
+	organizationId?: string | null
+	taskId?: string
+	filePath?: string
+	useProviderSignup?: boolean
+	historyItem?: HistoryItem
+	key?: string
+	password?: string
 	codeIndexSettings?: {
-		// Global state settings
 		codebaseIndexEnabled: boolean
 		codebaseIndexQdrantUrl: string
 		codebaseIndexEmbedderProvider:
@@ -483,23 +393,19 @@ export interface WebviewMessage {
 			| "vercel-ai-gateway"
 			| "bedrock"
 			| "openrouter"
-		codebaseIndexVectorStoreProvider?: "lancedb" | "qdrant" // kilocode_change
-		codebaseIndexLancedbVectorStoreDirectory?: string // kilocode_change
+		codebaseIndexVectorStoreProvider?: "lancedb" | "qdrant"
+		codebaseIndexLancedbVectorStoreDirectory?: string
 		codebaseIndexEmbedderBaseUrl?: string
 		codebaseIndexEmbedderModelId: string
-		codebaseIndexEmbedderModelDimension?: number // Generic dimension for all providers
+		codebaseIndexEmbedderModelDimension?: number
 		codebaseIndexOpenAiCompatibleBaseUrl?: string
 		codebaseIndexBedrockRegion?: string
 		codebaseIndexBedrockProfile?: string
 		codebaseIndexSearchMaxResults?: number
 		codebaseIndexSearchMinScore?: number
-		// kilocode_change start
 		codebaseIndexEmbeddingBatchSize?: number
 		codebaseIndexScannerMaxBatchRetries?: number
-		// kilocode_change end
-		codebaseIndexOpenRouterSpecificProvider?: string // OpenRouter provider routing
-
-		// Secret settings
+		codebaseIndexOpenRouterSpecificProvider?: string
 		codeIndexOpenAiKey?: string
 		codeIndexQdrantApiKey?: string
 		codebaseIndexOpenAiCompatibleApiKey?: string
@@ -507,7 +413,7 @@ export interface WebviewMessage {
 		codebaseIndexMistralApiKey?: string
 		codebaseIndexVercelAiGatewayApiKey?: string
 		codebaseIndexOpenRouterApiKey?: string
-		}	}
+	}
 	updatedSettings?: RooCodeSettings
 }
 

@@ -172,6 +172,37 @@
 			"newRuleFile": "New rule file..."
 		}
 	},
+	"seeNewChanges": {
+		"title": "Showing new changes",
+		"checkpointsUnavailable": "Cannot show new changes, checkpoints are unavailable.",
+		"noChanges": "Cannot show new changes, no changes were found.",
+		"error": "Cannot show new changes, an error occured."
+	},
+	"agentManager": {
+		"errors": {
+			"cliOutdated": "Your Kilocode CLI version is outdated and doesn't support the Agent Manager. Please update to the latest version.",
+			"cliNotFound": "Kilocode CLI not found. Please install it to use the Agent Manager.",
+			"cliMisconfigured": "Kilocode CLI is not configured. Please run 'kilocode auth' to sign in or 'kilocode config' to configure.",
+			"sessionFailed": "Failed to start agent session",
+			"sessionFailedWithMessage": "Failed to start agent session: {{message}}"
+		},
+		"actions": {
+			"updateInstructions": "Update Instructions",
+			"installInstructions": "Install Instructions",
+			"getHelp": "Get Help",
+			"runInTerminal": "Run in Terminal",
+			"updateGlobal": "Update Global",
+			"updateLocal": "Update Local",
+			"installGlobal": "Install Global",
+			"installLocal": "Install Local",
+			"loginCli": "Run kilocode auth",
+			"configureCli": "Run kilocode config"
+		},
+		"terminal": {
+			"installMessage": "Running npm install to install the Kilocode CLI. Once complete, you can close this terminal and try starting the Agent Manager again.",
+			"authReminder": "If this is your first install, run `kilocode auth` to sign in before starting the Agent Manager."
+		}
+	},
 	"taskTimeline": {
 		"tooltip": {
 			"clickToScroll": "View {{messageType}} (#{{messageNumber}})",
@@ -222,22 +253,25 @@
 		"json": "JSON"
 	},
 	"ghost": {
-
-			},
-			"autoTriggerDelay": {
-				"label": "Auto Trigger Delay",
-				"description": "The delay in seconds before Agentica triggers Autocomplete after you pause typing. A shorter delay means quicker suggestions, but may be more resource-intensive."
-			},
-			"enableQuickInlineTaskKeybinding": {
-				"label": "Quick Task ({{keybinding}})",
-				"description": "Only need a quick change? Select some code (or don't!) and hit Cmd+I. Describe your goal in plain English (\"create a React component with these props\", \"add error handling to this function\"), and get multiple, ready-to-use suggestions right in your editor. <DocsLink>Edit shortcut</DocsLink>"
-			},
-			"enableSmartInlineTaskKeybinding": {
-				"label": "Manual Autocomplete ({{keybinding}})",
-				"description": "Need a quick fix, completion, or refactor? Kilo will use the surrounding context to offer immediate improvements, keeping you in the flow. <DocsLink>Edit shortcut</DocsLink>"
-			},
-			"keybindingNotFound": "not found",
-			"noModelConfigured": "No suitable autocomplete model found. Please configure a provider in the API settings."
+		"autoTriggerDelay": {
+			"label": "Auto Trigger Delay",
+			"description": "The delay in seconds before Agentica triggers Autocomplete after you pause typing. A shorter delay means quicker suggestions, but may be more resource-intensive."
+		},
+		"enableQuickInlineTaskKeybinding": {
+			"label": "Quick Task ({{keybinding}})",
+			"description": "Only need a quick change? Select some code (or don't!) and hit Cmd+I. Describe your goal in plain English (\"create a React component with these props\", \"add error handling to this function\"), and get multiple, ready-to-use suggestions right in your editor. <DocsLink>Edit shortcut</DocsLink>"
+		},
+		"enableSmartInlineTaskKeybinding": {
+			"label": "Manual Autocomplete ({{keybinding}})",
+			"description": "Need a quick fix, completion, or refactor? Kilo will use the surrounding context to offer immediate improvements, keeping you in the flow. <DocsLink>Edit shortcut</DocsLink>"
+		},
+		"keybindingNotFound": "not found",
+		"noModelConfigured": "No suitable autocomplete model found. Please configure a provider in the API settings."
+	},
+	"speechToText": {
+		"errors": {
+			"invalidApiKey": "Your OpenAI API key is invalid or does not have access to the Realtime API. Please check your API key and try again.",
+			"unknown": "Connection failed. Please check your configuration and try again."
 		}
 	},
 	"virtualProvider": {
@@ -262,11 +296,7 @@
 		"confirmClearTitle": "Are you sure?",
 		"confirmClearDescription": "This will permanently delete all stored usage data for virtual providers. This action cannot be undone."
 	},
-
-		}
-	},
 	"modes": {
 		"shareModesNewBanner": "New: Share modes by creating an organization"
 	}
 }
-

@@ -71,3 +71,5 @@ git-commit-push.bat
 quick-commit.sh
 # Act Secret Files
 .secrets
+# Architect plans
+./plans/

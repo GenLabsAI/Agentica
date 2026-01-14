@@ -51,7 +51,7 @@
 		}
 	},
 	"commitMessage": {
-		"activated": "Agentica: 提交信息生成器已启动",
+		"activated": "Kilo Code: 提交信息生成器已启动",
 		"gitNotFound": "⚠️ Git 仓库未找到或 git 不可用",
 		"gitInitError": "⚠️ Git 初始化错误：{{error}}",
 		"generating": "Kilo: 正在生成提交信息...",
@@ -63,7 +63,7 @@
 		"activationFailed": "Kilo：消息生成器激活失败：{{error}}",
 		"errors": {
 			"noProject": "没有可用项目",
-			"connectionFailed": "连接到 Agentica 扩展失败",
+			"connectionFailed": "连接到 Kilo Code 扩展失败",
 			"missingMessage": "未从扩展接收到提交信息",
 			"invalidResponse": "从扩展程序收到的响应格式无效",
 			"timeout": "请求在 30 秒后超时",
@@ -89,7 +89,7 @@
 			"title": "生成提交信息",
 			"analyzing": "分析更改中...",
 			"generating": "生成提交消息中...",
-			"connecting": "连接到 Agentica..."
+			"connecting": "连接到 Kilo Code..."
 		},
 		"ui": {
 			"generateButton": "生成提交信息",
@@ -106,6 +106,7 @@
 		"errors": {
 			"cliOutdated": "你的 Kilocode CLI 版本已过时，不支持 Agent Manager。请更新到最新版本。",
 			"cliNotFound": "未找到 Kilocode CLI。请安装以使用 Agent Manager。",
+			"cliMisconfigured": "Kilocode CLI 未配置。请运行 'kilocode auth' 登录或 'kilocode config' 进行配置。",
 			"sessionFailed": "启动代理会话失败",
 			"sessionFailedWithMessage": "启动代理会话失败: {{message}}"
 		},
@@ -115,6 +116,7 @@
 			"getHelp": "获取帮助",
 			"runInTerminal": "运行命令",
 			"loginCli": "Run kilocode auth",
+			"configureCli": "Run kilocode config",
 			"updateGlobal": "全局更新",
 			"updateLocal": "本地更新",
 			"installGlobal": "全局安装",
@@ -127,10 +129,12 @@
 	},
 	"ghost": {
 		"statusBar": {
-
+			"enabled": "$(kilo-logo) Autocomplete",
+			"snoozed": "已暂停",
+			"warning": "$(warning) Autocomplete",
 			"tooltip": {
-				"basic": "Agentica Autocomplete",
-				"disabled": "Agentica Autocomplete（已禁用）",
+				"basic": "Kilo Code Autocomplete",
+				"disabled": "Kilo Code Autocomplete（已禁用）",
 				"tokenError": "必须设置有效 Token 才能使用 Autocomplete",
 				"sessionTotal": "会话总费用:",
 				"provider": "提供商:",
@@ -145,36 +149,36 @@
 				"lessThanCent": "<$0.01"
 			}
 		},
-		"toggleMessage": "Agentica Autocomplete {{status}}",
+		"toggleMessage": "Kilo Code Autocomplete {{status}}",
 		"progress": {
-			"title": "Agentica",
+			"title": "Kilo Code",
 			"analyzing": "正在分析你的代码...",
 			"generating": "正在生成建议编辑...",
 			"processing": "正在处理建议编辑...",
 			"showing": "正在显示建议编辑..."
 		},
 		"input": {
-			"title": "Agentica: 快速任务",
+			"title": "Kilo Code: 快速任务",
 			"placeholder": "例如：'重构这个函数使其更高效'"
 		},
 		"commands": {
-			"generateSuggestions": "Agentica: 生成建议编辑",
+			"generateSuggestions": "Kilo Code: 生成建议编辑",
 			"displaySuggestions": "显示建议编辑",
 			"cancelSuggestions": "取消建议编辑",
 			"applyCurrentSuggestion": "应用当前建议编辑",
 			"applyAllSuggestions": "应用所有建议编辑",
-			"category": "Agentica"
+			"category": "Kilo Code"
 		},
 		"codeAction": {
-			"title": "Agentica: 建议编辑"
+			"title": "Kilo Code: 建议编辑"
 		},
 		"chatParticipant": {
-			"fullName": "Agentica Agent",
+			"fullName": "Kilo Code Agent",
 			"name": "Agent",
 			"description": "我可以帮助你完成快速任务和建议编辑。"
 		},
 		"incompatibilityExtensionPopup": {
-			"message": "Agentica Autocomplete 被与 GitHub Copilot 的冲突阻止。要解决此问题，你必须禁用 Copilot 的内联建议。",
+			"message": "Kilo Code Autocomplete 被与 GitHub Copilot 的冲突阻止。要解决此问题，你必须禁用 Copilot 的内联建议。",
 			"disableCopilot": "禁用 Copilot",
 			"disableInlineAssist": "禁用 Autocomplete"
 		}
@@ -192,7 +196,12 @@
 			"okButton": "我明白",
 			"cancelButton": "取消"
 		},
-		"tipMessage": "Agentica: 按下 {{shortcut}} 生成终端命令"
+		"tipMessage": "Kilo Code: 按下 {{shortcut}} 生成终端命令"
+	},
+	"speechToText": {
+		"errors": {
+			"invalidApiKey": "您的 OpenAI API 密钥无效或无权访问实时 API。请检查您的 API 密钥并重试。",
+			"unknown": "连接失败。请检查您的配置并重试。"
+		}
 	}
 }
-
