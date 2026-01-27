@@ -1867,7 +1867,14 @@ export class ClineProvider
 					})
 				})
 
-			this.agenticaDeviceAuthService!.on("success", async (accessToken: string) => {
+				this.agenticaDeviceAuthService!.on("tick", (timeRemaining: number) => {
+					this.postMessageToWebview({
+						type: "agenticaDeviceAuthTick",
+						deviceAuthTimeRemaining: timeRemaining,
+					})
+				})
+
+				this.agenticaDeviceAuthService!.on("success", async (accessToken: string) => {
 				this.log(`Agentica device auth success - received access token`)
 				try {
 					await this.handleAgenticaDeviceAuth(accessToken)
