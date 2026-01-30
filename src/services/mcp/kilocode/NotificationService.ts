@@ -10,7 +10,7 @@ export class NotificationService {
 		client.setNotificationHandler(LoggingMessageNotificationSchema, async (notification) => {
 			const params = notification.params || {}
 			const level = params.level || "info"
-			const data = params.data || params.message || ""
+			const data = params.data || ""
 			const logger = params.logger || ""
 			const dataPrefix = logger ? `[${logger}]` : ``
 			const message = `MCP ${name}: ${dataPrefix}${data}`

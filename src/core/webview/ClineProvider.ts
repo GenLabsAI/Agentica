@@ -1869,7 +1869,7 @@ export class ClineProvider
 
 				this.agenticaDeviceAuthService!.on("tick", (timeRemaining: number) => {
 					this.postMessageToWebview({
-						type: "agenticaDeviceAuthTick",
+						type: "agenticaDeviceAuthPolling",
 						deviceAuthTimeRemaining: timeRemaining,
 					})
 				})
