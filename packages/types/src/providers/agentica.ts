@@ -24,6 +24,7 @@ export const agenticaModels = {
 		contextWindow: 128_000,
 		supportsImages: false,
 		supportsPromptCache: false,
+		supportsNativeTools: true,
 		inputPrice: 0,
 		outputPrice: 0,
 		description: "2.5 pro low",
@@ -202,6 +203,7 @@ export const agenticaModels = {
 		contextWindow: 200_000,
 		supportsImages: false,
 		supportsPromptCache: true,
+		supportsNativeTools: true,
 		inputPrice: 1.25,   // $1.25 per million tokens
 		outputPrice: 4.00,  // $4.00 per million tokens
 		description: "2.5 pro high",

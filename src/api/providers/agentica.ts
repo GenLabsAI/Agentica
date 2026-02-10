@@ -117,7 +117,7 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 		const model = this.getModel()
 
 		if (this.usesResponsesApi(model.id)) {
-			yield* this.createMessageWithResponsesApi(systemPrompt, messages, model)
+			yield* this.createMessageWithResponsesApi(systemPrompt, messages, model, metadata)
 			return
 		}
 
@@ -164,16 +164,47 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 		}
 	}
 
+	private convertToolsForResponsesApi(tools: OpenAI.Chat.ChatCompletionTool[]): any[] {
+		return tools.map((tool) => ({
+			type: "function",
+			name: tool.function.name,
+			description: tool.function.description,
+			parameters: tool.function.parameters,
+			strict: true,
+		}))
+	}
+
 	private async *createMessageWithResponsesApi(
 		systemPrompt: string,
 		messages: any[],
-		model: { id: AgenticaModelId; info: ModelInfo; maxTokens: number; temperature: number }
+		model: { id: AgenticaModelId; info: ModelInfo; maxTokens: number; temperature: number },
+		metadata?: ApiHandlerCreateMessageMetadata,
 	): ApiStream {
 		try {
 			const inputMessages = messages.map((msg: any) => ({
 				role: msg.role,
 				content: typeof msg.content === "string" ? msg.content : JSON.stringify(msg.content),
 			}))
+
+			const useNativeTools = metadata?.tools && metadata.tools.length > 0 && metadata?.toolProtocol !== "xml"
+			const tools = useNativeTools ? this.convertToolsForResponsesApi(metadata.tools) : undefined
+
+			const body: Record<string, any> = {
+				model: model.id,
+				instructions: systemPrompt,
+				input: inputMessages,
+				max_output_tokens: model.maxTokens,
+				temperature: model.temperature,
+				stream: true,
+			}
+
+			if (tools) {
+				body.tools = tools
+			}
+
+			if (useNativeTools && metadata?.tool_choice) {
+				body.tool_choice = metadata.tool_choice
+			}
 
 			const response = await fetch(this.getResponsesApiBaseUrl(), {
 				method: "POST",
@@ -183,14 +214,7 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 					"HTTP-Referer": "https://agentica.com",
 					"X-Title": "Agentica Extension"
 				},
-				body: JSON.stringify({
-					model: model.id,
-					instructions: systemPrompt,
-					input: inputMessages,
-					max_output_tokens: model.maxTokens,
-					temperature: model.temperature,
-					stream: true,
-				}),
+				body: JSON.stringify(body),
 			})
 
 			if (!response.ok) {
@@ -205,6 +229,7 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 			const reader = response.body.getReader()
 			const decoder = new TextDecoder()
 			let buffer = ""
+			let toolCallIndex = 0
 
 			while (true) {
 				const { done, value } = await reader.read()
@@ -227,6 +252,28 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 								type: "text" as const,
 								text: event.delta || "",
 							}
+						}
+
+						if (event.type === "response.output_item.added" && event.item?.type === "function_call") {
+							yield {
+								type: "tool_call_partial" as const,
+								index: toolCallIndex,
+								id: event.item.call_id,
+								name: event.item.name,
+								arguments: "",
+							}
+						}
+
+						if (event.type === "response.function_call_arguments.delta") {
+							yield {
+								type: "tool_call_partial" as const,
+								index: toolCallIndex,
+								arguments: event.delta || "",
+							}
+						}
+
+						if (event.type === "response.function_call_arguments.done") {
+							toolCallIndex++
 						}
 
 						if (event.type === "response.completed" && event.response?.usage) {
