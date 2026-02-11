@@ -165,13 +165,15 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 	}
 
 	private convertToolsForResponsesApi(tools: OpenAI.Chat.ChatCompletionTool[]): any[] {
-		return tools.map((tool) => ({
-			type: "function",
-			name: tool.function.name,
-			description: tool.function.description,
-			parameters: tool.function.parameters,
-			strict: true,
-		}))
+		return tools
+			.filter((tool): tool is OpenAI.Chat.ChatCompletionTool & { type: "function" } => tool.type === "function")
+			.map((tool) => ({
+				type: "function",
+				name: tool.function.name,
+				description: tool.function.description,
+				parameters: tool.function.parameters,
+				strict: true,
+			}))
 	}
 
 	private async *createMessageWithResponsesApi(
@@ -187,7 +189,7 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 			}))
 
 			const useNativeTools = metadata?.tools && metadata.tools.length > 0 && metadata?.toolProtocol !== "xml"
-			const tools = useNativeTools ? this.convertToolsForResponsesApi(metadata.tools) : undefined
+			const tools = useNativeTools && metadata?.tools ? this.convertToolsForResponsesApi(metadata.tools) : undefined
 
 			const body: Record<string, any> = {
 				model: model.id,
