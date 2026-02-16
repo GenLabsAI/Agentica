@@ -58,7 +58,6 @@ import { QueuedMessages } from "./QueuedMessages"
 import { CodeReviewDialog } from "./CodeReviewDialog"
 import type { CodeReviewIssue, CodeReviewResult } from "@roo-code/types"
 import { buildDocLink } from "@/utils/docLinks"
-import UsageQuotaBanner from "../common/UsageQuotaBanner"
 import { AgenticaClient } from "@/services/AgenticaClient"
 // import DismissibleUpsell from "../common/DismissibleUpsell" // kilocode_change: unused
 // import { useCloudUpsell } from "@src/hooks/useCloudUpsell" // kilocode_change: unused
@@ -1768,11 +1767,6 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			)}
 			{task && (
 				<>
-					{effectiveLimit && effectiveLimit > 0 && (
-						<div className="mb-2">
-							<UsageQuotaBanner requestsUsed={effectiveUsed} requestsLimit={effectiveLimit} />
-						</div>
-					)}
 					<div className="grow flex flex-col min-h-0">
 						<div className="flex-auto min-h-0">
 							<Virtuoso

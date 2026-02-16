@@ -25,6 +25,7 @@ import { ReasoningBlock } from "./ReasoningBlock"
 import Thumbnails from "../common/Thumbnails"
 import ImageBlock from "../common/ImageBlock"
 import ErrorRow from "./ErrorRow"
+import UsageLimitBanner from "../common/UsageLimitBanner"
 
 import McpResourceRow from "../mcp/McpResourceRow"
 
@@ -1388,6 +1389,37 @@ export const ChatRowContent = ({
 					const isKiloCodeAuthError =
 						apiConfiguration?.apiProvider === "kilocode" &&
 						message.text?.includes(KILOCODE_TOKEN_REQUIRED_ERROR)
+					
+					// Check for usage limit errors
+					const opensourceLimitError = message.text?.includes("You've used all your requests for free Open Source models")
+					const decaLimitError = message.text?.includes("You've used all your requests Agentica")
+					
+					// Show usage limit banners for specific error messages
+					if (opensourceLimitError) {
+						return (
+							<UsageLimitBanner
+								type="opensource_limit"
+								onUpgrade={() => vscode.postMessage({ type: "upgradeButtonClicked" })}
+								onSwitchToDeca={() => {
+									// Switch to Deca 2.5 Pro model
+									vscode.postMessage({
+										type: "selectModel",
+										model: "deca-2.5-pro"
+									})
+								}}
+							/>
+						)
+					}
+					
+					if (decaLimitError) {
+						return (
+							<UsageLimitBanner
+								type="deca_limit"
+								onUpgrade={() => vscode.postMessage({ type: "upgradeButtonClicked" })}
+							/>
+						)
+					}
+					
 					return (
 						<ErrorRow
 							type="error"
@@ -1407,7 +1439,7 @@ export const ChatRowContent = ({
 							}
 						/>
 					)
-				// kilocode_change end
+					// kilocode_change end
 				case "completion_result":
 					const commitRange = message.metadata?.kiloCode?.commitRange
 					return (
