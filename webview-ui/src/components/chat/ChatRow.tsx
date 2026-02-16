@@ -1390,31 +1390,14 @@ export const ChatRowContent = ({
 						apiConfiguration?.apiProvider === "kilocode" &&
 						message.text?.includes(KILOCODE_TOKEN_REQUIRED_ERROR)
 					
-					// Check for usage limit errors
-					const opensourceLimitError = message.text?.includes("You've used all your requests for free Open Source models")
-					const decaLimitError = message.text?.includes("You've used all your requests Agentica")
+					// Check for any error message containing "requests"
+					const isRequestsError = message.text?.includes("requests")
 					
-					// Show usage limit banners for specific error messages
-					if (opensourceLimitError) {
+					// Show fancy usage limit banner for any requests-related error
+					if (isRequestsError && !isKiloCodeAuthError) {
 						return (
 							<UsageLimitBanner
-								type="opensource_limit"
-								onUpgrade={() => vscode.postMessage({ type: "upgradeButtonClicked" })}
-								onSwitchToDeca={() => {
-									// Switch to Deca 2.5 Pro model
-									vscode.postMessage({
-										type: "selectModel",
-										model: "deca-2.5-pro"
-									})
-								}}
-							/>
-						)
-					}
-					
-					if (decaLimitError) {
-						return (
-							<UsageLimitBanner
-								type="deca_limit"
+								errorMessage={message.text || "Request limit reached"}
 								onUpgrade={() => vscode.postMessage({ type: "upgradeButtonClicked" })}
 							/>
 						)

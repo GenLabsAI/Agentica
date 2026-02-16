@@ -4,18 +4,16 @@ import { vscode } from "@src/utils/vscode"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { telemetryClient } from "@src/utils/TelemetryClient"
 import { TelemetryEventName } from "@roo-code/types"
-import { AlertTriangle, Zap, Crown } from "lucide-react"
+import { Crown } from "lucide-react"
 
 interface UsageLimitBannerProps {
-	/** Type of limit reached */
-	type: "opensource_limit" | "deca_limit"
+	/** Error message to display */
+	errorMessage: string
 	/** Optional callback when upgrade is clicked */
 	onUpgrade?: () => void
-	/** Optional callback when switch to deca is clicked */
-	onSwitchToDeca?: () => void
 }
 
-const UsageLimitBanner = memo(({ type, onUpgrade, onSwitchToDeca }: UsageLimitBannerProps) => {
+const UsageLimitBanner = memo(({ errorMessage, onUpgrade }: UsageLimitBannerProps) => {
 	const { t } = useAppTranslation()
 	const [isDismissed, setIsDismissed] = useState(false)
 
@@ -26,13 +24,13 @@ const UsageLimitBanner = memo(({ type, onUpgrade, onSwitchToDeca }: UsageLimitBa
 	const handleDismiss = () => {
 		setIsDismissed(true)
 		telemetryClient.capture(TelemetryEventName.UPSELL_DISMISSED, {
-			upsellId: `usage-limit-${type}`,
+			upsellId: "usage-limit-error",
 		})
 	}
 
 	const handleUpgrade = () => {
 		telemetryClient.capture(TelemetryEventName.UPSELL_CLICKED, {
-			upsellId: `usage-limit-${type}`,
+			upsellId: "usage-limit-error",
 		})
 
 		if (onUpgrade) {
@@ -44,67 +42,8 @@ const UsageLimitBanner = memo(({ type, onUpgrade, onSwitchToDeca }: UsageLimitBa
 		}
 	}
 
-	const handleSwitchToDeca = () => {
-		telemetryClient.capture(TelemetryEventName.UPSELL_CLICKED, {
-			upsellId: `switch-to-deca-${type}`,
-		})
-
-		if (onSwitchToDeca) {
-			onSwitchToDeca()
-		}
-	}
-
-	// Stage 1: Open source models limit reached
-	if (type === "opensource_limit") {
-		return (
-			<div className="relative p-4 pr-12 border rounded-lg bg-vscode-warningBackground text-vscode-warningForeground border-vscode-warningForeground mb-4">
-				{/* Close button */}
-				<button
-					onClick={handleDismiss}
-					className="absolute top-2 right-2 bg-transparent border-none cursor-pointer text-xl p-1 opacity-70 hover:opacity-100 transition-opacity duration-200 leading-none"
-					aria-label={t("common:dismiss")}>
-					×
-				</button>
-
-				{/* Content */}
-				<div className="flex items-start gap-3">
-					<AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0 text-vscode-warningForeground" />
-					<div className="flex-1 min-w-0">
-						<div className="font-semibold mb-2">
-							{t("chat:usageLimit.opensource.title", "Free Open Source Models Limit Reached")}
-						</div>
-						<div className="text-sm opacity-90 mb-3">
-							{t("chat:usageLimit.opensource.message", 
-								"You've used all your requests for free Open Source models. Continue with Deca 2.5 Pro, or upgrade to get access to all models."
-							)}
-						</div>
-						
-						{/* Action buttons */}
-						<div className="flex flex-wrap gap-2">
-							<VSCodeButton 
-								onClick={handleSwitchToDeca} 
-								appearance="secondary"
-								className="flex items-center gap-2 whitespace-nowrap">
-								<Zap className="w-4 h-4" />
-								{t("chat:usageLimit.opensource.switchToDeca", "Use Deca 2.5 Pro")}
-							</VSCodeButton>
-							<VSCodeButton 
-								onClick={handleUpgrade} 
-								appearance="primary"
-								className="flex items-center gap-2 whitespace-nowrap">
-								<Crown className="w-4 h-4" />
-								{t("common:upgrade", "Upgrade")}
-							</VSCodeButton>
-						</div>
-					</div>
-				</div>
-			</div>
-		)
-	}
-
-	// Stage 2: Deca models limit reached
 	return (
-		<div className="relative p-4 pr-12 border rounded-lg bg-vscode-errorBackground text-vscode-errorForeground border-vscode-errorForeground mb-4">
+		<div className="relative p-4 pr-12 border rounded-lg bg-gradient-to-r from-vscode-warningBackground to-vscode-errorBackground text-vscode-foreground border-vscode-warningForeground mb-4 shadow-sm">
 			{/* Close button */}
 			<button
 				onClick={handleDismiss}
@@ -115,18 +54,16 @@ const UsageLimitBanner = memo(({ type, onUpgrade, onSwitchToDeca }: UsageLimitBa
 
 			{/* Content */}
 			<div className="flex items-start gap-3">
-				<AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0 text-vscode-errorForeground" />
+				<Crown className="w-5 h-5 mt-0.5 flex-shrink-0 text-vscode-foreground" />
 				<div className="flex-1 min-w-0">
 					<div className="font-semibold mb-2">
-						{t("chat:usageLimit.deca.title", "Daily Request Limit Reached")}
+						{t("chat:usageLimit.title", "Request Limit Reached")}
 					</div>
 					<div className="text-sm opacity-90 mb-3">
-						{t("chat:usageLimit.deca.message", 
-							"You've used all your requests for today. Try again tomorrow, or upgrade to continue access."
-						)}
+						{errorMessage}
 					</div>
 					
-					{/* Action buttons */}
+					{/* Action button */}
 					<div className="flex flex-wrap gap-2">
 						<VSCodeButton 
 							onClick={handleUpgrade} 
