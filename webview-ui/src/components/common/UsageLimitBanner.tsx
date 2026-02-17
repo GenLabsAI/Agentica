@@ -4,7 +4,7 @@ import { vscode } from "@src/utils/vscode"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { telemetryClient } from "@src/utils/TelemetryClient"
 import { TelemetryEventName } from "@roo-code/types"
-import { Crown } from "lucide-react"
+import { AlertCircle } from "lucide-react"
 
 interface UsageLimitBannerProps {
 	/** Error message to display */
@@ -43,36 +43,33 @@ const UsageLimitBanner = memo(({ errorMessage, onUpgrade }: UsageLimitBannerProp
 	}
 
 	return (
-		<div className="relative p-4 pr-12 border rounded-lg bg-gradient-to-r from-vscode-warningBackground to-vscode-errorBackground text-vscode-foreground border-vscode-warningForeground mb-4 shadow-sm">
+		<div className="relative p-3 border-l-4 border-vscode-charts-blue bg-vscode-editor-background mb-3">
 			{/* Close button */}
 			<button
 				onClick={handleDismiss}
-				className="absolute top-2 right-2 bg-transparent border-none cursor-pointer text-xl p-1 opacity-70 hover:opacity-100 transition-opacity duration-200 leading-none"
+				className="absolute top-2 right-2 bg-transparent border-none cursor-pointer text-sm p-1 opacity-60 hover:opacity-100 transition-opacity duration-200 leading-none"
 				aria-label={t("common:dismiss")}>
 				×
 			</button>
 
 			{/* Content */}
-			<div className="flex items-start gap-3">
-				<Crown className="w-5 h-5 mt-0.5 flex-shrink-0 text-vscode-foreground" />
+			<div className="flex items-start gap-3 pr-6">
+				<AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-vscode-charts-blue" />
 				<div className="flex-1 min-w-0">
-					<div className="font-semibold mb-2">
-						{t("chat:usageLimit.title", "Request Limit Reached")}
+					<div className="font-medium text-sm mb-1 text-vscode-foreground">
+						{t("chat:usageLimit.title", "Request Limit")}
 					</div>
-					<div className="text-sm opacity-90 mb-3">
+					<div className="text-xs text-vscode-descriptionForeground mb-3 leading-relaxed">
 						{errorMessage}
 					</div>
 					
 					{/* Action button */}
-					<div className="flex flex-wrap gap-2">
-						<VSCodeButton 
-							onClick={handleUpgrade} 
-							appearance="primary"
-							className="flex items-center gap-2 whitespace-nowrap">
-							<Crown className="w-4 h-4" />
-							{t("common:upgrade", "Upgrade")}
-						</VSCodeButton>
-					</div>
+					<VSCodeButton 
+						onClick={handleUpgrade} 
+						appearance="secondary"
+						className="text-xs py-1 px-3">
+						{t("common:upgrade", "Upgrade")}
+					</VSCodeButton>
 				</div>
 			</div>
 		</div>
