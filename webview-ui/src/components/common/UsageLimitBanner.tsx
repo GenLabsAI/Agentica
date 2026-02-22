@@ -57,7 +57,7 @@ const UsageLimitBanner = memo(({ errorMessage, onUpgrade }: UsageLimitBannerProp
 				<AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-vscode-charts-blue" />
 				<div className="flex-1 min-w-0">
 					<div className="font-medium text-sm mb-1 text-vscode-foreground">
-						{t("chat:usageLimit.title", "Request Limit")}
+						{t("chat:usageLimit.title", { defaultValue: "Request Limit" } as Record<string, any>)}
 					</div>
 					<div className="text-xs text-vscode-descriptionForeground mb-3 leading-relaxed">
 						{errorMessage}
@@ -68,7 +68,7 @@ const UsageLimitBanner = memo(({ errorMessage, onUpgrade }: UsageLimitBannerProp
 						onClick={handleUpgrade} 
 						appearance="secondary"
 						className="text-xs py-1 px-3">
-						{t("common:upgrade", "Upgrade")}
+						{t("common:upgrade", { defaultValue: "Upgrade" } as Record<string, any>)}
 					</VSCodeButton>
 				</div>
 			</div>
