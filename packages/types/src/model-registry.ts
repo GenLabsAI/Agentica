@@ -27,40 +27,40 @@ export type ModelConfig = z.infer<typeof modelConfigSchema>
 // =========================================================================
 
 export const FREE_MODELS = {
-	"kimi-k2": {
-		user_facing_name: "kimi-k2",
-		provider_model_id: "moonshotai/kimi-k2-instruct-0905",
+	"kimi-k2.5": {
+		user_facing_name: "kimi-k2.5",
+		provider_model_id: "moonshot-ai/kimi-k2.5",
 		provider: PROVIDER_NVIDIA_NIM,
 		category: "free" as const,
-		description: "Moonshot AI Kimi K2 model"
+		description: "Kimi K2.5"
 	},
-	"deca-2.5-pro-low": {
-		user_facing_name: "deca-2.5-pro-low",
-		provider_model_id: "moonshot-ai/kimi-k2-thinking",
-		provider: PROVIDER_NVIDIA_NIM,
-		category: "free" as const,
-		description: "2.5 pro low"
-	},
-	"minimax-m2": {
-		user_facing_name: "minimax-m2",
-		provider_model_id: "minimaxai/minimax-m2",
+	"minimax-m2.1": {
+		user_facing_name: "minimax-m2.1",
+		provider_model_id: "minimaxai/minimax-m2.1",
 		provider: PROVIDER_NVIDIA_NIM,
 		category: "free" as const,
 		description: "Minimax M2 model"
 	},
-	"deepseek-v3.1-terminus": {
-		user_facing_name: "deepseek-v3.1-terminus",
-		provider_model_id: "deepseek-ai/deepseek-v3.1-terminus",
+	"deepseek-v3.2": {
+		user_facing_name: "deepseek-v3.2",
+		provider_model_id: "deepseek-ai/deepseek-v3.2",
 		provider: PROVIDER_NVIDIA_NIM,
 		category: "free" as const,
-		description: "DeepSeek V3.1 Terminus"
+		description: "DeepSeek V3.2 (free)"
 	},
-	"qwen3-coder": {
-		user_facing_name: "qwen3-coder",
-		provider_model_id: "qwen/qwen3-coder-480b-a35b-instruct",
+	"glm-5": {
+		user_facing_name: "glm-5",
+		provider_model_id: "zai/glm-5",
 		provider: PROVIDER_NVIDIA_NIM,
 		category: "free" as const,
-		description: "Qwen 3 Coder 480B"
+		description: "GLM 5 (free)"
+	},
+	"qwen3.5": {
+		user_facing_name: "qwen3.5",
+		provider_model_id: "qwen/qwen3.5-397b-a17b",
+		provider: PROVIDER_NVIDIA_NIM,
+		category: "free" as const,
+		description: "Qwen 3.5"
 	},
 	"gpt-oss-120b": {
 		user_facing_name: "gpt-oss-120b",
@@ -68,13 +68,6 @@ export const FREE_MODELS = {
 		provider: PROVIDER_NVIDIA_NIM,
 		category: "free" as const,
 		description: "GPT OSS 120B"
-	},
-	"deca-coder-flash": {
-		user_facing_name: "deca-coder-flash",
-		provider_model_id: "deca-coder-flash",  // Special: uses classification
-		provider: PROVIDER_NVIDIA_NIM,
-		category: "free" as const,
-		description: "Deca Coder Flash (routes via classification)"
 	},
 } as const satisfies Record<string, ModelConfig>
 
@@ -85,19 +78,12 @@ export const FREE_MODELS = {
 // No credit cost, but requires paid plan
 
 export const PAID_FREE_MODELS = {
-	"glm-4.6": {
-		user_facing_name: "glm-4.6",
-		provider_model_id: "zai/glm-4.6",
-		provider: PROVIDER_OPENROUTER,  // Will change to PROVIDER_FEATHERLESS
+	"minimax-m2.5": {
+		user_facing_name: "minimax-m2.5",
+		provider_model_id: "minimax/minimax-m2.5",
+		provider: PROVIDER_OPENROUTER,
 		category: "paid_free" as const,
-		description: "GLM 4.6 (paid plans only, no credit cost)"
-	},
-	"kimi-k2-thinking": {
-		user_facing_name: "kimi-k2-thinking",
-		provider_model_id: "moonshotai/kimi-k2-thinking",
-		provider: PROVIDER_OPENROUTER,  // Will change to PROVIDER_FEATHERLESS
-		category: "paid_free" as const,
-		description: "Kimi K2 Thinking (paid plans only, no credit cost)"
+		description: "Minimax M2.5 (paid plans only, no credit cost)"
 	},
 } as const satisfies Record<string, ModelConfig>
 
@@ -108,61 +94,47 @@ export const PAID_FREE_MODELS = {
 // Costs Agentica daily credits based on usage
 
 export const PREMIUM_MODELS = {
-	"claude-4.5-sonnet": {
-		user_facing_name: "claude-4.5-sonnet",
-		provider_model_id: "anthropic/claude-4.5-sonnet",
+	"claude-4.6-sonnet": {
+		user_facing_name: "claude-4.6-sonnet",
+		provider_model_id: "anthropic/claude-4.6-sonnet",
 		provider: PROVIDER_OPENROUTER,  // Will change to PROVIDER_ELECTRONHUB
 		category: "premium" as const,
-		description: "Claude 4.5 Sonnet"
+		description: "Claude 4.6 Sonnet"
 	},
-	"claude-4.5-opus": {
-		user_facing_name: "claude-4.5-opus",
-		provider_model_id: "anthropic/claude-4.5-opus",
+	"claude-4.6-opus": {
+		user_facing_name: "claude-4.6-opus",
+		provider_model_id: "anthropic/claude-4.6-opus",
 		provider: PROVIDER_OPENROUTER,  // Will change to PROVIDER_ELECTRONHUB
 		category: "premium" as const,
-		description: "Claude 4.5 Opus"
+		description: "Claude 4.6 Opus"
 	},
-	"gpt-5.2": {
-		user_facing_name: "gpt-5.2",
-		provider_model_id: "openai/gpt-5.2",
+	"gpt-5.3-codex": {
+		user_facing_name: "gpt-5.3",
+		provider_model_id: "openai/gpt-5.3-codex",
 		provider: PROVIDER_OPENROUTER,  // Will change to PROVIDER_ELECTRONHUB
 		category: "premium" as const,
-		description: "GPT-5.2"
+		description: "GPT-5.3"
 	},
 	"gemini-3-flash": {
 		user_facing_name: "gemini-3-flash",
 		provider_model_id: "google/gemini-3-flash-preview",
 		provider: PROVIDER_OPENROUTER,
-		category: "free" as const, // Note: this is marked as "free" in the original but in premium section
+		category: "free" as const,
 		description: "Gemini 3 Flash"
-	},
-	"gpt-5.1-codex": {
-		user_facing_name: "gpt-5.1-codex",
-		provider_model_id: "openai/gpt-5.1-codex",
-		provider: PROVIDER_OPENROUTER,  // Will change to PROVIDER_ELECTRONHUB
-		category: "premium" as const,
-		description: "GPT-5.1 Codex"
 	},
 	"gpt-5.1-codex-mini": {
 		user_facing_name: "gpt-5.1-codex-mini",
 		provider_model_id: "openai/gpt-5.1-codex-mini",
 		provider: PROVIDER_OPENROUTER,  // Will change to PROVIDER_ELECTRONHUB
 		category: "premium" as const,
-		description: "GPT-5.1 Codex Mini"
+		description: "Grok 4"
 	},
-	"gemini-3-pro": {
-		user_facing_name: "gemini-3-pro",
-		provider_model_id: "google/gemini-3-pro",
+	"gemini-3.1-pro": {
+		user_facing_name: "gemini-3.1-pro",
+		provider_model_id: "google/gemini-3.1-pro-preview",
 		provider: PROVIDER_OPENROUTER,  // Will change to PROVIDER_ELECTRONHUB
 		category: "premium" as const,
 		description: "Gemini 3 Pro"
-	},
-	"gemini-2.5-flash": {
-		user_facing_name: "gemini-2.5-flash",
-		provider_model_id: "google/gemini-2.5-flash",
-		provider: PROVIDER_OPENROUTER,  // Will change to PROVIDER_ELECTRONHUB
-		category: "premium" as const,
-		description: "Gemini 2.5 Flash"
 	},
 	"grok-4": {
 		user_facing_name: "grok-4",
@@ -191,6 +163,13 @@ export const PREMIUM_MODELS = {
 		provider: PROVIDER_OPENROUTER,  // Will change to PROVIDER_ELECTRONHUB
 		category: "premium" as const,
 		description: "2.5 pro high"
+	},
+	"deca-2.5-pro-low": {
+		user_facing_name: "deca-2.5-pro-low",
+		provider_model_id: "deca-2.5-pro-low",  // Special routing model
+		provider: PROVIDER_OPENROUTER,  // Will change to PROVIDER_ELECTRONHUB
+		category: "premium" as const,
+		description: "2.5 pro low"
 	},
 	"deca-2.5-mini": {
 		user_facing_name: "deca-2.5-mini",
