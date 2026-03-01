@@ -1,18 +1,19 @@
 # Agentica - More AI for Less Money
 
-Get $45 in API credits + 1000 daily open source requests for $20. Works in VS Code, Cursor, and Windsurf.
+Get $30 in API credits + free open source requests for $20. Works in VS Code, Cursor, and Windsurf.
 
 ## What You Get
 
 **Paid ($20/month)**
-- $45 in credits for Claude, GPT-5, Gemini-3
-- 1000 requests/day to open source models
+- $30/month in credits for Claude-4.6, GPT-5.x, Gemini-3.1
+- Unlimited requests/day to open source models
 - One API key for all models
 - OpenAI-compatible format
 
 **Free**
-- 200 requests/day to open source models
+- 100 total requests/day to open source models*
 - No credit card required
+
 
 ## Quick Start
 
