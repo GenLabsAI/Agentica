@@ -367,7 +367,7 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 				<div style={{ fontSize: "0.85em", color: "var(--vscode-descriptionForeground)", lineHeight: "1.4" }}>
 					New to GenLabs?{" "}
 					<a
-						href="https://genlabs.dev/signup"
+						href="https://auth.genlabs.dev/onboarding"
 						target="_blank"
 						rel="noopener noreferrer"
 						style={{ color: "var(--vscode-textLink-foreground)", textDecoration: "underline" }}>
