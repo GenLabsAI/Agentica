@@ -1,6 +1,6 @@
 # Agentica - More AI for Less Money
 
-Get $30 in API credits + free open source requests for $20. Works in VS Code, Cursor, and Windsurf.
+Get $1/day in API credits + free open source requests for $15. Works in VS Code, Cursor, and Windsurf.
 
 ## What You Get
 
